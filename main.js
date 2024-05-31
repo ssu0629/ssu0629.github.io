@@ -64,7 +64,6 @@ function draw() {
     totalDeg += guests[i].degX;
   }
 
-  console.log(totalDeg);
 
   textAlign(CENTER, CENTER);
   text(clickCount.value, width / 2, height / 2);
