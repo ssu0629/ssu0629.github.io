@@ -43,7 +43,6 @@ function preload() {
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
   me = partyLoadMyShared({ degX: 0 });
-  game = new Game(); // 미니게임1 객체 생성
 }
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
@@ -58,9 +57,9 @@ function setup() {
     shared.y = 200;
   }
 
-  totalDeg = 0; // 총 회전 각도 초기화
-
+  game = new Game(); // 미니게임1 객체 생성
   game.setup(); // 미니게임1 설정
+  totalDeg = 0; // 총 회전 각도 초기화
 }
 
 // 마우스를 클릭하면 공유 객체의 위치를 업데이트하고 클릭 수를 증가
