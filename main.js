@@ -4,6 +4,32 @@ let clickCount;
 let totalDeg;
 let guests;
 let me;
+function cb(event){
+  dthetaXdt=event.rotationRate.alpha*PI/180;
+  dthetaYdt=event.rotationRate.beta*PI/180;
+  dthetaZdt=event.rotationRate.gamma*PI/180;
+  
+  let ct=millis()/1000;
+  dt=ct-t;
+  t=ct;
+
+  det=true;
+}
+
+function onClick(){
+  if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          window.addEventListener('devicemotion', cb);
+        }
+      })
+      .catch(console.error);
+  } else {
+    window.addEventListener('devicemotion', cb);
+    // handle regular non iOS 13+ devices
+  }
+}
 
 function preload() {
   partyConnect(
