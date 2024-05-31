@@ -19,6 +19,26 @@ function preload() {
 function setup() {
   createCanvas(400, 400);
   noStroke();
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    // iOS 13+ 장치에서는 권한 요청
+    DeviceOrientationEvent.requestPermission()
+      .then(response => {
+        if (response == 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+        }
+      })
+      .catch(console.error);
+  } else {
+    // 다른 장치에서는 바로 이벤트 리스너 추가
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+
+  function handleOrientation(event) {
+    let alpha = event.alpha;
+    let beta = event.beta;
+    let gamma = event.gamma;
+    // 처리 로직
+  }
 
   if (partyIsHost()) {
     clickCount.value = 0;
