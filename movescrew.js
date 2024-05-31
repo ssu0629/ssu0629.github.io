@@ -48,7 +48,7 @@ function preload() {
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
 function setup() {
-  createCanvas(400, 400); // 400x400 크기의 캔버스를 생성
+  createCanvas(800, 600); // 800x600 크기의 캔버스를 생성
   noStroke(); // 윤곽선 없음
 
   // 호스트인 경우 초기 값을 설정
@@ -74,21 +74,21 @@ function mousePressed() {
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
-  background('#ffcccc'); // 배경색 설정
-  fill("#000066"); // 도형 색상 설정
+  // background('#ffcccc'); // 배경색 설정
+  // fill("#000066"); // 도형 색상 설정
 
-  me.degY = rotationY; // 현재 기기의 y축 회전 각도를 저장
+  // me.degY = rotationY; // 현재 기기의 y축 회전 각도를 저장
 
-  // 각 게스트의 회전 값을 합산
-  for (let i = 0; i < guests.length; i++) {
-    totalDeg += guests[i].degY;
-  }
+  // // 각 게스트의 회전 값을 합산
+  // for (let i = 0; i < guests.length; i++) {
+  //   totalDeg += guests[i].degY;
+  // }
 
-  console.log(totalDeg); // 합산된 회전 값을 콘솔에 출력
+  // console.log(totalDeg); // 합산된 회전 값을 콘솔에 출력
 
-  textAlign(CENTER, CENTER); // 텍스트 정렬 설정
-  text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
-  text(radians(totalDeg), width / 2, 100); // 합산된 회전 값을 라디안으로 변환하여 화면에 표시
+  // textAlign(CENTER, CENTER); // 텍스트 정렬 설정
+  // text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
+  // text(radians(totalDeg), width / 2, 100); // 합산된 회전 값을 라디안으로 변환하여 화면에 표시
 
   // 키가 눌린 상태에서 'w' 또는 's' 키를 확인하여 공유 객체의 위치를 업데이트
   // if (keyIsPressed) {
@@ -103,7 +103,7 @@ function draw() {
 
   // ellipse(shared.x, shared.y, 100, 100); // 공유 객체의 위치에 원을 그리기
 
-  totalDeg = 0; // 합산된 회전 값을 초기화
+  // totalDeg = 0; // 합산된 회전 값을 초기화
 
   game.draw(); // 미니게임1 그림
 }
@@ -133,6 +133,25 @@ class Game {
   draw() {
     background(150); // 배경 색상 설정
     this.show(); // 게임 상태 표시
+
+    background('#ffcccc'); // 배경색 설정
+    fill("#000066"); // 도형 색상 설정
+
+    me.degY = rotationY; // 현재 기기의 y축 회전 각도를 저장
+
+    // 각 게스트의 회전 값을 합산
+    for (let i = 0; i < guests.length; i++) {
+      totalDeg += guests[i].degY;
+    }
+
+    console.log(totalDeg); // 합산된 회전 값을 콘솔에 출력
+
+    textAlign(CENTER, CENTER); // 텍스트 정렬 설정
+    text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
+    text(radians(totalDeg), width / 2, 100); // 합산된 회전 값을 라디안으로 변환하여 화면에 표시
+
+    totalDeg = 0; // 합산된 회전 값을 초기화
+
 
     for (let screw of this.screws) {
       screw.show(); // 각 나사 객체 표시
