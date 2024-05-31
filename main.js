@@ -32,7 +32,7 @@ function setup() {
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
-        if (response == 'granted') {
+        if (response === 'granted') {
           window.addEventListener('deviceorientation', handleOrientation);
         } else {
           alert('DeviceOrientation 권한이 거부되었습니다.');
