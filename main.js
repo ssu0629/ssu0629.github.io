@@ -19,26 +19,32 @@ function preload() {
 function setup() {
   createCanvas(400, 400);
   noStroke();
-  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-    // iOS 13+ 장치에서는 권한 요청
+   // 권한 요청
+   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
         if (response == 'granted') {
           window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+          alert('DeviceOrientation 권한이 거부되었습니다.');
         }
       })
       .catch(console.error);
   } else {
-    // 다른 장치에서는 바로 이벤트 리스너 추가
+    // iOS 13 이하 또는 다른 브라우저의 경우
     window.addEventListener('deviceorientation', handleOrientation);
   }
+}
 
-  function handleOrientation(event) {
-    let alpha = event.alpha;
-    let beta = event.beta;
-    let gamma = event.gamma;
-    // 처리 로직
-  }
+function handleOrientation(event) {
+  let alpha = event.alpha; // Z축 회전
+  let beta = event.beta;   // X축 회전
+  let gamma = event.gamma; // Y축 회전
+
+  // 처리 로직 예시
+  console.log(`Alpha: ${alpha}, Beta: ${beta}, Gamma: ${gamma}`);
+}
+
 
   if (partyIsHost()) {
     clickCount.value = 0;
