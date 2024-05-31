@@ -4,6 +4,8 @@ let clickCount;
 let totalDeg;
 let guests;
 let me;
+let det = false;
+
 function cb(event){
   dthetaXdt=event.rotationRate.alpha*PI/180;
   dthetaYdt=event.rotationRate.beta*PI/180;
@@ -30,6 +32,7 @@ function onClick(){
     // handle regular non iOS 13+ devices
   }
 }
+
 
 function preload() {
   partyConnect(
