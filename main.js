@@ -1,10 +1,13 @@
 let shared;
 let clickCount;
-
 let totalDeg;
 let guests;
 let me;
 
+document.addEventListener("DOMContentLoaded", function() {
+  const activateButton = document.getElementById('activateButton');
+  activateButton.addEventListener('click', onClick);
+});
 
 function onClick() {
   if (typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -21,7 +24,6 @@ function onClick() {
   }
 }
 
-
 function preload() {
   partyConnect(
     "wss://demoserver.p5party.org",
@@ -30,7 +32,7 @@ function preload() {
   shared = partyLoadShared("shared", { x: 100, y: 100 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
-  me = partyLoadMyShared( {degX: 0} )
+  me = partyLoadMyShared({ degX: 0 });
 }
 
 function setup() {
@@ -59,7 +61,7 @@ function draw() {
   me.degX = rotationX;
 
   for (let i = 0; i < guests.length; i++) {
-    totalDeg += guests[i].degX
+    totalDeg += guests[i].degX;
   }
 
   console.log(totalDeg);
@@ -70,10 +72,10 @@ function draw() {
 
   if (keyIsPressed) {
     if (key === 'w') {
-      shared.x += 0.5*radians(totalDeg);
+      shared.x += 0.5 * radians(totalDeg);
       shared.y -= 0.5;
     } else if (key === 's') {
-      shared.x += 0.5*radians(totalDeg);
+      shared.x += 0.5 * radians(totalDeg);
       shared.y += 0.5;
     }
   }
