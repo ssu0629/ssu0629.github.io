@@ -70,40 +70,12 @@ function mousePressed() {
   game.mousePressed(); // 미니게임 1 마우스 클릭 처리
 }
 
+function keyPressed() {
+  game.keyPressed(); // 키 입력 처리
+}
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
-  // background('#ffcccc'); // 배경색 설정
-  // fill("#000066"); // 도형 색상 설정
-
-  // me.degY = rotationY; // 현재 기기의 y축 회전 각도를 저장
-
-  // // 각 게스트의 회전 값을 합산
-  // for (let i = 0; i < guests.length; i++) {
-  //   totalDeg += guests[i].degY;
-  // }
-
-  // console.log(totalDeg); // 합산된 회전 값을 콘솔에 출력
-
-  // textAlign(CENTER, CENTER); // 텍스트 정렬 설정
-  // text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
-  // text(radians(totalDeg), width / 2, 100); // 합산된 회전 값을 라디안으로 변환하여 화면에 표시
-
-  // 키가 눌린 상태에서 'w' 또는 's' 키를 확인하여 공유 객체의 위치를 업데이트
-  // if (keyIsPressed) {
-  //   if (key === 'w') {
-  //     shared.x += 0.5 * radians(totalDeg);
-  //     shared.y -= 0.5;
-  //   } else if (key === 's') {
-  //     shared.x += 0.5 * radians(totalDeg);
-  //     shared.y += 0.5;
-  //   }
-  // }
-
-  // ellipse(shared.x, shared.y, 100, 100); // 공유 객체의 위치에 원을 그리기
-
-  // totalDeg = 0; // 합산된 회전 값을 초기화
-
   game.draw(); // 미니게임1 그림
 }
 
@@ -133,8 +105,6 @@ class Game {
     background(150); // 배경 색상 설정
     this.show(); // 게임 상태 표시
 
-    background('#ffcccc'); // 배경색 설정
-    fill("#000066"); // 도형 색상 설정
 
     me.degY = rotationY; // 현재 기기의 y축 회전 각도를 저장
 
@@ -173,14 +143,13 @@ class Game {
     }
   }
 
-  keyPressed() {
-    if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
-      if (keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) { // 좌우 화살표 키 입력 시
-        if (this.isGameOver || this.isGameSuccess) return; // 게임 오버 또는 성공 시 무시
-        this.selectedScrew.move(); // 나사 회전
-      }
+ 
+  if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
+    if (totalDeg >= 1.4) { // 기울기 값 인식
+      if (this.isGameOver || this.isGameSuccess) return; // 게임 오버 또는 성공 시 무시
+      this.selectedScrew.move(); // 나사 회전
     }
-  }
+    }
 
   createScrews() {
     this.screws = []; // 나사 배열 초기화
