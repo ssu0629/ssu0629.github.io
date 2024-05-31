@@ -60,6 +60,7 @@ function setup() {
   game = new Game(); // 미니게임1 객체 생성
   game.setup(); // 미니게임1 설정
   totalDeg = 0; // 총 회전 각도 초기화
+  
 }
 
 // 마우스를 클릭하면 공유 객체의 위치를 업데이트하고 클릭 수를 증가
@@ -70,13 +71,17 @@ function mousePressed() {
   game.mousePressed(); // 미니게임 1 마우스 클릭 처리
 }
 
-function keyPressed() {
-  game.keyPressed(); // 키 입력 처리
-}
+// function keyPressed() {
+//   game.keyPressed(); // 키 입력 처리
+// }
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
+  textAlign(CENTER, CENTER); // 텍스트 정렬 설정
+  text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
+  text(radians(totalDeg), width / 2, 100); // 합산된 회전 값을 라디안으로 변환하여 화면에 표시
   game.draw(); // 미니게임1 그림
+  
 }
 
 // 미니게임1 나사돌리기 실행 class
@@ -103,32 +108,28 @@ class Game {
 
   draw() {
     background(150); // 배경 색상 설정
-    this.show(); // 게임 상태 표시
-
 
     me.degY = rotationY; // 현재 기기의 y축 회전 각도를 저장
 
     // 각 게스트의 회전 값을 합산
+    totalDeg = 0; // 합산된 회전 값을 초기화
     for (let i = 0; i < guests.length; i++) {
       totalDeg += guests[i].degY;
     }
 
     console.log(totalDeg); // 합산된 회전 값을 콘솔에 출력
 
-    textAlign(CENTER, CENTER); // 텍스트 정렬 설정
-    text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
-    text(radians(totalDeg), width / 2, 100); // 합산된 회전 값을 라디안으로 변환하여 화면에 표시
-
-    totalDeg = 0; // 합산된 회전 값을 초기화
 
 
-    for (let screw of this.screws) {
-      screw.show(); // 각 나사 객체 표시
+    if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
+      if (totalDeg >= 1.4) { // 기울기 값
+        if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
+          this.selectedScrew.move(); // 나사 회전
+        }
+      }
     }
 
-    if (this.selectedScrew) {
-      this.selectedScrew.highlight(); // 선택된 나사 하이라이트
-    }
+    this.show(); // 게임 상태 표시 (항상 호출되도록 위치 조정)
   }
 
   mousePressed() {
@@ -143,14 +144,6 @@ class Game {
     }
   }
 
- 
-  if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
-    if (totalDeg >= 1.4) { // 기울기 값 인식
-      if (this.isGameOver || this.isGameSuccess) return; // 게임 오버 또는 성공 시 무시
-      this.selectedScrew.move(); // 나사 회전
-    }
-    }
-
   createScrews() {
     this.screws = []; // 나사 배열 초기화
     this.screws.push(new Screw(200, 200)); // 나사 객체 생성 및 배열에 추가
@@ -160,6 +153,14 @@ class Game {
   }
 
   show() {
+    for (let screw of this.screws) {
+      screw.show(); // 각 나사 객체 표시
+    }
+
+    if (this.selectedScrew) {
+      this.selectedScrew.highlight(); // 선택된 나사 하이라이트
+    }
+
     if (this.successed == 4) { // 모든 나사가 성공한 경우
       this.isGameSuccess = true; // 게임 성공 상태로 설정
     }
@@ -176,14 +177,6 @@ class Game {
         textSize(32);
         text("게임 성공!", width / 2, height / 2 - 50); // 성공 메시지 표시
       }
-    }
-
-    for (let screw of this.screws) {
-      screw.show(); // 각 나사 객체 표시
-    }
-
-    if (this.selectedScrew && !this.isGameSuccess) {
-      this.selectedScrew.highlight(); // 선택된 나사 하이라이트
     }
   }
 
@@ -226,6 +219,8 @@ class Game {
     this.isGameSuccess = false; // 게임 성공 상태 초기화
   }
 }
+
+
 // 나사 생성 class
 class Screw {
   constructor(x, y) {
