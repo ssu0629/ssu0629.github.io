@@ -4,21 +4,9 @@ let clickCount;
 let totalDeg;
 let guests;
 let me;
-let det = false;
 
-function cb(event){
-  dthetaXdt=event.rotationRate.alpha*PI/180;
-  dthetaYdt=event.rotationRate.beta*PI/180;
-  dthetaZdt=event.rotationRate.gamma*PI/180;
-  
-  let ct=millis()/1000;
-  dt=ct-t;
-  t=ct;
 
-  det=true;
-}
-
-function onClick(){
+function onClick() {
   if (typeof DeviceMotionEvent.requestPermission === 'function') {
     DeviceMotionEvent.requestPermission()
       .then(permissionState => {
