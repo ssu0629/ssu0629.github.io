@@ -84,7 +84,7 @@ function draw() {
   // 각 게스트의 회전 값을 합산
   totalDeg = 0; // 합산된 회전 값을 초기화
   for (let i = 0; i < guests.length; i++) {
-    totalDeg += guests[i].degY;
+    totalDeg += radians(guests[i].degY); // 각 게스트의 y축 기울기를 라디안으로 변환하여 합산
   }
 
   game.draw(); // 미니게임1 그림
@@ -93,7 +93,7 @@ function draw() {
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   fill("#000066"); // 텍스트 색상 설정
   text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
-  text(totalDeg, width / 2, 100); // 합산된 기울기 값을 화면에 표시
+  text(totalDeg.toFixed(2) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
 
   console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
 }
@@ -123,7 +123,7 @@ class Game {
 
   draw() {
     if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
-      if (totalDeg >= 30) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+      if (totalDeg >= radians(30)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
         if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
           this.selectedScrew.move(); // 나사 회전
         }
