@@ -138,7 +138,7 @@ class Game {
           }
         } 
       }   
-      else if (totalDeg > 0 && this.previousDeg != 0){
+      else if (totalDeg < 0 && this.previousDeg != 0){
         this.previousDeg = - this.previousDeg_2
         if (totalDeg >= this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
