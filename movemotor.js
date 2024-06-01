@@ -59,7 +59,7 @@ function setup() {
 
   totalDeg = 0; // 총 회전 각도 초기화
 
-  game.setup(); // 미니게임1 설정
+
   game2 = new Motorgame();
 }
 
@@ -121,7 +121,7 @@ class Motorgame {
     this.decelerationStep = 0.05;
     this.energy = 0;
     this.maxEnergy = 100;
-    this.timeLimit = 30; // 타이머 제한 시간 (초)
+    this.timeLimit = 10; // 타이머 제한 시간 (초)
     this.startTime = millis();
     this.gameState = "playing"; // 게임 상태: "playing", "success", "fail"
   }
