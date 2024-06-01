@@ -160,9 +160,6 @@ class Game {
       if (screw.isMouseOver()) { // 마우스가 나사 위에 있을 때
         this.selectedScrew = screw; // 나사 선택
         this.mode = "rotate"; // 모드 변경
-        this.previousDeg = totalDeg;
-        this.previousDeg_1 = abs(totalDeg);
-        this.previousDeg_2 = radians(90) - abs(totalDeg);
         break;
       }
     }
@@ -183,6 +180,9 @@ class Game {
 
     if (this.selectedScrew) {
       this.selectedScrew.highlight(); // 선택된 나사 하이라이트
+      this.previousDeg = totalDeg;
+      this.previousDeg_1 = abs(totalDeg);
+      this.previousDeg_2 = radians(90) - abs(totalDeg);
     }
 
     if (this.successed == 4) { // 모든 나사가 성공한 경우
