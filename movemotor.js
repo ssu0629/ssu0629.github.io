@@ -94,7 +94,8 @@ function mousePressed() {
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
-  background(255);
+  background('#ffcccc'); // 배경색 설정
+  fill("#000066"); // 도형 색상 설정
 
   totalAcceleration = 0; // 초기화
 
