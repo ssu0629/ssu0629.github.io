@@ -1,6 +1,6 @@
 let shared;
 let clickCount;
-let totalAcceleration;
+let totalAcceleration = 0;
 let guests;
 let me;
 let game2;
@@ -93,11 +93,18 @@ function draw() {
   background('#ffcccc'); // 배경색 설정
   fill("#000066"); // 도형 색상 설정
 
-  totalAcceleration = me.acceleration; // 현재 기기의 가속도를 저장
+  totalAcceleration = 0; // 초기화
+
+  // 기준치를 넘는 경우에만 현재 기기의 가속도를 저장
+  if (me.acceleration > threshold) {
+    totalAcceleration = me.acceleration;
+  }
 
   // 각 게스트의 가속도 값을 합산
   for (let i = 0; i < guests.length; i++) {
-    totalAcceleration += guests[i].acceleration;
+    if (guests[i].acceleration > threshold) {
+      totalAcceleration += guests[i].acceleration;
+    }
   }
 
   console.log(`Total Acceleration: ${totalAcceleration}`); // 합산된 가속도 값을 콘솔에 출력
@@ -117,7 +124,7 @@ class Motorgame {
     this.acceleration = 0;
     this.maxAcceleration = 100;
     this.energy = 0;
-    this.maxEnergy = 10000;
+    this.maxEnergy = 1000;
     this.timeLimit = 10; // 타이머 제한 시간 (초)
     this.startTime = millis();
     this.gameState = "playing"; // 게임 상태: "playing", "success", "fail"
@@ -126,13 +133,13 @@ class Motorgame {
   update(totalAcceleration) {
     if (this.gameState === "playing") {
       let currentTime = millis();
-      
-      if (totalAcceleration > threshold) { // 작은 움직임 무시
+
+      if (totalAcceleration > threshold) { // 기준치를 넘는 경우에만 업데이트
         this.acceleration = min(totalAcceleration, this.maxAcceleration);
       } else if (currentTime - lastMotionTime > 1000) { // 1초 동안 가속도가 0에 가까우면
         this.acceleration = max(this.acceleration - 0.5, 0); // 서서히 감소
       }
-      
+
       this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
 
       // 프로펠러 업데이트
