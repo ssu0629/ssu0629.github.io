@@ -127,18 +127,18 @@ class Game {
       console.log(this.previousDeg)
       console.log(totalDeg)
       if (totalDeg > 0){  
-        if (totalDeg <= -(this.previousDeg)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+        if (totalDeg <= -(radians(180)-this.previousDeg)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
             this.selectedScrew.move(); // 나사 회전
-            this.previousDeg = -this.previousDeg
+            this.previousDeg = radians(180)-this.previousDeg
           }
         } 
       }   
       else {
-        if (totalDeg >= -(this.previousDeg)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+        if (totalDeg >= -(radians(180)+this.previousDeg)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
             this.selectedScrew.move(); // 나사 회전
-            this.previousDeg  = -this.previousDeg
+            this.previousDeg  = radians(180) + this.previousDeg
           }
         }
       }
@@ -223,7 +223,7 @@ class Game {
 
   resetTimer() {
     this.timerStart = millis(); // 타이머 시작 시간 설정
-    this.timeLimit = 50000; // 타이머 제한 시간 설정 (10초)
+    this.timeLimit = 50000; // 타이머 제한 시간 설정 (50초)
   }
 
   resetGame() {
