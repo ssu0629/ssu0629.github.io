@@ -10,7 +10,11 @@ const threshold = 2; // 가속도의 기준치 설정 (필요에 따라 조정 �
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
   const activateButton = document.getElementById('activateButton');
-  activateButton.addEventListener('click', onClick);
+  if (activateButton) {
+    activateButton.addEventListener('click', onClick);
+  } else {
+    console.error("Activate button not found.");
+  }
 });
 
 // onClick 함수는 iOS 기기에서 motion 권한을 요청합니다.
@@ -54,7 +58,7 @@ function preload() {
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
 function setup() {
-  createCanvas(400, 400); // 400x400 크기의 캔버스를 생성
+  createCanvas(800, 600); // 800x600 크기의 캔버스를 생성
   noStroke(); // 윤곽선 없음
 
   // 호스트인 경우 초기 값을 설정
@@ -90,8 +94,6 @@ function mousePressed() {
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
-  background('#ffcccc'); // 배경색 설정
-  fill("#000066"); // 도형 색상 설정
 
   totalAcceleration = 0; // 초기화
 
