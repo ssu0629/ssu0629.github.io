@@ -126,6 +126,7 @@ class Game {
     console.log(totalDeg)
     console.log(radians(90))
     if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
+      console.log(this.previousDeg)
       if (totalDeg > 0){  
         if (totalDeg <= -(this.previousDeg)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
@@ -155,7 +156,7 @@ class Game {
       if (screw.isMouseOver()) { // 마우스가 나사 위에 있을 때
         this.selectedScrew = screw; // 나사 선택
         this.mode = "rotate"; // 모드 변경
-        this.previousDeg = abs(totalDeg);
+        this.previousDeg = totalDeg;
         break;
       }
     }
