@@ -6,7 +6,6 @@ let me;
 let game2;
 let lastMotionTime;
 const threshold = 2; // 가속도의 기준치 설정 (필요에 따라 조정 가능)
-const decayRate = 1.2; // 가속도 감소율
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
@@ -153,13 +152,11 @@ class Motorgame {
 
   update(totalAcceleration) {
     if (this.gameState === "playing") {
-      let currentTime = millis();
-
       if (totalAcceleration > threshold) { // 기준치를 넘는 경우에만 업데이트
         this.acceleration = min(totalAcceleration, this.maxAcceleration);
       } else {
-        // 서서히 감소
-        this.acceleration = max(this.acceleration * decayRate, 0);
+        // 가속도 변화가 기준치 이하일 때 가속도 0으로 설정
+        this.acceleration = 0;
       }
 
       this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
