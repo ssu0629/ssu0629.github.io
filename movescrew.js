@@ -8,7 +8,11 @@ let game;
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
   const activateButton = document.getElementById('activateButton');
-  activateButton.addEventListener('click', onClick);
+  if (activateButton) {
+    activateButton.addEventListener('click', onClick);
+  } else {
+    console.error("Activate button not found.");
+  }
 });
 
 // onClick 함수는 iOS 기기에서 motion 권한을 요청합니다.
@@ -29,12 +33,14 @@ function onClick() {
 
 // devicemotion 이벤트 콜백 함수
 function cb(event) {
-  console.log(event.rotationRate); // 회전 속도를 콘솔에 출력
-  // 추가적인 이벤트 처리 로직을 여기에 작성
+  if (event.rotationRate) {
+    me.degY = event.rotationRate.beta; // y축 회전 속도를 degY에 저장
+  }
 }
 
 // p5.js preload 함수로 party.js 연결 및 공유 데이터 초기화
 function preload() {
+  console.log("preload called");
   partyConnect(
     "wss://demoserver.p5party.org",
     "party_circle"
@@ -42,11 +48,12 @@ function preload() {
   shared = partyLoadShared("shared", { x: 100, y: 100 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
-  me = partyLoadMyShared({ degX: 0 });
+  me = partyLoadMyShared({ degY: 0 });
 }
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
 function setup() {
+  console.log("setup called");
   createCanvas(800, 600); // 800x600 크기의 캔버스를 생성
   noStroke(); // 윤곽선 없음
 
@@ -74,8 +81,6 @@ function mousePressed() {
 function draw() {
   background(150); // 배경 색상 설정
 
-  me.degY = rotationY; // 현재 기기의 y축 회전 각도를 저장
-
   // 각 게스트의 회전 값을 합산
   totalDeg = 0; // 합산된 회전 값을 초기화
   for (let i = 0; i < guests.length; i++) {
@@ -84,6 +89,7 @@ function draw() {
 
   game.draw(); // 미니게임1 그림
 
+  // 게임 오버 상태와 관계없이 항상 텍스트를 그립니다.
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   fill("#000066"); // 텍스트 색상 설정
   text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
@@ -106,6 +112,7 @@ class Game {
   }
 
   setup() {
+    console.log("Game setup called");
     this.createScrews(); // 나사 객체 생성
     this.restartButton = createButton("다시 시작"); // 다시 시작 버튼 생성
     this.restartButton.position(width / 2 - 50, height / 2); // 버튼 위치 설정
@@ -116,7 +123,7 @@ class Game {
 
   draw() {
     if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
-      if (totalDeg >= 1.4) { // 기울기 값
+      if (totalDeg >= 1.5) { // 기울기 값 임계값을 초과하면
         if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
           this.selectedScrew.move(); // 나사 회전
         }
