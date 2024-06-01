@@ -124,11 +124,13 @@ class Game {
   draw() {
     if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
       if (totalDeg >= radians(180)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
-        if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
-          this.selectedScrew.move(); // 나사 회전
-        }
+        if (totalDeg <= - radians(180)) {
+          if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
+            this.selectedScrew.move(); // 나사 회전
+          }
       }
     }
+  }
 
     this.show(); // 게임 상태 표시 (항상 호출되도록 위치 조정)
   }
