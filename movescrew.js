@@ -34,7 +34,7 @@ function onClick() {
 // devicemotion 이벤트 콜백 함수
 function cb(event) {
   if (event.rotationRate) {
-    me.degY = event.rotationRate.beta; // y축 회전 속도를 degY에 저장
+    me.degY = event.rotationRate.gamma; // y축 회전 속도를 degY에 저장
   }
 }
 
