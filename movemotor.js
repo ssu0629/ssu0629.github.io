@@ -5,6 +5,7 @@ let guests;
 let me;
 let game2;
 let lastMotionTime;
+const threshold = 2; // 가속도의 기준치 설정 (필요에 따라 조정 가능)
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
@@ -31,8 +32,9 @@ function onClick() {
 // devicemotion 이벤트 콜백 함수
 function cb(event) {
   const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 }; // null 체크 및 기본값 설정
-  me.acceleration = Math.sqrt((acc.x * acc.x) + (acc.y * acc.y) + (acc.z * acc.z)) || 0; // 가속도 벡터의 크기를 계산하고 NaN 방지
-  if (me.acceleration > 0.1) { // 작은 움직임 무시
+  const acceleration = Math.sqrt((acc.x * acc.x) + (acc.y * acc.y) + (acc.z * acc.z)) || 0; // 가속도 벡터의 크기를 계산하고 NaN 방지
+  if (acceleration > threshold) { // 기준치를 넘는 경우에만 업데이트
+    me.acceleration = acceleration;
     lastMotionTime = millis();
   }
   console.log(`Acceleration: ${me.acceleration}`); // 가속도를 콘솔에 출력
@@ -125,7 +127,7 @@ class Motorgame {
     if (this.gameState === "playing") {
       let currentTime = millis();
       
-      if (totalAcceleration > 0.1) { // 작은 움직임 무시
+      if (totalAcceleration > threshold) { // 작은 움직임 무시
         this.acceleration = min(totalAcceleration, this.maxAcceleration);
       } else if (currentTime - lastMotionTime > 1000) { // 1초 동안 가속도가 0에 가까우면
         this.acceleration = max(this.acceleration - 0.5, 0); // 서서히 감소
