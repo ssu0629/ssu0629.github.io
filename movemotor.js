@@ -1,11 +1,12 @@
 let shared;
 let clickCount;
-let totalAcceleration = 0;
+let totalAccelerationChange = 0;
 let guests;
 let me;
 let game2;
 let lastMotionTime;
-const threshold = 2; // 가속도의 기준치 설정 (필요에 따라 조정 가능)
+const threshold = 0.5; // 가속도 변화율 기준치 설정 (필요에 따라 조정 가능)
+const decayRate = 0.9; // 가속도 감소율
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
@@ -53,11 +54,20 @@ function cb(event) {
   };
 
   const acceleration = Math.sqrt(adjustedAcc.x * adjustedAcc.x + adjustedAcc.y * adjustedAcc.y + adjustedAcc.z * adjustedAcc.z) || 0;
-  if (acceleration > threshold) { // 기준치를 넘는 경우에만 업데이트
-    me.acceleration = acceleration;
+  
+  if (!me.previousAcceleration) {
+    me.previousAcceleration = acceleration;
+  }
+
+  const accelerationChange = Math.abs(acceleration - me.previousAcceleration);
+  me.previousAcceleration = acceleration;
+
+  if (accelerationChange > threshold) { // 기준치를 넘는 경우에만 업데이트
+    me.accelerationChange = accelerationChange;
     lastMotionTime = millis();
   }
-  console.log(`Acceleration: ${me.acceleration}`); // 가속도를 콘솔에 출력
+
+  console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
 }
 
 // p5.js preload 함수로 party.js 연결 및 공유 데이터 초기화
@@ -69,7 +79,7 @@ function preload() {
   shared = partyLoadShared("shared", { x: 200, y: 200 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
-  me = partyLoadMyShared({ acceleration: 0 });
+  me = partyLoadMyShared({ accelerationChange: 0 });
 }
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
@@ -84,7 +94,7 @@ function setup() {
     shared.y = 200;
   }
 
-  totalAcceleration = 0; // 총 가속도 초기화
+  totalAccelerationChange = 0; // 총 가속도 변화율 초기화
   lastMotionTime = millis();
 
   game2 = new Motorgame();
@@ -113,28 +123,28 @@ function draw() {
   background('#ffcccc'); // 배경색 설정
   fill("#000066"); // 도형 색상 설정
 
-  totalAcceleration = 0; // 초기화
+  totalAccelerationChange = 0; // 초기화
 
-  // 기준치를 넘는 경우에만 현재 기기의 가속도를 저장
-  if (me.acceleration > threshold) {
-    totalAcceleration = me.acceleration;
+  // 기준치를 넘는 경우에만 현재 기기의 가속도 변화를 저장
+  if (me.accelerationChange > threshold) {
+    totalAccelerationChange = me.accelerationChange;
   }
 
-  // 각 게스트의 가속도 값을 합산
+  // 각 게스트의 가속도 변화 값을 합산
   for (let i = 0; i < guests.length; i++) {
-    if (guests[i].acceleration > threshold) {
-      totalAcceleration += guests[i].acceleration;
+    if (guests[i].accelerationChange > threshold) {
+      totalAccelerationChange += guests[i].accelerationChange;
     }
   }
 
-  console.log(`Total Acceleration: ${totalAcceleration}`); // 합산된 가속도 값을 콘솔에 출력
+  console.log(`Total Acceleration Change: ${totalAccelerationChange}`); // 합산된 가속도 변화 값을 콘솔에 출력
 
-  game2.update(totalAcceleration);
+  game2.update(totalAccelerationChange);
   game2.display();
 
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
-  text(totalAcceleration.toFixed(2), width / 2, 100); // 합산된 가속도 값을 화면에 표시
+  text(totalAccelerationChange.toFixed(2), width / 2, 100); // 합산된 가속도 변화를 화면에 표시
 }
 
 // 모터 돌리기 게임 class
@@ -150,13 +160,16 @@ class Motorgame {
     this.gameState = "playing"; // 게임 상태: "playing", "success", "fail"
   }
 
-  update(totalAcceleration) {
+  update(totalAccelerationChange) {
     if (this.gameState === "playing") {
-      if (totalAcceleration > threshold) { // 기준치를 넘는 경우에만 업데이트
-        this.acceleration = min(totalAcceleration, this.maxAcceleration);
+      if (totalAccelerationChange > threshold) { // 기준치를 넘는 경우에만 업데이트
+        this.acceleration = min(totalAccelerationChange, this.maxAcceleration);
       } else {
-        // 가속도 변화가 기준치 이하일 때 가속도 0으로 설정
-        this.acceleration = 0;
+        // 가속도 변화가 기준치 이하일 때 가속도를 빠르게 감소
+        this.acceleration *= decayRate;
+        if (this.acceleration < 1) {
+          this.acceleration = 0; // 가속도가 충분히 작아지면 0으로 설정
+        }
       }
 
       this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
