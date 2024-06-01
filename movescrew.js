@@ -126,7 +126,7 @@ class Game {
 
   draw() {
     if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
-      console.log(totalDeg)
+      console.log(previousDeg)
       console.log(this.previousDeg_1)
       console.log(this.previousDeg_2)
       if (totalDeg > 0){  
