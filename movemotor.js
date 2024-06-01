@@ -5,7 +5,7 @@ let guests;
 let me;
 let game2;
 let lastMotionTime;
-const threshold = 0.5; // 가속도 변화율 기준치 설정 (필요에 따라 조정 가능)
+const threshold = 1; // 가속도 변화율 기준치 설정 (필요에 따라 조정 가능)
 const decayRate = 0.9; // 가속도 감소율
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
@@ -167,7 +167,7 @@ class Motorgame {
       } else {
         // 가속도 변화가 기준치 이하일 때 가속도를 빠르게 감소
         this.acceleration *= decayRate;
-        if (this.acceleration < 1) {
+        if (this.acceleration < 2) {
           this.acceleration = 0; // 가속도가 충분히 작아지면 0으로 설정
         }
       }
