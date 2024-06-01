@@ -6,6 +6,7 @@ let me;
 let game2;
 let lastMotionTime;
 const threshold = 2; // 가속도의 기준치 설정 (필요에 따라 조정 가능)
+const decayRate = 1.2; // 가속도 감소율
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
@@ -35,8 +36,24 @@ function onClick() {
 
 // devicemotion 이벤트 콜백 함수
 function cb(event) {
-  const acc = event.acceleration || { x: 0, y: 0, z: 0 }; // 중력 제외한 가속도 값 사용
-  const acceleration = Math.sqrt((acc.x * acc.x) + (acc.y * acc.y) + (acc.z * acc.z)) || 0; // 가속도 벡터의 크기를 계산하고 NaN 방지
+  const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
+  const accWithoutGravity = event.acceleration || { x: 0, y: 0, z: 0 };
+
+  // 중력 보정
+  const alpha = 0.8;
+  me.gravity = me.gravity || { x: 0, y: 0, z: 0 };
+
+  me.gravity.x = alpha * me.gravity.x + (1 - alpha) * acc.x;
+  me.gravity.y = alpha * me.gravity.y + (1 - alpha) * acc.y;
+  me.gravity.z = alpha * me.gravity.z + (1 - alpha) * acc.z;
+
+  const adjustedAcc = {
+    x: acc.x - me.gravity.x,
+    y: acc.y - me.gravity.y,
+    z: acc.z - me.gravity.z,
+  };
+
+  const acceleration = Math.sqrt(adjustedAcc.x * adjustedAcc.x + adjustedAcc.y * adjustedAcc.y + adjustedAcc.z * adjustedAcc.z) || 0;
   if (acceleration > threshold) { // 기준치를 넘는 경우에만 업데이트
     me.acceleration = acceleration;
     lastMotionTime = millis();
@@ -126,7 +143,7 @@ class Motorgame {
   constructor() {
     this.propeller = new Propeller(width / 2, height / 2, 150);
     this.acceleration = 0;
-    this.maxAcceleration = 100;
+    this.maxAcceleration = 60;
     this.energy = 0;
     this.maxEnergy = 1000;
     this.timeLimit = 10; // 타이머 제한 시간 (초)
@@ -142,7 +159,7 @@ class Motorgame {
         this.acceleration = min(totalAcceleration, this.maxAcceleration);
       } else {
         // 서서히 감소
-        this.acceleration = max(this.acceleration - 5, 0);
+        this.acceleration = max(this.acceleration * decayRate, 0);
       }
 
       this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
