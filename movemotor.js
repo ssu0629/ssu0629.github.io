@@ -1,9 +1,10 @@
 let shared;
 let clickCount;
-let totalDeg;
+let totalAcceleration;
 let guests;
 let me;
 let game2;
+let lastMotionTime;
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
@@ -29,8 +30,12 @@ function onClick() {
 
 // devicemotion 이벤트 콜백 함수
 function cb(event) {
-  console.log(event.rotationRate); // 회전 속도를 콘솔에 출력
-  // 추가적인 이벤트 처리 로직을 여기에 작성
+  const acc = event.accelerationIncludingGravity;
+  me.acceleration = Math.sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z); // 가속도 벡터의 크기를 계산
+  if (me.acceleration > 0.1) { // 작은 움직임 무시
+    lastMotionTime = millis();
+  }
+  console.log(`Acceleration: ${me.acceleration}`); // 가속도를 콘솔에 출력
 }
 
 // p5.js preload 함수로 party.js 연결 및 공유 데이터 초기화
@@ -42,7 +47,7 @@ function preload() {
   shared = partyLoadShared("shared", { x: 100, y: 100 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
-  me = partyLoadMyShared({ degX: 0 });
+  me = partyLoadMyShared({ acceleration: 0 });
 }
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
@@ -57,8 +62,8 @@ function setup() {
     shared.y = 200;
   }
 
-  totalDeg = 0; // 총 회전 각도 초기화
-
+  totalAcceleration = 0; // 총 가속도 초기화
+  lastMotionTime = millis();
 
   game2 = new Motorgame();
 }
@@ -81,44 +86,34 @@ function mousePressed() {
   }
 }
 
-
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
   background('#ffcccc'); // 배경색 설정
   fill("#000066"); // 도형 색상 설정
 
-  me.degY = rotationY; // 현재 기기의 X축 회전 각도를 저장
+  totalAcceleration = me.acceleration; // 현재 기기의 가속도를 저장
 
-  // 각 게스트의 회전 값을 합산
+  // 각 게스트의 가속도 값을 합산
   for (let i = 0; i < guests.length; i++) {
-    totalDeg += guests[i].degY;
+    totalAcceleration += guests[i].acceleration;
   }
 
-  console.log(totalDeg); // 합산된 회전 값을 콘솔에 출력
+  console.log(`Total Acceleration: ${totalAcceleration}`); // 합산된 가속도 값을 콘솔에 출력
 
-  game2.update();
+  game2.update(totalAcceleration);
   game2.display();
 
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
-  text(radians(totalDeg), width / 2, 100); // 합산된 회전 값을 라디안으로 변환하여 화면에 표시
+  text(totalAcceleration.toFixed(2), width / 2, 100); // 합산된 가속도 값을 화면에 표시
+}
 
-
-
-  totalDeg = 0; // 합산된 회전 값을 초기화
-
-} 
-
-
-
-//모터 돌리기 게임 class
+// 모터 돌리기 게임 class
 class Motorgame {
   constructor() {
     this.propeller = new Propeller(width / 2, height / 2, 150);
     this.acceleration = 0;
     this.maxAcceleration = 10;
-    this.accelerationStep = 0.1;
-    this.decelerationStep = 0.05;
     this.energy = 0;
     this.maxEnergy = 100;
     this.timeLimit = 10; // 타이머 제한 시간 (초)
@@ -126,19 +121,16 @@ class Motorgame {
     this.gameState = "playing"; // 게임 상태: "playing", "success", "fail"
   }
 
-  update() {
+  update(totalAcceleration) {
     if (this.gameState === "playing") {
-      // 키보드 입력에 따른 가속도 조절
-      if (keyIsDown(UP_ARROW)) {
-        this.acceleration = min(this.acceleration + this.accelerationStep, this.maxAcceleration);
-      } else if (keyIsDown(DOWN_ARROW)) {
-        this.acceleration = max(this.acceleration - this.accelerationStep, 0);
-      } else {
-        // 키보드를 누르지 않으면 속도 감소
-        this.acceleration = max(this.acceleration - this.decelerationStep, 0);
+      let currentTime = millis();
+      
+      if (totalAcceleration > 0.1) { // 작은 움직임 무시
+        this.acceleration = min(totalAcceleration, this.maxAcceleration);
+      } else if (currentTime - lastMotionTime > 1000) { // 1초 동안 가속도가 0에 가까우면
+        this.acceleration = max(this.acceleration - 0.1, 0); // 서서히 감소
       }
-
-      // 에너지 게이지 업데이트
+      
       this.energy = min(this.energy + this.acceleration * 0.1, this.maxEnergy);
 
       // 프로펠러 업데이트
@@ -227,7 +219,7 @@ class Motorgame {
   }
 }
 
-//프로펠러 그리는 class
+// 프로펠러 그리는 class
 class Propeller {
   constructor(x, y, size) {
     this.x = x;
@@ -266,3 +258,4 @@ class Propeller {
     endShape(CLOSE);
   }
 }
+
