@@ -30,8 +30,8 @@ function onClick() {
 
 // devicemotion 이벤트 콜백 함수
 function cb(event) {
-  const acc = event.accelerationIncludingGravity;
-  me.acceleration = Math.sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z); // 가속도 벡터의 크기를 계산
+  const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 }; // null 체크 및 기본값 설정
+  me.acceleration = Math.sqrt((acc.x * acc.x) + (acc.y * acc.y) + (acc.z * acc.z)) || 0; // 가속도 벡터의 크기를 계산하고 NaN 방지
   if (me.acceleration > 0.1) { // 작은 움직임 무시
     lastMotionTime = millis();
   }
@@ -258,4 +258,3 @@ class Propeller {
     endShape(CLOSE);
   }
 }
-
