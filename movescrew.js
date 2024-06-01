@@ -131,7 +131,7 @@ class Game {
       console.log(this.previousDeg_2)
       if (totalDeg > 0 && this.previousDeg != 10){
         this.previousDeg = this.previousDeg_1
-        if (totalDeg >= this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+        if (totalDeg > this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
             this.selectedScrew.move(); // 나사 회전
             this.previousDeg = 10
@@ -140,7 +140,7 @@ class Game {
       }   
       else if (totalDeg < 0 && this.previousDeg != 0){
         this.previousDeg = - this.previousDeg_2
-        if (totalDeg >= this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+        if (totalDeg > this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
             this.selectedScrew.move(); // 나사 회전
             this.previousDeg = 0
