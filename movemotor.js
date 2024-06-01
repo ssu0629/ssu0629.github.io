@@ -113,9 +113,9 @@ class Motorgame {
   constructor() {
     this.propeller = new Propeller(width / 2, height / 2, 150);
     this.acceleration = 0;
-    this.maxAcceleration = 10;
+    this.maxAcceleration = 100;
     this.energy = 0;
-    this.maxEnergy = 100;
+    this.maxEnergy = 1000;
     this.timeLimit = 10; // 타이머 제한 시간 (초)
     this.startTime = millis();
     this.gameState = "playing"; // 게임 상태: "playing", "success", "fail"
@@ -128,10 +128,10 @@ class Motorgame {
       if (totalAcceleration > 0.1) { // 작은 움직임 무시
         this.acceleration = min(totalAcceleration, this.maxAcceleration);
       } else if (currentTime - lastMotionTime > 1000) { // 1초 동안 가속도가 0에 가까우면
-        this.acceleration = max(this.acceleration - 0.1, 0); // 서서히 감소
+        this.acceleration = max(this.acceleration - 0.5, 0); // 서서히 감소
       }
       
-      this.energy = min(this.energy + this.acceleration * 0.1, this.maxEnergy);
+      this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
 
       // 프로펠러 업데이트
       this.propeller.update(this.acceleration);
