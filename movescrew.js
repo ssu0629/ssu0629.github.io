@@ -134,10 +134,10 @@ class Game {
         }
       }
     }
-  }
-
     this.show(); // 게임 상태 표시 (항상 호출되도록 위치 조정)
   }
+
+  
 
   mousePressed() {
     if (this.isGameOver || this.isGameSuccess) return; // 게임 오버 또는 성공 시 무시
@@ -146,6 +146,7 @@ class Game {
       if (screw.isMouseOver()) { // 마우스가 나사 위에 있을 때
         this.selectedScrew = screw; // 나사 선택
         this.mode = "rotate"; // 모드 변경
+        this.previousDeg = totalDeg;
         break;
       }
     }
@@ -224,6 +225,7 @@ class Game {
     this.createScrews(); // 나사 객체 재생성
     this.isGameOver = false; // 게임 오버 상태 초기화
     this.isGameSuccess = false; // 게임 성공 상태 초기화
+    this.previousDeg = 0;
   }
 }
 
