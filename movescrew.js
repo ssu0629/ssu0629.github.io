@@ -133,12 +133,12 @@ class Game {
         if (totalDeg >= this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
             this.selectedScrew.move(); // 나사 회전
-            this.previousDeg = this.previousDeg_2
+            this.previousDeg = -this.previousDeg_2
           }
         } 
       }   
       else {
-        if (totalDeg >= - this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+        if (totalDeg >= this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
             this.selectedScrew.move(); // 나사 회전
             this.previousDeg =  this.previousDeg_1
