@@ -117,7 +117,7 @@ class Motorgame {
     this.acceleration = 0;
     this.maxAcceleration = 100;
     this.energy = 0;
-    this.maxEnergy = 1000;
+    this.maxEnergy = 10000;
     this.timeLimit = 10; // 타이머 제한 시간 (초)
     this.startTime = millis();
     this.gameState = "playing"; // 게임 상태: "playing", "success", "fail"
