@@ -109,7 +109,8 @@ class Game {
     this.frame = 30; // 프레임 수
     this.isGameSuccess = false; // 게임 성공 여부
     this.isGameOver = false; // 게임 오버 여부
-    this.previousDeg = 0;
+    this.previousDeg_1 = 0;
+    this.previousDeg_2 = 0;
   }
 
   setup() {
@@ -124,21 +125,20 @@ class Game {
 
   draw() {
     if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
-      console.log(this.previousDeg)
       console.log(totalDeg)
+      console.log(this.previousDeg_1)
+      console.log(this.previousDeg_2)
       if (totalDeg > 0){  
-        if (totalDeg <= -(radians(180)-this.previousDeg)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+        if (totalDeg >= this.previousDeg_1 ) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
             this.selectedScrew.move(); // 나사 회전
-            this.previousDeg = radians(180)-this.previousDeg
           }
         } 
       }   
       else {
-        if (totalDeg >= -(radians(180)+this.previousDeg)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+        if (totalDeg >= - this.previousDeg_2) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
             this.selectedScrew.move(); // 나사 회전
-            this.previousDeg  = radians(180) + this.previousDeg
           }
         }
       }
@@ -155,7 +155,8 @@ class Game {
       if (screw.isMouseOver()) { // 마우스가 나사 위에 있을 때
         this.selectedScrew = screw; // 나사 선택
         this.mode = "rotate"; // 모드 변경
-        this.previousDeg = totalDeg;
+        this.previousDeg_1 = totalDeg;
+        this.previousDeg_2 = radians(180) - totalDeg;
         break;
       }
     }
@@ -234,7 +235,8 @@ class Game {
     this.createScrews(); // 나사 객체 재생성
     this.isGameOver = false; // 게임 오버 상태 초기화
     this.isGameSuccess = false; // 게임 성공 상태 초기화
-    this.previousDeg = 0;
+    this.previousDeg_1 = 0;
+    this.previousDeg_2 = 0;
   }
 }
 
