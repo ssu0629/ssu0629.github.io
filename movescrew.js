@@ -160,7 +160,7 @@ class Game {
         this.mode = "rotate"; // 모드 변경
         this.previousDeg = totalDeg;
         this.previousDeg_1 = abs(totalDeg);
-        this.previousDeg_2 = radians(180) - abs(totalDeg);
+        this.previousDeg_2 = radians(90) - abs(totalDeg);
         break;
       }
     }
