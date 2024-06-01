@@ -35,7 +35,7 @@ function onClick() {
 
 // devicemotion 이벤트 콜백 함수
 function cb(event) {
-  const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 }; // null 체크 및 기본값 설정
+  const acc = event.acceleration || { x: 0, y: 0, z: 0 }; // 중력 제외한 가속도 값 사용
   const acceleration = Math.sqrt((acc.x * acc.x) + (acc.y * acc.y) + (acc.z * acc.z)) || 0; // 가속도 벡터의 크기를 계산하고 NaN 방지
   if (acceleration > threshold) { // 기준치를 넘는 경우에만 업데이트
     me.acceleration = acceleration;
@@ -50,7 +50,7 @@ function preload() {
     "wss://demoserver.p5party.org",
     "party_circle"
   );
-  shared = partyLoadShared("shared", { x: 100, y: 100 });
+  shared = partyLoadShared("shared", { x: 200, y: 200 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
   me = partyLoadMyShared({ acceleration: 0 });
@@ -58,7 +58,7 @@ function preload() {
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
 function setup() {
-  createCanvas(800, 600); // 800x600 크기의 캔버스를 생성
+  createCanvas(400, 400); // 400x400 크기의 캔버스를 생성
   noStroke(); // 윤곽선 없음
 
   // 호스트인 경우 초기 값을 설정
@@ -80,7 +80,7 @@ function mousePressed() {
   shared.y = mouseY;
   clickCount.value++;
 
-  if (game2.gameState === "fail") {
+  if (game2.gameState === "fail" || game2.gameState === "success") {
     let buttonX = width / 2 - 100;
     let buttonY = height / 2 + 50;
     let buttonWidth = 200;
@@ -178,6 +178,9 @@ class Motorgame {
       fill(0);
       textAlign(CENTER, CENTER);
       text("게임 성공!", width / 2, height / 2);
+
+      // 다시 도전 버튼 그리기
+      this.drawRetryButton();
     } else if (this.gameState === "fail") {
       // 게임 실패 화면
       textSize(64);
