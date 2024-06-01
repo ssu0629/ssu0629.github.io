@@ -223,7 +223,7 @@ class Game {
 
   resetTimer() {
     this.timerStart = millis(); // 타이머 시작 시간 설정
-    this.timeLimit = 10000; // 타이머 제한 시간 설정 (10초)
+    this.timeLimit = 50000; // 타이머 제한 시간 설정 (10초)
   }
 
   resetGame() {
