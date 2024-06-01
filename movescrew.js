@@ -126,17 +126,26 @@ class Game {
     console.log(totalDeg)
     console.log(radians(90))
     if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
-      let degDifference = abs(totalDeg) - this.previousDeg;
-      if (degDifference >= radians(90)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
-        if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
-          this.selectedScrew.move(); // 나사 회전
-          this.previousDeg += radians(90);
+      if (totalDeg > 0){  
+        if (totalDeg <= -(this.previousDeg)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+          if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
+            this.selectedScrew.move(); // 나사 회전
+            this.previousDeg = -this.previousDeg
+          }
+        } 
+      }   
+      else {
+        if (totalDeg >= -(this.previousDeg)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
+          if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
+            this.selectedScrew.move(); // 나사 회전
+            this.previousDeg  = -this.previousDeg
+          }
         }
       }
-    }
+    }    
     this.show(); // 게임 상태 표시 (항상 호출되도록 위치 조정)
   }
-
+    
   
 
   mousePressed() {
