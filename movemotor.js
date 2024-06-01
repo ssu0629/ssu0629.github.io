@@ -140,8 +140,9 @@ class Motorgame {
 
       if (totalAcceleration > threshold) { // 기준치를 넘는 경우에만 업데이트
         this.acceleration = min(totalAcceleration, this.maxAcceleration);
-      } else if (currentTime - lastMotionTime > 1000) { // 1초 동안 가속도가 0에 가까우면
-        this.acceleration = max(this.acceleration - 0.5, 0); // 서서히 감소
+      } else {
+        // 서서히 감소
+        this.acceleration = max(this.acceleration - 0.5, 0);
       }
 
       this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
