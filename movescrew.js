@@ -95,7 +95,7 @@ function draw() {
   text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
   text(totalDeg.toFixed(2) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
 
-  console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
+  // console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
 }
 
 // 미니게임1 나사돌리기 실행 class
@@ -122,12 +122,12 @@ class Game {
   }
 
   draw() {
+    console.log(totalDeg)
     if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
       if (totalDeg >= radians(180)) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
-        if (totalDeg <= - radians(180)) {
-          if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
-            this.selectedScrew.move(); // 나사 회전
-          }
+        if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
+          this.selectedScrew.move(); // 나사 회전
+        }
       }
     }
   }
