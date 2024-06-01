@@ -142,7 +142,7 @@ class Motorgame {
         this.acceleration = min(totalAcceleration, this.maxAcceleration);
       } else {
         // 서서히 감소
-        this.acceleration = max(this.acceleration - 0.5, 0);
+        this.acceleration = max(this.acceleration - 5, 0);
       }
 
       this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
