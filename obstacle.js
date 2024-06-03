@@ -141,6 +141,7 @@ class ObstacleGame {
   update() {
     this.counter++;
     this.distanceTraveled += this.speed; // 이동 거리 증가
+
     if (this.counter % this.spawnRate === 0) {
       this.spawnObstacle();
     }
@@ -179,25 +180,6 @@ class ObstacleGame {
     for (let obstacle of this.obstacles) {
       rect(obstacle.x, obstacle.y, obstacle.size, obstacle.size);
     }
-  }
-
-  spawnObstacle() {
-    let size = 20;
-    let x = random(0, width - size);
-    this.obstacles.push({ x: x, y: 0, size: size });
-  }
-
-  isColliding(player, obstacle) {
-    return (
-      player.x < obstacle.x + obstacle.size &&
-      player.x + player.size > obstacle.x &&
-      player.y < obstacle.y + obstacle.size &&
-      player.y + player.size > obstacle.y
-    );
-  }
-
-  showRestartButton() {
-    this.restartButton.show();
   }
 
   drawMiniMap() {
