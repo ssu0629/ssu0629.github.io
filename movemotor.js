@@ -201,15 +201,11 @@ class Motorgame {
     if (this.gameState === "playing") {
       if (totalAccelerationChange > threshold) { // 기준치를 넘는 경우에만 업데이트
         this.acceleration = min(totalAccelerationChange, this.maxAcceleration);
+        this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
       } else {
-        // 가속도 변화가 기준치 이하일 때 가속도를 빠르게 감소
-        this.acceleration *= decayRate;
-        if (this.acceleration < 1) {
-          this.acceleration = 0; // 가속도가 충분히 작아지면 0으로 설정
-        }
+        // 가속도 변화가 기준치 이하일 때 에너지를 감소
+        this.energy = max(this.energy - 1, 0);
       }
-
-      this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
 
       // 프로펠러 업데이트
       this.propeller.update(this.acceleration);
@@ -339,3 +335,4 @@ class Propeller {
     endShape(CLOSE);
   }
 }
+
