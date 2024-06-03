@@ -7,6 +7,8 @@ let game2;
 let lastMotionTime;
 const threshold = 2; // 가속도 변화율 기준치 설정 (필요에 따라 조정 가능)
 const decayRate = 0.9; // 가속도 감소율
+const initialIgnoreCount = 5; // 초기 측정값 무시 횟수
+let ignoreCount = initialIgnoreCount;
 
 // 애니메이션은 모터와 배터리 두 종류가 있음
 // 나중에 다른 파일과 합쳐졌을 때를 대비해서
@@ -73,11 +75,17 @@ function cb(event) {
   const accelerationChange = Math.abs(acceleration - me.previousAcceleration);
   me.previousAcceleration = acceleration;
 
-  if (accelerationChange > threshold) { // 기준치를 넘는 경우에만 업데이트
-    me.accelerationChange = accelerationChange;
-    lastMotionTime = millis();
-  } else {
+  // 초기 측정값 무시
+  if (ignoreCount > 0) {
+    ignoreCount--;
     me.accelerationChange = 0;
+  } else {
+    if (accelerationChange > threshold) { // 기준치를 넘는 경우에만 업데이트
+      me.accelerationChange = accelerationChange;
+      lastMotionTime = millis();
+    } else {
+      me.accelerationChange = 0;
+    }
   }
 
   console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
