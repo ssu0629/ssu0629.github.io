@@ -131,7 +131,7 @@ class ObstacleGame {
 
   handleMotion(accelerationX) {
     // 기울기 값을 사용하여 플레이어 이동
-    const sensitivity = 1; // 기울기 민감도 조절
+    const sensitivity = 2; // 기울기 민감도 조절
     this.player.x += accelerationX * sensitivity;
 
     if (this.player.x < 0) this.player.x = 0;
@@ -200,10 +200,26 @@ class ObstacleGame {
     fill(0, 255, 0);
     rect(width - miniMapWidth - 10, 10, miniMapWidth, 5);
   }
-}
 
-let moveLeft = false;
-let moveRight = false;
+  spawnObstacle() {
+    let size = 20;
+    let x = random(0, width - size);
+    this.obstacles.push({ x: x, y: 0, size: size });
+  }
+
+  isColliding(player, obstacle) {
+    return (
+      player.x < obstacle.x + obstacle.size &&
+      player.x + player.size > obstacle.x &&
+      player.y < obstacle.y + obstacle.size &&
+      player.y + player.size > obstacle.y
+    );
+  }
+
+  showRestartButton() {
+    this.restartButton.show();
+  }
+}
 
 function keyPressed(event) {
   if (event.code === 'ArrowLeft') {
