@@ -82,8 +82,6 @@ function draw() {
   text(clickCount.value, width / 2, height / 2);
   text(radians(totalDeg), width / 2, 100);
 
-  ellipse(shared.x, shared.y, 100, 100);
-
   totalDeg = 0;
 
   if (!game.gameOver) {
