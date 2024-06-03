@@ -180,18 +180,4 @@ class ObstacleGame {
 let moveLeft = false;
 let moveRight = false;
 
-function keyPressed(event) {
-  if (event.code === 'ArrowLeft') {
-    moveLeft = true;
-  } else if (event.code === 'ArrowRight') {
-    moveRight = true;
-  }
-}
 
-function keyReleased(event) {
-  if (event.code === 'ArrowLeft') {
-    moveLeft = false;
-  } else if (event.code === 'ArrowRight') {
-    moveRight = false;
-  }
-}
