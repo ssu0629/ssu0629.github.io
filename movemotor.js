@@ -229,7 +229,7 @@ class Motorgame {
   display() {
     if (this.gameState === "playing") {
       // 프로펠러 그리기
-      this.propeller.display();
+      //this.propeller.display();
 
       // 에너지 게이지 그리기
       this.drawEnergyGauge(this.energy, this.maxEnergy);
