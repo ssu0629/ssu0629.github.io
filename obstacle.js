@@ -60,11 +60,16 @@ function setup() {
 
 function handleMotionEvent(event) {
   const acceleration = event.accelerationIncludingGravity;
-  game.handleMotion(acceleration.x);
+  if (acceleration) {
+    const accelerationX = acceleration.x;
+    game.handleMotion(accelerationX);
+  }
 }
 
 function draw() {
+  // 배경 색상 설정
   background('#ffcccc');
+
   fill("#000066");
 
   me.degY = rotationY;
@@ -91,6 +96,9 @@ function draw() {
     game.showRestartButton(); // 게임 오버 시 다시 시작 버튼 표시
     noLoop(); // 게임 루프 정지
   }
+
+  // 미니맵 그리기
+  game.drawMiniMap();
 }
 
 class ObstacleGame {
@@ -120,7 +128,7 @@ class ObstacleGame {
 
   handleMotion(accelerationX) {
     // 기울기 값을 사용하여 플레이어 이동
-    const sensitivity = 0.5; // 기울기 민감도 조절
+    const sensitivity = 1; // 기울기 민감도 조절
     this.player.x += accelerationX * sensitivity;
 
     if (this.player.x < 0) this.player.x = 0;
@@ -142,6 +150,7 @@ class ObstacleGame {
 
       if (this.isColliding(this.player, this.obstacles[i])) {
         this.gameOver = true; // 게임 오버 상태로 설정
+        this.restartButton.show(); // 게임 오버 시 다시 시작 버튼 표시
         break;
       }
     }
@@ -155,6 +164,11 @@ class ObstacleGame {
     for (let obstacle of this.obstacles) {
       rect(obstacle.x, obstacle.y, obstacle.size, obstacle.size);
     }
+  }
+
+  displayBackground() {
+    // 배경 색상 설정
+    background('#ffcccc');
   }
 
   spawnObstacle() {
@@ -175,11 +189,39 @@ class ObstacleGame {
   showRestartButton() {
     this.restartButton.show();
   }
+
+  drawMiniMap() {
+    let miniMapWidth = 50;
+    let miniMapHeight = 200;
+    let miniPlayerSize = 5;
+
+    // 미니맵 배경
+    fill(200);
+    rect(width - miniMapWidth - 10, 10, miniMapWidth, miniMapHeight);
+
+    // 주인공 위치 표시
+    fill(0, 0, 255);
+    let miniPlayerX = map(this.player.x, 0, width, width - miniMapWidth - 10, width - 10);
+    let miniPlayerY = map(this.player.y, 0, height, 10, 10 + miniMapHeight);
+    ellipse(miniPlayerX, miniPlayerY, miniPlayerSize, miniPlayerSize);
+  }
 }
 
 let moveLeft = false;
 let moveRight = false;
 
+function keyPressed(event) {
+  if (event.code === 'ArrowLeft') {
+    moveLeft = true;
+  } else if (event.code === 'ArrowRight') {
+    moveRight = true;
+  }
+}
 
-
-
+function keyReleased(event) {
+  if (event.code === 'ArrowLeft') {
+    moveLeft = false;
+  } else if (event.code === 'ArrowRight') {
+    moveRight = false;
+  }
+}
