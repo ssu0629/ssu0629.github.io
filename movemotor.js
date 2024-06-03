@@ -211,7 +211,7 @@ class Motorgame {
       } else {
         // 가속도 변화가 기준치 이하일 때 에너지를 감소
         this.acceleration = 0;
-        this.energy = max(this.energy - 1, 0);
+        this.energy = max(this.energy - 5, 0);
       }
 
       // 프로펠러 업데이트
