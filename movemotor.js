@@ -5,7 +5,7 @@ let guests;
 let me;
 let game2;
 let lastMotionTime;
-const threshold = 0.5; // 가속도 변화율 기준치 설정 (필요에 따라 조정 가능)
+const threshold = 2; // 가속도 변화율 기준치 설정 (필요에 따라 조정 가능)
 const decayRate = 0.9; // 가속도 감소율
 
 //애니메이션은 모터와 배터리 두 종류가 있음
@@ -76,6 +76,8 @@ function cb(event) {
   if (accelerationChange > threshold) { // 기준치를 넘는 경우에만 업데이트
     me.accelerationChange = accelerationChange;
     lastMotionTime = millis();
+  } else {
+    me.accelerationChange = 0;
   }
 
   console.log(`Acceleration Change: ${me.accelerationChange}`); // 가속도 변화를 콘솔에 출력
@@ -179,7 +181,7 @@ function draw() {
   image(motorImg, width / 2, height / 2, 400, 320)
 
   //배터리 애니메이션
-  motorBatteryImgNow = int(1 + 7 * (game2.energy / 10000)) //점수 0~1000 값을 1~8로 나오도록
+  motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)) //점수 0~1000 값을 1~8로 나오도록
   motorBatteryImg = motorBatteryImgs[motorBatteryImgNow++]
   image(motorBatteryImg, 0, height / 2, 400, 320)
 }
@@ -191,7 +193,7 @@ class Motorgame {
     this.acceleration = 0;
     this.maxAcceleration = 60;
     this.energy = 0;
-    this.maxEnergy = 10000;
+    this.maxEnergy = 1000;
     this.timeLimit = 10; // 타이머 제한 시간 (초)
     this.startTime = millis();
     this.gameState = "playing"; // 게임 상태: "playing", "success", "fail"
@@ -204,6 +206,7 @@ class Motorgame {
         this.energy = min(this.energy + this.acceleration * 0.5, this.maxEnergy);
       } else {
         // 가속도 변화가 기준치 이하일 때 에너지를 감소
+        this.acceleration = 0;
         this.energy = max(this.energy - 1, 0);
       }
 
@@ -335,4 +338,3 @@ class Propeller {
     endShape(CLOSE);
   }
 }
-
