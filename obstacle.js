@@ -108,6 +108,8 @@ class ObstacleGame {
     this.speed = 2;
     this.spawnRate = 60;
     this.counter = 0;
+    this.distanceTraveled = 0;
+    this.totalDistance = 1000; // 총 이동 거리 (맵의 길이)
     this.gameOver = false;
 
     // 다시 시작 버튼 생성 및 숨기기
@@ -121,6 +123,7 @@ class ObstacleGame {
     this.player = { x: width / 2, y: height - 50, size: 20 };
     this.obstacles = [];
     this.counter = 0;
+    this.distanceTraveled = 0;
     this.gameOver = false;
     this.restartButton.hide();
     loop(); // 게임 루프 재시작
@@ -137,6 +140,7 @@ class ObstacleGame {
 
   update() {
     this.counter++;
+    this.distanceTraveled += this.speed; // 이동 거리 증가
     if (this.counter % this.spawnRate === 0) {
       this.spawnObstacle();
     }
@@ -154,6 +158,17 @@ class ObstacleGame {
         break;
       }
     }
+
+    // 목적지에 도달하면 게임 성공 처리
+    if (this.distanceTraveled >= this.totalDistance) {
+      this.gameOver = true;
+      textSize(32);
+      fill(0, 255, 0);
+      textAlign(CENTER, CENTER);
+      text("You Win!", width / 2, height / 2);
+      this.restartButton.show();
+      noLoop();
+    }
   }
 
   display() {
@@ -164,11 +179,6 @@ class ObstacleGame {
     for (let obstacle of this.obstacles) {
       rect(obstacle.x, obstacle.y, obstacle.size, obstacle.size);
     }
-  }
-
-  displayBackground() {
-    // 배경 색상 설정
-    background('#ffcccc');
   }
 
   spawnObstacle() {
@@ -201,9 +211,12 @@ class ObstacleGame {
 
     // 주인공 위치 표시
     fill(0, 0, 255);
-    let miniPlayerX = map(this.player.x, 0, width, width - miniMapWidth - 10, width - 10);
-    let miniPlayerY = map(this.player.y, 0, height, 10, 10 + miniMapHeight);
-    ellipse(miniPlayerX, miniPlayerY, miniPlayerSize, miniPlayerSize);
+    let miniPlayerY = map(this.distanceTraveled, 0, this.totalDistance, 10 + miniMapHeight, 10);
+    ellipse(width - miniMapWidth / 2 - 10, miniPlayerY, miniPlayerSize, miniPlayerSize);
+
+    // 목적지 표시
+    fill(0, 255, 0);
+    rect(width - miniMapWidth - 10, 10, miniMapWidth, 5);
   }
 }
 
