@@ -5,11 +5,22 @@ let guests;
 let me;
 let game2;
 let lastMotionTime;
-const threshold = 1; // 가속도 변화율 기준치 설정 (필요에 따라 조정 가능)
+const threshold = 0.5; // 가속도 변화율 기준치 설정 (필요에 따라 조정 가능)
 const decayRate = 0.9; // 가속도 감소율
 
+//애니메이션은 모터와 배터리 두 종류가 있음
+//나중에 다른 파일과 합쳐졌을 때를 대비해서 
+//모터 미니게임의 에셋들의 파일 이름과 변수는 motor로 시작
+let motorImgs = []; //모터 돌아가는 모션, 8프레임
+let motorBatteryImgs = []; //배터리가 늘어나는 모션, 8프레임인데 마지막은 초록색 충전 완료 표시
+let motorBgImg; //배경 및 안움직이는 그림
+let motorImg; //Imgs: 모든 프레임, Img: 현재 프레임
+let motorImgNow = 0; //~ImgNow: 애니메이션이 몇번째 프레임인지
+let motorBatteryImg;
+let motorBatteryImgNow = 0;
+
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   const activateButton = document.getElementById('activateButton');
   if (activateButton) {
     activateButton.addEventListener('click', onClick);
@@ -54,7 +65,7 @@ function cb(event) {
   };
 
   const acceleration = Math.sqrt(adjustedAcc.x * adjustedAcc.x + adjustedAcc.y * adjustedAcc.y + adjustedAcc.z * adjustedAcc.z) || 0;
-  
+
   if (!me.previousAcceleration) {
     me.previousAcceleration = acceleration;
   }
@@ -76,6 +87,14 @@ function preload() {
     "wss://demoserver.p5party.org",
     "party_circle"
   );
+
+  // 애니메이션 파일 불러오기
+  for (let i = 1; i < 9; i++) { //파일이름이 1부터 8임 (0부터 7이 아님)
+    motorImgs[i] = loadImage("assets/motor" + i + ".png");
+    motorBatteryImgs[i] = loadImage("assets/motor_battery" + i + ".png");
+  }
+  motorBgImg = loadImage("assets/motor_bg.png");
+
   shared = partyLoadShared("shared", { x: 200, y: 200 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
@@ -123,6 +142,13 @@ function draw() {
   background('#ffcccc'); // 배경색 설정
   fill("#000066"); // 도형 색상 설정
 
+  //애니메이션 배경 그리기
+  noSmooth();
+  noStroke();
+  imageMode(CENTER);
+  image(motorBgImg, width / 2, height / 2, 400, 320) //원본 이미지 해상도는 100*80
+
+
   totalAccelerationChange = 0; // 초기화
 
   // 기준치를 넘는 경우에만 현재 기기의 가속도 변화를 저장
@@ -145,6 +171,17 @@ function draw() {
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
   text(totalAccelerationChange.toFixed(2), width / 2, 100); // 합산된 가속도 변화를 화면에 표시
+
+  // this.propeller.display() 아직 안없앰
+  //모터 애니메이션
+  motorImgNow = int(game2.energy * 1.5) //숫자 곱하거나 나눠서 애니메이션 속도 조절 가능
+  motorImg = motorImgs[motorImgNow++ % 8 + 1];
+  image(motorImg, width / 2, height / 2, 400, 320)
+
+  //배터리 애니메이션
+  motorBatteryImgNow = int(1 + 7 * (game2.energy / 10000)) //점수 0~1000 값을 1~8로 나오도록
+  motorBatteryImg = motorBatteryImgs[motorBatteryImgNow++]
+  image(motorBatteryImg, 0, height / 2, 400, 320)
 }
 
 // 모터 돌리기 게임 class
@@ -167,7 +204,7 @@ class Motorgame {
       } else {
         // 가속도 변화가 기준치 이하일 때 가속도를 빠르게 감소
         this.acceleration *= decayRate;
-        if (this.acceleration < 2) {
+        if (this.acceleration < 1) {
           this.acceleration = 0; // 가속도가 충분히 작아지면 0으로 설정
         }
       }
