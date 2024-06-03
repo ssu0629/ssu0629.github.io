@@ -182,10 +182,12 @@ function draw() {
   text(totalAccelerationChange.toFixed(2), width / 2, 100); // 합산된 가속도 변화를 화면에 표시
 
   // 모터 애니메이션
-  motorImgNow = int(game2.energy * 1.5); // 숫자 곱하거나 나눠서 애니메이션 속도 조절 가능
-  motorImg = motorImgs[motorImgNow++ % 8 + 1];
+  if (game2.acceleration > 0) {
+    motorImgNow = int(game2.energy * 1.5); // 숫자 곱하거나 나눠서 애니메이션 속도 조절 가능
+  }
+  motorImg = motorImgs[motorImgNow % 8 + 1];
   image(motorImg, width / 2, height / 2, 400, 320);
-
+  
   // 배터리 애니메이션
   motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
   motorBatteryImg = motorBatteryImgs[motorBatteryImgNow++];
