@@ -47,16 +47,34 @@ function preload() {
     "wss://demoserver.p5party.org",
     "party_circle"
   );
-  shared = partyLoadShared("shared", { x: 100, y: 100 });
+
+  // 애니메이션 파일 불러오기
+  for (let i = 1; i < 9; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
+    screwselectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected" + i + ".png");
+    //motorBatteryImgs[i] = loadImage("assets/motor_battery" + i + ".png");
+  }
+  screwBgImg = loadImage("assets/assets for use/minigame_screw/screwBg.png");
+  introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
+
+  // 버튼 이미지 불러오기
+  buttonStartImg = loadImage("assets/buttonStart.png");
+  buttonStartOverImg = loadImage("assets/buttonStartOver.png");
+  buttonStartPressedImg = loadImage("assets/buttonStartPressed.png");
+
+  shared = partyLoadShared("shared", { x: 200, y: 200 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
-  me = partyLoadMyShared({ degY: 0 });
+  me = partyLoadMyShared({ accelerationChange: 0 });
+
+  neoDunggeunmoProFont = loadFont("assets/NeoDunggeunmoPro-Regular.ttf"); // 폰트 로드
 }
+
+
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
 function setup() {
   console.log("setup called");
-  createCanvas(800, 600); // 800x600 크기의 캔버스를 생성
+  createCanvas(1280, 960); // 1280x960 크기의 캔버스를 생성
   noStroke(); // 윤곽선 없음
 
   // 호스트인 경우 초기 값을 설정
@@ -69,19 +87,88 @@ function setup() {
   game = new Game(); // 미니게임1 객체 생성
   game.setup(); // 미니게임1 설정
   totalDeg = 0; // 총 회전 각도 초기화
+
+  // 버튼 위치 및 크기 설정
+  buttonX = windowWidth / 2 - 100;
+  buttonY = windowHeight / 2 + 150;
+  buttonWidth = 200;
+  buttonHeight = 50;
 }
 
 // 마우스를 클릭하면 공유 객체의 위치를 업데이트하고 클릭 수를 증가
 function mousePressed() {
-  shared.x = mouseX;
-  shared.y = mouseY;
-  clickCount.value++;
+  function mousePressed() {
+    if (game.gameState === "intro") {
+      // 시작 화면에서 시작 버튼을 누르면 게임 시작
+      if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+        buttonState = "pressed";
+      }
+    } else {
+      shared.x = mouseX;
+      shared.y = mouseY;
+      clickCount.value++;
+  
+      if (game.gameState === "success") {
+        let buttonX = width / 2 - 100;
+        let buttonY = height / 2 + 50;
+        let buttonWidth = 200;
+        let buttonHeight = 50;
+  
+        if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+          game.reset();
+        }
+      }
+    }
+  }
   game.mousePressed(); // 미니게임 1 마우스 클릭 처리
+}
+
+function mouseReleased() {
+  if (game.gameState === "intro" && buttonState === "pressed") {
+    if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+      game.gameState = "playing";
+    }
+
+    buttonState = "normal";
+  }
+}
+
+function mouseMoved() {
+  if (game.gameState === "intro") {
+    if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
+      buttonState = "over";
+    } else {
+      buttonState = "normal";
+    }
+  }
 }
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
-  background(150); // 배경 색상 설정
+
+  background('#ffcccc'); // 배경색 설정
+  fill("#000066"); // 도형 색상 설정
+
+  if (game.gameState === "intro") {
+    // 시작 화면 표시
+    image(introImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
+    let buttonImg;
+    if (buttonState === "normal") {
+      buttonImg = buttonStartImg;
+    } else if (buttonState === "over") {
+      buttonImg = buttonStartOverImg;
+    } else if (buttonState === "pressed") {
+      buttonImg = buttonStartPressedImg;
+    }
+
+    image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+  } else {
+    // 게임 화면 표시
+    // 애니메이션 배경 그리기
+    noSmooth();
+    noStroke();
+    image(screwBgImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); 
+
 
   // 각 게스트의 회전 값을 합산
   totalDeg = 0; // 합산된 회전 값을 초기화
@@ -97,10 +184,10 @@ function draw() {
   // 게임 오버 상태와 관계없이 항상 텍스트를 그립니다.
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   fill("#000066"); // 텍스트 색상 설정
-  text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
   text(totalDeg.toFixed(2) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
 
   // console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
+}
 }
 
 // 기기의 회전 상태를 업데이트하고 나사의 move 함수를 호출하는 함수
@@ -135,6 +222,7 @@ class Game {
     this.frame = 30; // 프레임 수
     this.isGameSuccess = false; // 게임 성공 여부
     this.isGameOver = false; // 게임 오버 여부
+    this.gameState = "intro"; // 게임 상태: "intro", "playing", "success", "fail"
   }
 
   setup() {
