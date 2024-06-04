@@ -122,6 +122,8 @@ function preload() {
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
   me = partyLoadMyShared({ accelerationChange: 0 });
+
+  neoDunggeunmoProFont = loadFont("assets/NeoDunggeunmoPro-Regular.ttf"); // 폰트 로드
 }
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
