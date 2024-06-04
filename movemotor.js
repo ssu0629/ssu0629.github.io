@@ -220,7 +220,7 @@ function draw() {
     } else if (buttonState === "pressed") {
       buttonImg = buttonStartPressedImg;
     }
-    image(buttonImg, width / 2, height / 2 + 50, 200, 50);
+    image(buttonImg, wwindowWidth/2-400,windowHeight/2+300,800,600);
   } else {
     // 게임 화면 표시
     // 애니메이션 배경 그리기
@@ -257,7 +257,7 @@ function draw() {
       textSize(64);
       fill(0);
       textAlign(CENTER, CENTER);
-      text("게임 성공!", width / 2, height / 2);
+      text("게임 성공!", windowWidth/2-400,windowHeight/2-300,800,600);
     }
     // 모터 애니메이션
     if (game2.acceleration > 0 && game2.gameState === "playing") {
