@@ -196,7 +196,7 @@ function mouseMoved() {
     let buttonWidth = 200;
     let buttonHeight = 50;
 
-    if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+    if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
       buttonState = "over";
     } else {
       buttonState = "normal";
