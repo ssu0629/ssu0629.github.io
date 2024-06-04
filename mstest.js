@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // onClick 함수는 iOS 기기에서 motion 권한을 요청합니다.
 function onClick() {
-  if (typeof DeviceOrientationEvent.requestPermission == 'function') {
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
     DeviceOrientationEvent.requestPermission()
       .then(permissionState => {
         if (permissionState == 'granted') {
@@ -40,6 +40,7 @@ function onClick() {
 
 // deviceorientation 이벤트 콜백 함수
 function cb(event) {
+  console.log(event.gamma);
   if (event.gamma !== null) {
     me.degY = radians(event.gamma); // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
     console.log("degY");
