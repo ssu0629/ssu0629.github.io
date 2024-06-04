@@ -27,7 +27,7 @@ function onClick() {
   if (typeof DeviceOrientationEvent.requestPermission === 'function') {
     DeviceOrientationEvent.requestPermission()
       .then(permissionState => {
-        if (permissionState == 'granted') {
+        if (permissionState === 'granted') {
           window.addEventListener('deviceorientation', cb);
         }
       })
@@ -40,11 +40,8 @@ function onClick() {
 
 // deviceorientation 이벤트 콜백 함수
 function cb(event) {
-  console.log(event.gamma);
   if (event.gamma !== null) {
     me.degY = radians(event.gamma); // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
-    console.log("degY");
-    console.log(me.degY);
   }
 }
 
