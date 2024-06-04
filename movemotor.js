@@ -297,7 +297,7 @@ class Motorgame {
       textSize(64);
       fill(0);
       textAlign(CENTER, CENTER);
-      text("게임 성공!", width / 2, height / 2);
+      text("게임 성공!", window.innerWidth / 2, window.innerHeight / 2);
 
       // 다시 도전 버튼 그리기
       this.drawRetryButton();
