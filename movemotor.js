@@ -182,7 +182,7 @@ function draw() {
   text(totalAccelerationChange.toFixed(2), width / 2, 100); // 합산된 가속도 변화를 화면에 표시
 
   // 모터 애니메이션
-  if (game2.acceleration > 0) {
+  if (game2.acceleration > 0 && game2.gameState === "playing") {
     motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
   }
   motorImg = motorImgs[motorImgNow + 1];
@@ -283,41 +283,41 @@ class Motorgame {
 }
 
 // 프로펠러 그리는 class
-class Propeller {
-  constructor(x, y, size) {
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.angle = 0;
-    this.speed = 0;
-  }
+//class Propeller {
+//   constructor(x, y, size) {
+//     this.x = x;
+//     this.y = y;
+//     this.size = size;
+//     this.angle = 0;
+//     this.speed = 0;
+//   }
 
-  update(speed) {
-    this.speed = speed;
-    this.angle += this.speed;
-  }
+//   update(speed) {
+//     this.speed = speed;
+//     this.angle += this.speed;
+//   }
 
-  display() {
-    push();
-    translate(this.x, this.y);
-    rotate(this.angle);
-    fill(0); // 프로펠러 색을 검정색으로 설정
+//   display() {
+//     push();
+//     translate(this.x, this.y);
+//     rotate(this.angle);
+//     fill(0); // 프로펠러 색을 검정색으로 설정
 
-    // 프로펠러 블레이드 그리기
-    for (let i = 0; i < 6; i++) {
-      rotate(60);
-      this.drawBlade();
-    }
+//     // 프로펠러 블레이드 그리기
+//     for (let i = 0; i < 6; i++) {
+//       rotate(60);
+//       this.drawBlade();
+//     }
 
-    pop();
-  }
+//     pop();
+//   }
 
-  drawBlade() {
-    let bladeWidth = this.size / 2; // 블레이드의 폭을 조절하는 변수
-    beginShape();
-    vertex(0, 0);
-    vertex(this.size, -bladeWidth / 4);
-    vertex(this.size, bladeWidth / 4);
-    endShape(CLOSE);
-  }
-}
+//   drawBlade() {
+//     let bladeWidth = this.size / 2; // 블레이드의 폭을 조절하는 변수
+//     beginShape();
+//     vertex(0, 0);
+//     vertex(this.size, -bladeWidth / 4);
+//     vertex(this.size, bladeWidth / 4);
+//     endShape(CLOSE);
+//   }
+// }
