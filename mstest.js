@@ -42,6 +42,8 @@ function onClick() {
 function cb(event) {
   if (event.gamma !== null) {
     me.degY = radians(event.gamma); // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
+    console.log("degY");
+    console.log(me.degY);
   }
 }
 
@@ -127,6 +129,8 @@ function draw() {
   for (let i = 0; i < guests.length; i++) {
     totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
   }
+  console.log("totalDeg");
+  console.log(totalDeg);
 
   // 360도 회전을 인식하기 위한 체크포인트 로직
   updateRotation();
