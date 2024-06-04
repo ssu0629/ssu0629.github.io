@@ -148,8 +148,8 @@ function setup() {
 function mousePressed() {
   if (game2.gameState === "intro") {
     // 시작 화면에서 시작 버튼을 누르면 게임 시작
-    let buttonX = width / 2 - 100;
-    let buttonY = height / 2 + 50;
+    let buttonX = windowWidth / 2 - 100;
+    let buttonY = windowHeight / 2 + 150;
     let buttonWidth = 200;
     let buttonHeight = 50;
 
@@ -174,10 +174,11 @@ function mousePressed() {
   }
 }
 
+
 function mouseReleased() {
   if (game2.gameState === "intro" && buttonState === "pressed") {
-    let buttonX = width / 2 - 100;
-    let buttonY = height / 2 + 50;
+    let buttonX = windowWidth / 2 - 100;
+    let buttonY = windowHeight / 2 + 150;
     let buttonWidth = 200;
     let buttonHeight = 50;
 
@@ -189,10 +190,11 @@ function mouseReleased() {
   }
 }
 
+
 function mouseMoved() {
   if (game2.gameState === "intro") {
-    let buttonX = width / 2 - 100;
-    let buttonY = height / 2 + 50;
+    let buttonX = windowWidth / 2 - 100;
+    let buttonY = windowHeight / 2 + 150;
     let buttonWidth = 200;
     let buttonHeight = 50;
 
@@ -203,6 +205,7 @@ function mouseMoved() {
     }
   }
 }
+
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
@@ -220,8 +223,8 @@ function draw() {
     } else if (buttonState === "pressed") {
       buttonImg = buttonStartPressedImg;
     }
-  
-    image(buttonImg, windowWidth / 2 - 400 + ((windowWidth / 2 + 400) - (windowWidth / 2 -400))/2 , windowHeight / 2 + 150, 64, 28 );
+    
+    image(buttonImg, windowWidth / 2, windowHeight / 2 + 150, 200, 50);
   } else {
     // 게임 화면 표시
     // 애니메이션 배경 그리기
@@ -248,10 +251,6 @@ function draw() {
     game2.update(totalAccelerationChange);
     game2.display();
 
-    // textAlign(CENTER, CENTER); // 텍스트 정렬 설정
-    // text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
-    // text(totalAccelerationChange.toFixed(2), width / 2, 100); // 합산된 가속도 변화를 화면에 표시
-
     // 모터 애니메이션
     if (game2.acceleration > 0 && game2.gameState === "playing") {
       motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
@@ -263,18 +262,18 @@ function draw() {
     motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
     motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
     image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600); // 6.25배 확대
+  }
 
-    // 게임 성공 메시지 그리기
-    if (game2.gameState === "success") {
-      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
-      textSize(64);
-      fill(0);
-      textAlign(CENTER, CENTER);
-      text("게임 성공!", width / 2, height / 2);
-    }
-
+  // 게임 성공 메시지 그리기
+  if (game2.gameState === "success") {
+    textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
+    textSize(64);
+    fill(0);
+    textAlign(CENTER, CENTER);
+    text("게임 성공!", width / 2, height / 2);
   }
 }
+
 
 
 // 모터 돌리기 게임 class
