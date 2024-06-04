@@ -70,7 +70,7 @@ function preload() {
   shared = partyLoadShared("shared", { x: 200, y: 200 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
-  me = partyLoadMyShared({ accelerationChange: 0 });
+  me = partyLoadMyShared({ degY: 0 });
 
   neoDunggeunmoProFont = loadFont("assets/NeoDunggeunmoPro-Regular.ttf"); // 폰트 로드
 }
@@ -129,8 +129,8 @@ function draw() {
   for (let i = 0; i < guests.length; i++) {
     totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
   }
-  console.log("totalDeg");
-  console.log(totalDeg);
+  // console.log("totalDeg");
+  // console.log(totalDeg);
 
   // 360도 회전을 인식하기 위한 체크포인트 로직
   updateRotation();
