@@ -220,13 +220,14 @@ function draw() {
     } else if (buttonState === "pressed") {
       buttonImg = buttonStartPressedImg;
     }
-    image(buttonImg, windowWidth/2-400,windowHeight/2-300,800,600);
+  
+    image(buttonImg, windowWidth / 2 , windowHeight / 2 + 150, 64, 28 );
   } else {
     // 게임 화면 표시
     // 애니메이션 배경 그리기
     noSmooth();
     noStroke();
-    image(motorBgImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); // 6.25배 확대
+    image(motorBgImg, (windowWidth / 2 + 400) / 2, windowHeight / 2 - 300, 800, 600); // 6.25배 확대
 
     totalAccelerationChange = 0; // 초기화
 
