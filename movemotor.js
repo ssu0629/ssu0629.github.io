@@ -252,14 +252,6 @@ function draw() {
     // text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
     // text(totalAccelerationChange.toFixed(2), width / 2, 100); // 합산된 가속도 변화를 화면에 표시
 
-    // 게임 성공 메시지 그리기
-    if (game2.gameState === "success") {
-      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
-      textSize(64);
-      fill(0);
-      textAlign(CENTER, CENTER);
-      text("게임 성공!", windowWidth/2-400,windowHeight/2-300);
-    }
     // 모터 애니메이션
     if (game2.acceleration > 0 && game2.gameState === "playing") {
       motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
@@ -272,6 +264,14 @@ function draw() {
     motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
     image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600); // 6.25배 확대
 
+    // 게임 성공 메시지 그리기
+    if (game2.gameState === "success") {
+      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
+      textSize(64);
+      fill(0);
+      textAlign(CENTER, CENTER);
+      text("게임 성공!", width / 2, height / 2);
+    }
 
   }
 }
@@ -314,12 +314,7 @@ class Motorgame {
       // 에너지 게이지 그리기
       this.drawEnergyGauge(this.energy, this.maxEnergy);
     } else if (this.gameState === "success") {
-      // 게임 성공 화면
-      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
-      textSize(64);
-      fill(0);
-      textAlign(CENTER, CENTER);
-      text("게임 성공!", width / 2, height / 2);
+
   
       // 다시 도전 버튼 그리기
       this.drawRetryButton();
