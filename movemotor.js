@@ -248,7 +248,7 @@ class Motorgame {
     this.acceleration = 0;
     this.maxAcceleration = 60;
     this.energy = 0;
-    this.maxEnergy = 1000;
+    this.maxEnergy = 2000;
     this.gameState = "intro"; // 게임 상태: "intro", "playing", "success", "fail"
   }
 
