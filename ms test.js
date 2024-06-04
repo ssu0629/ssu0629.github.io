@@ -4,6 +4,8 @@ let totalDeg;
 let guests;
 let me;
 let game;
+let checkpointPassed = [false, false, false]; // 체크포인트 통과 여부를 저장
+let rotationCount = 0; // 회전 수를 저장
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
@@ -87,6 +89,9 @@ function draw() {
     totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
   }
 
+  // 360도 회전을 인식하기 위한 체크포인트 로직
+  updateRotation();
+
   game.draw(); // 미니게임1 그림
 
   // 게임 오버 상태와 관계없이 항상 텍스트를 그립니다.
@@ -96,6 +101,27 @@ function draw() {
   text(totalDeg.toFixed(2) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
 
   // console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
+}
+
+// 기기의 회전 상태를 업데이트하고 나사의 move 함수를 호출하는 함수
+function updateRotation() {
+  const checkpoints = [radians(120), radians(240), radians(360)];
+
+  if (totalDeg >= checkpoints[0] && !checkpointPassed[0]) {
+    checkpointPassed[0] = true;
+  }
+  if (totalDeg >= checkpoints[1] && !checkpointPassed[1]) {
+    checkpointPassed[1] = true;
+  }
+  if (totalDeg >= checkpoints[2] && !checkpointPassed[2]) {
+    checkpointPassed[2] = true;
+  }
+
+  if (checkpointPassed.every(Boolean)) {
+    rotationCount++;
+    game.selectedScrew.move();
+    checkpointPassed = [false, false, false]; // 체크포인트 초기화
+  }
 }
 
 // 미니게임1 나사돌리기 실행 class
@@ -109,9 +135,6 @@ class Game {
     this.frame = 30; // 프레임 수
     this.isGameSuccess = false; // 게임 성공 여부
     this.isGameOver = false; // 게임 오버 여부
-    this.previousDeg = 0;
-    this.previousDeg_1 = 0;
-    this.previousDeg_2 = 0;
   }
 
   setup() {
@@ -125,33 +148,8 @@ class Game {
   }
 
   draw() {
-    if (this.mode === "rotate" && this.selectedScrew) { // 회전 모드이고 나사가 선택된 경우
-      console.log(this.previousDeg)
-      console.log(this.previousDeg_1)
-      console.log(this.previousDeg_2)
-      if (totalDeg > 0 && this.previousDeg != 10){
-        this.previousDeg = this.previousDeg_1
-        if (totalDeg > this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
-          if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
-            this.selectedScrew.move(); // 나사 회전
-            this.previousDeg = 10
-          }
-        } 
-      }   
-      else if (totalDeg < 0 && this.previousDeg != 0){
-        this.previousDeg = - this.previousDeg_2
-        if (totalDeg > this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
-          if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
-            this.selectedScrew.move(); // 나사 회전
-            this.previousDeg = 0
-          }
-        }
-      }
-    }    
     this.show(); // 게임 상태 표시 (항상 호출되도록 위치 조정)
   }
-    
-  
 
   mousePressed() {
     if (this.isGameOver || this.isGameSuccess) return; // 게임 오버 또는 성공 시 무시
@@ -180,9 +178,6 @@ class Game {
 
     if (this.selectedScrew) {
       this.selectedScrew.highlight(); // 선택된 나사 하이라이트
-      this.previousDeg = totalDeg;
-      this.previousDeg_1 = abs(totalDeg);
-      this.previousDeg_2 = radians(90) - abs(totalDeg);
     }
 
     if (this.successed == 4) { // 모든 나사가 성공한 경우
@@ -241,9 +236,8 @@ class Game {
     this.createScrews(); // 나사 객체 재생성
     this.isGameOver = false; // 게임 오버 상태 초기화
     this.isGameSuccess = false; // 게임 성공 상태 초기화
-    this.previousDeg = 0;
-    this.previousDeg_1 = 0;
-    this.previousDeg_2 = 0;
+    checkpointPassed = [false, false, false]; // 체크포인트 초기화
+    rotationCount = 0; // 회전 수 초기화
   }
 }
 
