@@ -251,23 +251,6 @@ function draw() {
     motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
     motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
     image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600);
-
-    // 게임 성공 메시지 그리기
-    if (game2.gameState === "success") {
-      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
-      textSize(64);
-      fill(0);
-      textAlign(CENTER, CENTER);
-      text("게임 성공!", width / 2, height / 2);
-
-      // 게임 성공 후에도 배터리 이미지를 유지
-      motorBatteryImgNow = 8; // 충전 완료된 배터리 이미지로 설정
-      motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
-      image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600);
-
-      // 다시 도전 버튼 그리기
-      game2.drawRetryButton();
-    }
   }
 }
 
@@ -304,15 +287,21 @@ class Motorgame {
       // 에너지 게이지 그리기
       this.drawEnergyGauge(this.energy, this.maxEnergy);
     } else if (this.gameState === "success") {
-      // 게임 성공 메시지 그리기
+
       textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
       textSize(64);
       fill(0);
       textAlign(CENTER, CENTER);
       text("게임 성공!", width / 2, height / 2);
 
+      // 게임 성공 후에도 배터리 이미지를 유지
+      motorBatteryImgNow = 8; // 충전 완료된 배터리 이미지로 설정
+      motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
+      image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600);
+
       // 다시 도전 버튼 그리기
-      this.drawRetryButton();
+      game2.drawRetryButton();
+  
     }
   }
 
