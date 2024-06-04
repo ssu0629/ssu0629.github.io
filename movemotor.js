@@ -22,6 +22,12 @@ let motorBatteryImg;
 let motorBatteryImgNow = 0;
 let introImg; // 시작 화면 이미지
 
+// 버튼 상태 이미지
+let buttonStartImg;
+let buttonStartOverImg;
+let buttonStartPressedImg;
+let buttonState = "normal"; // 버튼 상태: "normal", "over", "pressed"
+
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function () {
   const activateButton = document.getElementById('activateButton');
@@ -107,6 +113,11 @@ function preload() {
   motorBgImg = loadImage("assets/motor_bg.png");
   introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
 
+  // 버튼 이미지 불러오기
+  buttonStartImg = loadImage("assets/buttonStart.png");
+  buttonStartOverImg = loadImage("assets/buttonStartOver.png");
+  buttonStartPressedImg = loadImage("assets/buttonStartPressed.png");
+
   shared = partyLoadShared("shared", { x: 200, y: 200 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
@@ -141,7 +152,7 @@ function mousePressed() {
     let buttonHeight = 50;
 
     if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
-      game2.gameState = "playing";
+      buttonState = "pressed";
     }
   } else {
     shared.x = mouseX;
@@ -154,9 +165,39 @@ function mousePressed() {
       let buttonWidth = 200;
       let buttonHeight = 50;
 
-      if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+      if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonX && mouseY < buttonY + buttonHeight) {
         game2.reset();
       }
+    }
+  }
+}
+
+function mouseReleased() {
+  if (game2.gameState === "intro" && buttonState === "pressed") {
+    let buttonX = width / 2 - 100;
+    let buttonY = height / 2 + 50;
+    let buttonWidth = 200;
+    let buttonHeight = 50;
+
+    if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+      game2.gameState = "playing";
+    }
+
+    buttonState = "normal";
+  }
+}
+
+function mouseMoved() {
+  if (game2.gameState === "intro") {
+    let buttonX = width / 2 - 100;
+    let buttonY = height / 2 + 50;
+    let buttonWidth = 200;
+    let buttonHeight = 50;
+
+    if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+      buttonState = "over";
+    } else {
+      buttonState = "normal";
     }
   }
 }
@@ -168,20 +209,23 @@ function draw() {
 
   if (game2.gameState === "intro") {
     // 시작 화면 표시
-    image(introImg, width / 2, height / 2, 400, 320);
-    fill(0);
-    rect(width / 2 - 100, height / 2 + 50, 200, 50);
-    fill(255);
-    textSize(32);
-    textAlign(CENTER, CENTER);
-    text("시작", width / 2, height / 2 + 75);
+    
+    image(introImg, windowWidth/2-400,windowHeight/2-300,800,600);
+    let buttonImg;
+    if (buttonState === "normal") {
+      buttonImg = buttonStartImg;
+    } else if (buttonState === "over") {
+      buttonImg = buttonStartOverImg;
+    } else if (buttonState === "pressed") {
+      buttonImg = buttonStartPressedImg;
+    }
+    image(buttonImg, width / 2, height / 2 + 50, 200, 50);
   } else {
     // 게임 화면 표시
     // 애니메이션 배경 그리기
     noSmooth();
     noStroke();
-    imageMode(CENTER);
-    image(motorBgImg, width / 2, height / 2, 400, 320); // 원본 이미지 해상도는 100*80
+    image(motorBgImg, windowWidth/2-400,windowHeight/2-300,800,600); // 6.25배 확대
 
     totalAccelerationChange = 0; // 초기화
 
@@ -211,12 +255,12 @@ function draw() {
       motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
     }
     motorImg = motorImgs[motorImgNow + 1];
-    image(motorImg, width / 2, height / 2, 400, 320);
+    image(motorImg, windowWidth/2-400,windowHeight/2-300,800,600); // 6.25배 확대
 
     // 배터리 애니메이션
     motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
     motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
-    image(motorBatteryImg, 0, height / 2, 400, 320);
+    image(motorBatteryImg, windowWidth/2-455,windowHeight/2-300,800,600); // 6.25배 확대
   }
 }
 
