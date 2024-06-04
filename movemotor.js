@@ -283,7 +283,7 @@ class Motorgame {
       image(motorImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
 
       // 배터리 애니메이션
-      motorBatteryImgNow = int(1 + 7 * (this.energy / 10000)); // 점수 0~10000 값을 1~8로 나오도록
+      motorBatteryImgNow = int(1 + 7 * (this.energy / this.maxEnergy)); // 점수 0~10000 값을 1~8로 나오도록
       if (this.gameState === "success") {
         motorBatteryImgNow = 8; // 충전 완료된 배터리 이미지로 설정
       }
