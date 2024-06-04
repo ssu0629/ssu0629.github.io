@@ -257,7 +257,7 @@ function draw() {
       textSize(64);
       fill(0);
       textAlign(CENTER, CENTER);
-      text("게임 성공!", windowWidth/2-400,windowHeight/2-300,800,600);
+      text("게임 성공!", windowWidth/2-400,windowHeight/2-300);
     }
     // 모터 애니메이션
     if (game2.acceleration > 0 && game2.gameState === "playing") {
