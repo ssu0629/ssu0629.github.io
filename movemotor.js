@@ -20,6 +20,7 @@ let motorImg; // Imgs: 모든 프레임, Img: 현재 프레임
 let motorImgNow = 0; //~ImgNow: 애니메이션이 몇번째 프레임인지
 let motorBatteryImg;
 let motorBatteryImgNow = 0;
+let introImg; // 시작 화면 이미지
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function () {
@@ -104,6 +105,7 @@ function preload() {
     motorBatteryImgs[i] = loadImage("assets/motor_battery" + i + ".png");
   }
   motorBgImg = loadImage("assets/motor_bg.png");
+  introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
 
   shared = partyLoadShared("shared", { x: 200, y: 200 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
@@ -131,18 +133,30 @@ function setup() {
 
 // 마우스를 클릭하면 공유 객체의 위치를 업데이트하고 클릭 수를 증가
 function mousePressed() {
-  shared.x = mouseX;
-  shared.y = mouseY;
-  clickCount.value++;
-
-  if (game2.gameState === "fail" || game2.gameState === "success") {
+  if (game2.gameState === "intro") {
+    // 시작 화면에서 시작 버튼을 누르면 게임 시작
     let buttonX = width / 2 - 100;
     let buttonY = height / 2 + 50;
     let buttonWidth = 200;
     let buttonHeight = 50;
 
     if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
-      game2.reset();
+      game2.gameState = "playing";
+    }
+  } else {
+    shared.x = mouseX;
+    shared.y = mouseY;
+    clickCount.value++;
+
+    if (game2.gameState === "fail" || game2.gameState === "success") {
+      let buttonX = width / 2 - 100;
+      let buttonY = height / 2 + 50;
+      let buttonWidth = 200;
+      let buttonHeight = 50;
+
+      if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+        game2.reset();
+      }
     }
   }
 }
@@ -152,46 +166,58 @@ function draw() {
   background('#ffcccc'); // 배경색 설정
   fill("#000066"); // 도형 색상 설정
 
-  // 애니메이션 배경 그리기
-  noSmooth();
-  noStroke();
-  imageMode(CENTER);
-  image(motorBgImg, width / 2, height / 2, 400, 320); // 원본 이미지 해상도는 100*80
+  if (game2.gameState === "intro") {
+    // 시작 화면 표시
+    image(introImg, width / 2, height / 2, 400, 320);
+    fill(0);
+    rect(width / 2 - 100, height / 2 + 50, 200, 50);
+    fill(255);
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    text("시작", width / 2, height / 2 + 75);
+  } else {
+    // 게임 화면 표시
+    // 애니메이션 배경 그리기
+    noSmooth();
+    noStroke();
+    imageMode(CENTER);
+    image(motorBgImg, width / 2, height / 2, 400, 320); // 원본 이미지 해상도는 100*80
 
-  totalAccelerationChange = 0; // 초기화
+    totalAccelerationChange = 0; // 초기화
 
-  // 기준치를 넘는 경우에만 현재 기기의 가속도 변화를 저장
-  if (me.accelerationChange > threshold) {
-    totalAccelerationChange = me.accelerationChange;
-  }
-
-  // 각 게스트의 가속도 변화 값을 합산
-  for (let i = 0; i < guests.length; i++) {
-    if (guests[i].accelerationChange > threshold) {
-      totalAccelerationChange += guests[i].accelerationChange;
+    // 기준치를 넘는 경우에만 현재 기기의 가속도 변화를 저장
+    if (me.accelerationChange > threshold) {
+      totalAccelerationChange = me.accelerationChange;
     }
+
+    // 각 게스트의 가속도 변화 값을 합산
+    for (let i = 0; i < guests.length; i++) {
+      if (guests[i].accelerationChange > threshold) {
+        totalAccelerationChange += guests[i].accelerationChange;
+      }
+    }
+
+    console.log(`Total Acceleration Change: ${totalAccelerationChange}`); // 합산된 가속도 변화 값을 콘솔에 출력
+
+    game2.update(totalAccelerationChange);
+    game2.display();
+
+    textAlign(CENTER, CENTER); // 텍스트 정렬 설정
+    text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
+    text(totalAccelerationChange.toFixed(2), width / 2, 100); // 합산된 가속도 변화를 화면에 표시
+
+    // 모터 애니메이션
+    if (game2.acceleration > 0 && game2.gameState === "playing") {
+      motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
+    }
+    motorImg = motorImgs[motorImgNow + 1];
+    image(motorImg, width / 2, height / 2, 400, 320);
+
+    // 배터리 애니메이션
+    motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
+    motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
+    image(motorBatteryImg, 0, height / 2, 400, 320);
   }
-
-  console.log(`Total Acceleration Change: ${totalAccelerationChange}`); // 합산된 가속도 변화 값을 콘솔에 출력
-
-  game2.update(totalAccelerationChange);
-  game2.display();
-
-  textAlign(CENTER, CENTER); // 텍스트 정렬 설정
-  text(clickCount.value, width / 2, height / 2); // 클릭 수를 화면에 표시
-  text(totalAccelerationChange.toFixed(2), width / 2, 100); // 합산된 가속도 변화를 화면에 표시
-
-  // 모터 애니메이션
-  if (game2.acceleration > 0 && game2.gameState === "playing") {
-    motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
-  }
-  motorImg = motorImgs[motorImgNow + 1];
-  image(motorImg, width / 2, height / 2, 400, 320);
-
-  // 배터리 애니메이션
-  motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
-  motorBatteryImg = motorBatteryImgs[motorBatteryImgNow++];
-  image(motorBatteryImg, 0, height / 2, 400, 320);
 }
 
 // 모터 돌리기 게임 class
@@ -202,7 +228,7 @@ class Motorgame {
     this.maxAcceleration = 60;
     this.energy = 0;
     this.maxEnergy = 1000;
-    this.gameState = "playing"; // 게임 상태: "playing", "success", "fail"
+    this.gameState = "intro"; // 게임 상태: "intro", "playing", "success", "fail"
   }
 
   update(totalAccelerationChange) {
@@ -229,7 +255,7 @@ class Motorgame {
   display() {
     if (this.gameState === "playing") {
       // 프로펠러 그리기
-      //this.propeller.display();
+      // this.propeller.display();
 
       // 에너지 게이지 그리기
       this.drawEnergyGauge(this.energy, this.maxEnergy);
@@ -282,7 +308,7 @@ class Motorgame {
   }
 }
 
-//프로펠러 그리는 class
+// 프로펠러 그리는 class
 class Propeller {
   constructor(x, y, size) {
     this.x = x;
