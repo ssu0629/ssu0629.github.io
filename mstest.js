@@ -6,6 +6,11 @@ let me;
 let game;
 let checkpointPassed = [false, false, false]; // 체크포인트 통과 여부를 저장
 let rotationCount = 0; // 회전 수를 저장
+let screwselectedImgs = new Array(8);
+let screwBgImg;
+let introImg;
+let buttonState;
+// let gameState;
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
@@ -19,10 +24,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // onClick 함수는 iOS 기기에서 motion 권한을 요청합니다.
 function onClick() {
-  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+  if (typeof DeviceOrientationEvent.requestPermission == 'function') {
     DeviceOrientationEvent.requestPermission()
       .then(permissionState => {
-        if (permissionState === 'granted') {
+        if (permissionState == 'granted') {
           window.addEventListener('deviceorientation', cb);
         }
       })
@@ -49,12 +54,11 @@ function preload() {
   );
 
   // 애니메이션 파일 불러오기
-  for (let i = 1; i < 9; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
-    screwselectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected" + i + ".png");
-    //motorBatteryImgs[i] = loadImage("assets/motor_battery" + i + ".png");
+  for (let i = 0; i < 8; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
+    screwselectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected/screwSelected" + (i+1) + ".png");
   }
   screwBgImg = loadImage("assets/assets for use/minigame_screw/screwBg.png");
-  introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
+  //introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
 
   // 버튼 이미지 불러오기
   buttonStartImg = loadImage("assets/buttonStart.png");
@@ -69,8 +73,6 @@ function preload() {
   neoDunggeunmoProFont = loadFont("assets/NeoDunggeunmoPro-Regular.ttf"); // 폰트 로드
 }
 
-
-
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
 function setup() {
   console.log("setup called");
@@ -84,7 +86,7 @@ function setup() {
     shared.y = 200;
   }
 
-  game = new Game(); // 미니게임1 객체 생성
+  game = new Game_test();
   game.setup(); // 미니게임1 설정
   totalDeg = 0; // 총 회전 각도 초기화
 
@@ -97,78 +99,28 @@ function setup() {
 
 // 마우스를 클릭하면 공유 객체의 위치를 업데이트하고 클릭 수를 증가
 function mousePressed() {
-  function mousePressed() {
-    if (game.gameState === "intro") {
-      // 시작 화면에서 시작 버튼을 누르면 게임 시작
-      if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
-        buttonState = "pressed";
-      }
-    } else {
-      shared.x = mouseX;
-      shared.y = mouseY;
-      clickCount.value++;
-  
-      if (game.gameState === "success") {
-        let buttonX = width / 2 - 100;
-        let buttonY = height / 2 + 50;
-        let buttonWidth = 200;
-        let buttonHeight = 50;
-  
-        if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
-          game.reset();
-        }
-      }
-    }
-  }
   game.mousePressed(); // 미니게임 1 마우스 클릭 처리
 }
 
-function mouseReleased() {
-  if (game.gameState === "intro" && buttonState === "pressed") {
-    if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
-      game.gameState = "playing";
-    }
-
-    buttonState = "normal";
-  }
-}
-
-function mouseMoved() {
-  if (game.gameState === "intro") {
-    if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
-      buttonState = "over";
-    } else {
-      buttonState = "normal";
+// 키가 눌렸을 때 호출되는 함수
+function keyPressed() {
+  if (key === ' ') { // 스페이스바를 눌렀을 때
+    if (game.selectedScrew) { // 선택된 나사가 있는 경우
+      game.selectedScrew.move(); // 나사를 회전시킴
     }
   }
 }
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
-
   background('#ffcccc'); // 배경색 설정
   fill("#000066"); // 도형 색상 설정
 
-  if (game.gameState === "intro") {
-    // 시작 화면 표시
-    image(introImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
-    let buttonImg;
-    if (buttonState === "normal") {
-      buttonImg = buttonStartImg;
-    } else if (buttonState === "over") {
-      buttonImg = buttonStartOverImg;
-    } else if (buttonState === "pressed") {
-      buttonImg = buttonStartPressedImg;
-    }
-
-    image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
-  } else {
-    // 게임 화면 표시
-    // 애니메이션 배경 그리기
-    noSmooth();
-    noStroke();
-    image(screwBgImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); 
-
+  // 게임 화면 표시
+  // 애니메이션 배경 그리기
+  noSmooth();
+  noStroke();
+  image(screwBgImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
 
   // 각 게스트의 회전 값을 합산
   totalDeg = 0; // 합산된 회전 값을 초기화
@@ -187,7 +139,6 @@ function draw() {
   text(totalDeg.toFixed(2) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
 
   // console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
-}
 }
 
 // 기기의 회전 상태를 업데이트하고 나사의 move 함수를 호출하는 함수
@@ -212,7 +163,7 @@ function updateRotation() {
 }
 
 // 미니게임1 나사돌리기 실행 class
-class Game {
+class Game_test {
   constructor() {
     this.screws = []; // 나사 객체를 담을 배열
     this.selectedScrew = null; // 선택된 나사 객체
@@ -222,7 +173,6 @@ class Game {
     this.frame = 30; // 프레임 수
     this.isGameSuccess = false; // 게임 성공 여부
     this.isGameOver = false; // 게임 오버 여부
-    this.gameState = "intro"; // 게임 상태: "intro", "playing", "success", "fail"
   }
 
   setup() {
@@ -342,42 +292,22 @@ class Screw {
     this.spacing = this.threadHeight / this.threadTurns; // 나사 회전 간격
     this.angle = 0; // 나사의 각도
     this.successed = false; // 나사 성공 여부
+    this.imageIndex = 0; // 이미지 인덱스 초기화
+    this.imageWidth = 150;
+    this.imageHeight = 300;
   }
 
   show() {
     push();
     translate(this.x, this.y + this.depth); // 나사의 위치로 이동
-    stroke(125);
-    strokeWeight(15);
-    noFill();
-    beginShape();
-    for (let i = 0; i <= this.threadTurns; i++) {
-      let y = i * this.spacing;
-      let x = (i % 2 === 0) ? -this.threadWidth / 2 : this.threadWidth / 2; // 나사 모양 생성
-      vertex(x, y);
-    }
-    endShape();
-    this.drawHead(); // 나사 머리 그림
+
+    // 나사 이미지 애니메이션 표시
+    image(screwselectedImgs[this.imageIndex], 0, 0, this.imageWidth, this.imageHeight);
+
     pop();
   }
 
-  drawHead() {
-    noStroke();
-    fill(180);
-    ellipse(0, 0, this.size, this.size); // 나사 머리 그림
-    for (let i = 0; i < this.size / 2; i++) {
-      let inter = map(i, 0, this.size / 2, 180, 100);
-      fill(inter);
-      ellipse(0, 0, this.size - i, this.size - i); // 나사 머리의 음영 효과
-    }
-    stroke(0);
-    strokeWeight(2);
-    push();
-    rotate(this.angle);
-    line(-this.size / 4, 0, this.size / 4, 0); // 십자선 그리기
-    line(0, -this.size / 4, 0, this.size / 4);
-    pop();
-  }
+  
 
   update() {
     this.angle += PI / (2 * game.frame); // 나사의 각도 업데이트
@@ -387,35 +317,34 @@ class Screw {
   }
 
   highlight() {
+    console.log("s");
     push();
     translate(this.x, this.y + this.depth); // 나사의 위치로 이동
     noFill();
     stroke(255, 0, 0);
     strokeWeight(3);
-    ellipse(0, 0, this.size + 10, this.size + 10); // 하이라이트 그림
+    ellipse(0, 0, this.size + 100, this.size + 100); // 하이라이트 그림
     pop();
   }
 
   isMouseOver() {
-    let d = dist(mouseX, mouseY, this.x, this.y + this.depth); // 마우스 위치와 나사 위치의 거리 계산
-    return d < this.size / 2; // 마우스가 나사 위에 있는지 확인
+    let d = dist(mouseX, mouseY, this.x + this.imageWidth/2, this.y + this.imageHeight/2 + this.depth); // 마우스 위치와 나사 위치의 거리 계산
+    return d < this.imageWidth / 2; // 마우스가 나사 위에 있는지 확인
   }
 
   move() {
-    if (this.depth + this.spacing <= game.holeDepth) { // 나사가 구멍 깊이보다 깊지 않은 경우
-      for (let i = 0; i < game.frame; i++) {
-        this.depth += this.spacing / game.frame; // 나사 깊이 업데이트
-        if (i == game.frame - 1) {
-          this.threadTurns -= 1; // 나사 회전 수 감소
-        }
-        this.update(); // 나사 각도 업데이트
-      }
-      if (!this.successed && this.depth + this.spacing >= game.holeDepth) { // 나사가 성공적으로 들어간 경우
+    if (this.imageIndex < 7) { // 나사가 구멍 깊이보다 깊지 않은 경우
+      this.updateImageIndex(); // 이미지 인덱스 업데이트
+      if (!this.successed && this.imageIndex == 7) { // 나사가 성공적으로 들어간 경우
         game.successed += 1; // 게임 성공 수 증가
         this.successed = true; // 나사 성공 상태로 설정
       }
     } else {
-      this.depth = game.holeDepth; // 나사 깊이 고정
+      this.imageIndex = 7; // 나사 깊이 고정
     }
+  }
+
+  updateImageIndex() {
+    this.imageIndex = (this.imageIndex + 1); // 이미지 인덱스 업데이트
   }
 }
