@@ -220,7 +220,7 @@ function draw() {
     } else if (buttonState === "pressed") {
       buttonImg = buttonStartPressedImg;
     }
-    image(buttonImg, wwindowWidth/2-400,windowHeight/2-300,800,600);
+    image(buttonImg, windowWidth/2-400,windowHeight/2-300,800,600);
   } else {
     // 게임 화면 표시
     // 애니메이션 배경 그리기
