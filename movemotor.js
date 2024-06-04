@@ -220,7 +220,7 @@ function draw() {
     } else if (buttonState === "pressed") {
       buttonImg = buttonStartPressedImg;
     }
-    
+
     image(buttonImg, windowWidth / 2, windowHeight / 2 + 150, 200, 50);
   } else {
     // 게임 화면 표시
@@ -253,12 +253,12 @@ function draw() {
       motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
     }
     motorImg = motorImgs[motorImgNow + 1];
-    image(motorImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); 
+    image(motorImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
 
     // 배터리 애니메이션
     motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
     motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
-    image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600); 
+    image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600);
 
     // 게임 성공 메시지 그리기
     if (game2.gameState === "success") {
@@ -274,7 +274,6 @@ function draw() {
 // 모터 돌리기 게임 class
 class Motorgame {
   constructor() {
-    this.propeller = new Propeller(width / 2, height / 2, 150);
     this.acceleration = 0;
     this.maxAcceleration = 60;
     this.energy = 0;
@@ -293,9 +292,6 @@ class Motorgame {
         this.energy = max(this.energy - 5, 0);
       }
 
-      // 프로펠러 업데이트
-      this.propeller.update(this.acceleration);
-
       // 에너지가 최대치에 도달하면 게임 성공 상태로 전환
       if (this.energy >= this.maxEnergy) {
         this.gameState = "success";
@@ -308,6 +304,13 @@ class Motorgame {
       // 에너지 게이지 그리기
       this.drawEnergyGauge(this.energy, this.maxEnergy);
     } else if (this.gameState === "success") {
+      // 게임 성공 메시지 그리기
+      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
+      textSize(64);
+      fill(0);
+      textAlign(CENTER, CENTER);
+      text("게임 성공!", width / 2, height / 2);
+
       // 다시 도전 버튼 그리기
       this.drawRetryButton();
     }
@@ -334,49 +337,8 @@ class Motorgame {
   }
 
   reset() {
-    this.propeller = new Propeller(width / 2, height / 2, 150);
     this.acceleration = 0;
     this.energy = 0;
     this.gameState = "playing";
-  }
-}
-
-// 프로펠러 그리는 class
-class Propeller {
-  constructor(x, y, size) {
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.angle = 0;
-    this.speed = 0;
-  }
-
-  update(speed) {
-    this.speed = speed;
-    this.angle += this.speed;
-  }
-
-  display() {
-    push();
-    translate(this.x, this.y);
-    rotate(this.angle);
-    fill(0); // 프로펠러 색을 검정색으로 설정
-
-    // 프로펠러 블레이드 그리기
-    for (let i = 0; i < 6; i++) {
-      rotate(60);
-      this.drawBlade();
-    }
-
-    pop();
-  }
-
-  drawBlade() {
-    let bladeWidth = this.size / 2; // 블레이드의 폭을 조절하는 변수
-    beginShape();
-    vertex(0, 0);
-    vertex(this.size, -bladeWidth / 4);
-    vertex(this.size, bladeWidth / 4);
-    endShape(CLOSE);
   }
 }
