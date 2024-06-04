@@ -211,8 +211,7 @@ function draw() {
 
   if (game2.gameState === "intro") {
     // 시작 화면 표시
-    
-    image(introImg, windowWidth/2-400,windowHeight/2-300,800,600);
+    image(introImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
     let buttonImg;
     if (buttonState === "normal") {
       buttonImg = buttonStartImg;
@@ -227,7 +226,7 @@ function draw() {
     // 애니메이션 배경 그리기
     noSmooth();
     noStroke();
-    image(motorBgImg, windowWidth/2-400,windowHeight/2-300,800,600); // 6.25배 확대
+    image(motorBgImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); // 6.25배 확대
 
     totalAccelerationChange = 0; // 초기화
 
@@ -257,14 +256,24 @@ function draw() {
       motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
     }
     motorImg = motorImgs[motorImgNow + 1];
-    image(motorImg, windowWidth/2-400,windowHeight/2-300,800,600); // 6.25배 확대
+    image(motorImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); // 6.25배 확대
 
     // 배터리 애니메이션
     motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
     motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
-    image(motorBatteryImg, windowWidth/2-455,windowHeight/2-300,800,600); // 6.25배 확대
+    image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600); // 6.25배 확대
+
+    // 게임 성공 메시지 그리기
+    if (game2.gameState === "success") {
+      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
+      textSize(64);
+      fill(0);
+      textAlign(CENTER, CENTER);
+      text("게임 성공!", width / 2, height / 2);
+    }
   }
 }
+
 
 // 모터 돌리기 게임 class
 class Motorgame {
@@ -300,31 +309,31 @@ class Motorgame {
 
   display() {
     if (this.gameState === "playing") {
-      // 프로펠러 그리기
-      // this.propeller.display();
-
       // 에너지 게이지 그리기
       this.drawEnergyGauge(this.energy, this.maxEnergy);
     } else if (this.gameState === "success") {
       // 게임 성공 화면
+      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
       textSize(64);
       fill(0);
       textAlign(CENTER, CENTER);
       text("게임 성공!", width / 2, height / 2);
-
+  
       // 다시 도전 버튼 그리기
       this.drawRetryButton();
     } else if (this.gameState === "fail") {
       // 게임 실패 화면
+      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
       textSize(64);
       fill(0);
       textAlign(CENTER, CENTER);
       text("게임 실패", width / 2, height / 2);
-
+  
       // 다시 도전 버튼 그리기
       this.drawRetryButton();
     }
   }
+  
 
   drawEnergyGauge(energy, maxEnergy) {
     let gaugeWidth = 200;
