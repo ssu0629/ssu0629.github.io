@@ -27,6 +27,7 @@ let buttonStartImg;
 let buttonStartOverImg;
 let buttonStartPressedImg;
 let buttonState = "normal"; // 버튼 상태: "normal", "over", "pressed"
+let buttonX, buttonY, buttonWidth, buttonHeight;
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function () {
@@ -142,17 +143,18 @@ function setup() {
   lastMotionTime = millis();
 
   game2 = new Motorgame();
+
+  // 버튼 위치 및 크기 설정
+  buttonX = windowWidth / 2 - 100;
+  buttonY = windowHeight / 2 + 150;
+  buttonWidth = 200;
+  buttonHeight = 50;
 }
 
 // 마우스를 클릭하면 공유 객체의 위치를 업데이트하고 클릭 수를 증가
 function mousePressed() {
   if (game2.gameState === "intro") {
     // 시작 화면에서 시작 버튼을 누르면 게임 시작
-    let buttonX = windowWidth / 2 - 100;
-    let buttonY = windowHeight / 2 + 150;
-    let buttonWidth = 200;
-    let buttonHeight = 50;
-
     if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
       buttonState = "pressed";
     }
@@ -176,11 +178,6 @@ function mousePressed() {
 
 function mouseReleased() {
   if (game2.gameState === "intro" && buttonState === "pressed") {
-    let buttonX = width / 2 - 100;
-    let buttonY = height / 2 + 50;
-    let buttonWidth = 200;
-    let buttonHeight = 50;
-
     if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
       game2.gameState = "playing";
     }
@@ -191,11 +188,6 @@ function mouseReleased() {
 
 function mouseMoved() {
   if (game2.gameState === "intro") {
-    let buttonX = width / 2 - 100;
-    let buttonY = height / 2 + 50;
-    let buttonWidth = 200;
-    let buttonHeight = 50;
-
     if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
       buttonState = "over";
     } else {
@@ -221,7 +213,7 @@ function draw() {
       buttonImg = buttonStartPressedImg;
     }
 
-    image(buttonImg, windowWidth / 2, windowHeight / 2 + 150, 200, 50);
+    image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
   } else {
     // 게임 화면 표시
     // 애니메이션 배경 그리기
@@ -267,6 +259,14 @@ function draw() {
       fill(0);
       textAlign(CENTER, CENTER);
       text("게임 성공!", width / 2, height / 2);
+
+      // 게임 성공 후에도 배터리 이미지를 유지
+      motorBatteryImgNow = 8; // 충전 완료된 배터리 이미지로 설정
+      motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
+      image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600);
+
+      // 다시 도전 버튼 그리기
+      game2.drawRetryButton();
     }
   }
 }
