@@ -161,19 +161,18 @@ function mousePressed() {
     shared.y = mouseY;
     clickCount.value++;
 
-    if (game2.gameState === "fail" || game2.gameState === "success") {
+    if (game2.gameState === "success") {
       let buttonX = width / 2 - 100;
       let buttonY = height / 2 + 50;
       let buttonWidth = 200;
       let buttonHeight = 50;
 
-      if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonX && mouseY < buttonY + buttonHeight) {
+      if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
         game2.reset();
       }
     }
   }
 }
-
 
 function mouseReleased() {
   if (game2.gameState === "intro" && buttonState === "pressed") {
@@ -261,10 +260,16 @@ function draw() {
     motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
     image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600); 
 
+    // 게임 성공 메시지 그리기
+    if (game2.gameState === "success") {
+      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
+      textSize(64);
+      fill(0);
+      textAlign(CENTER, CENTER);
+      text("게임 성공!", width / 2, height / 2);
+    }
+  }
 }
-}
-
-
 
 // 모터 돌리기 게임 class
 class Motorgame {
@@ -303,21 +308,10 @@ class Motorgame {
       // 에너지 게이지 그리기
       this.drawEnergyGauge(this.energy, this.maxEnergy);
     } else if (this.gameState === "success") {
-
       // 다시 도전 버튼 그리기
       this.drawRetryButton();
     }
-
-      // 게임 성공 메시지 그리기
-    if (game2.gameState === "success") {
-      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
-      textSize(64);
-      fill(0);
-      textAlign(CENTER, CENTER);
-      text("게임 성공!", width / 2, height / 2);
-    }
   }
-  
 
   drawEnergyGauge(energy, maxEnergy) {
     let gaugeWidth = 200;
