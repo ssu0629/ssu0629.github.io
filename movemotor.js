@@ -113,7 +113,7 @@ function preload() {
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
 function setup() {
-  createCanvas(400, 400); // 400x400 크기의 캔버스를 생성
+  createCanvas(1280, 960); // 1280x960 크기의 캔버스를 생성
   noStroke(); // 윤곽선 없음
 
   // 호스트인 경우 초기 값을 설정
