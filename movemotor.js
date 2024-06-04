@@ -177,8 +177,8 @@ function mousePressed() {
 
 function mouseReleased() {
   if (game2.gameState === "intro" && buttonState === "pressed") {
-    let buttonX = windowWidth / 2 - 100;
-    let buttonY = windowHeight / 2 + 150;
+    let buttonX = width / 2 - 100;
+    let buttonY = height / 2 + 50;
     let buttonWidth = 200;
     let buttonHeight = 50;
 
@@ -190,11 +190,10 @@ function mouseReleased() {
   }
 }
 
-
 function mouseMoved() {
   if (game2.gameState === "intro") {
-    let buttonX = windowWidth / 2 - 100;
-    let buttonY = windowHeight / 2 + 150;
+    let buttonX = width / 2 - 100;
+    let buttonY = height / 2 + 50;
     let buttonWidth = 200;
     let buttonHeight = 50;
 
@@ -205,7 +204,6 @@ function mouseMoved() {
     }
   }
 }
-
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
@@ -256,22 +254,14 @@ function draw() {
       motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
     }
     motorImg = motorImgs[motorImgNow + 1];
-    image(motorImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); // 6.25배 확대
+    image(motorImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); 
 
     // 배터리 애니메이션
     motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
     motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
-    image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600); // 6.25배 확대
-  }
+    image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600); 
 
-  // 게임 성공 메시지 그리기
-  if (game2.gameState === "success") {
-    textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
-    textSize(64);
-    fill(0);
-    textAlign(CENTER, CENTER);
-    text("게임 성공!", width / 2, height / 2);
-  }
+}
 }
 
 
@@ -314,19 +304,17 @@ class Motorgame {
       this.drawEnergyGauge(this.energy, this.maxEnergy);
     } else if (this.gameState === "success") {
 
-  
       // 다시 도전 버튼 그리기
       this.drawRetryButton();
-    } else if (this.gameState === "fail") {
-      // 게임 실패 화면
+    }
+
+      // 게임 성공 메시지 그리기
+    if (game2.gameState === "success") {
       textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
       textSize(64);
       fill(0);
       textAlign(CENTER, CENTER);
-      text("게임 실패", width / 2, height / 2);
-  
-      // 다시 도전 버튼 그리기
-      this.drawRetryButton();
+      text("게임 성공!", width / 2, height / 2);
     }
   }
   
