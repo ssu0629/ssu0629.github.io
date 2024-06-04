@@ -239,18 +239,6 @@ function draw() {
 
     game2.update(totalAccelerationChange);
     game2.display();
-
-    // 모터 애니메이션
-    if (game2.acceleration > 0 && game2.gameState === "playing") {
-      motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
-    }
-    motorImg = motorImgs[motorImgNow + 1];
-    image(motorImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
-
-    // 배터리 애니메이션
-    motorBatteryImgNow = int(1 + 7 * (game2.energy / 1000)); // 점수 0~1000 값을 1~8로 나오도록
-    motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
-    image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600);
   }
 }
 
@@ -283,25 +271,36 @@ class Motorgame {
   }
 
   display() {
-    if (this.gameState === "playing") {
+    if (this.gameState === "playing" || this.gameState === "success") {
       // 에너지 게이지 그리기
       this.drawEnergyGauge(this.energy, this.maxEnergy);
-    } else if (this.gameState === "success") {
 
+      // 모터 애니메이션
+      if (this.acceleration > 0 && this.gameState === "playing") {
+        motorImgNow = (motorImgNow + 1) % 8; // 애니메이션 프레임 업데이트
+      }
+      motorImg = motorImgs[motorImgNow + 1];
+      image(motorImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
+
+      // 배터리 애니메이션
+      motorBatteryImgNow = int(1 + 7 * (this.energy / 10000)); // 점수 0~10000 값을 1~8로 나오도록
+      if (this.gameState === "success") {
+        motorBatteryImgNow = 8; // 충전 완료된 배터리 이미지로 설정
+      }
+      motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
+      image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600);
+    }
+
+    if (this.gameState === "success") {
+      // 게임 성공 메시지 그리기
       textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
       textSize(64);
       fill(0);
       textAlign(CENTER, CENTER);
       text("게임 성공!", width / 2, height / 2);
 
-      // 게임 성공 후에도 배터리 이미지를 유지
-      motorBatteryImgNow = 8; // 충전 완료된 배터리 이미지로 설정
-      motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
-      image(motorBatteryImg, windowWidth / 2 - 455, windowHeight / 2 - 300, 800, 600);
-
       // 다시 도전 버튼 그리기
-      game2.drawRetryButton();
-  
+      this.drawRetryButton();
     }
   }
 
