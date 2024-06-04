@@ -57,6 +57,7 @@ function onClick() {
 
 // devicemotion 이벤트 콜백 함수
 function cb(event) {
+  console.log("eventmotor");
   const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
   const accWithoutGravity = event.acceleration || { x: 0, y: 0, z: 0 };
 
