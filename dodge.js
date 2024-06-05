@@ -29,7 +29,7 @@ let game; // 게임 인스턴스를 전역으로 선언하여 draw 함수에서 
 
 let introActive = true; // 인트로 활성 상태 변수
 let startButtonPressed = false;
-let restartButtonPressed = false;  // 버튼이 눌린 상태 변수
+let restartButtonPressed = false; // 버튼이 눌린 상태 변수
 
 // 시작버튼
 let startW = 200;
@@ -221,6 +221,7 @@ function drawRestartButton() {
   }
 }
 
+
 function mousePressed() {
   if (introActive) {
     if (mouseX > startX && mouseX < startX + startW && mouseY > startY && mouseY < startY + startH) {
@@ -243,9 +244,6 @@ function startGame() {
   introActive = false;
   loop(); // 게임 루프 재시작
 }
-
-
-
 
 function mouseReleased() {
   if (introActive && startButtonPressed) {
