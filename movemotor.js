@@ -116,9 +116,9 @@ function preload() {
   introImg = loadImage("assets/assets for use/introBg/motorIntroBg.png"); // 시작 화면 이미지 파일 로드
 
   // 버튼 이미지 불러오기
-  buttonStartImg = loadImage("assets/buttonStart.png");
-  buttonStartOverImg = loadImage("assets/buttonStartOver.png");
-  buttonStartPressedImg = loadImage("assets/buttonStartPressed.png");
+  buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
+  buttonStartOverImg = loadImage("assets/assets for use/buttons 200_100/buttonStartOver.png");
+  buttonStartPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonStartPressed.png");
 
   shared = partyLoadShared("shared", { x: 200, y: 200 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
@@ -145,11 +145,15 @@ function setup() {
 
   game2 = new Motorgame();
 
-  // 버튼 위치 및 크기 설정
-  buttonX = windowWidth / 2 - buttonWidth/2;
-  buttonY = height / 2 +50;
-  buttonWidth = 320;
-  buttonHeight = 140;
+  buttonStartImg.loadPixels();  // 버튼 이미지 로드 완료 후 크기 설정
+  buttonWidth = buttonStartImg.width;
+  buttonHeight = buttonStartImg.height;
+
+  // // 버튼 위치 및 크기 설정
+  // buttonX = windoWidth /2;
+  // buttonY = windowHeight / 2 + 100;
+  // buttonWidth = 160;
+  // buttonHeight = 70;
 }
 
 // 마우스를 클릭하면 공유 객체의 위치를 업데이트하고 클릭 수를 증가
@@ -165,10 +169,10 @@ function mousePressed() {
     clickCount.value++;
 
     if (game2.gameState === "success") {
-      let buttonX = windowWidth / 2;
-      let buttonY = height / 2 + 50;
-      let buttonWidth = 320;
-      let buttonHeight = 140;
+      let buttonX = window.innerWidth /2;
+      let buttonY = windowHeight / 2 + 100;
+      let buttonWidth = 160;
+      let buttonHeight = 70;
 
       if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
         game2.reset();
@@ -199,12 +203,12 @@ function mouseMoved() {
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
-  background('#ffcccc'); // 배경색 설정
-  fill("#000066"); // 도형 색상 설정
-
   if (game2.gameState === "intro") {
     // 시작 화면 표시
     image(introImg ,windowWidth/2-400,windowHeight/2-300,800,600); //맵 중앙에 800*600
+
+    buttonX = windowWidth / 2 - buttonWidth / 2;
+    buttonY = windowHeight / 5*4 - buttonHeight / 2 - 20;
 
     let buttonImg;
     if (buttonState === "normal") {
@@ -215,7 +219,7 @@ function draw() {
       buttonImg = buttonStartPressedImg;
     }
 
-    image(buttonImg, buttonX-buttonWidth/2, buttonY, buttonWidth, buttonHeight);
+    image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
   } else {
     // 게임 화면 표시
     // 애니메이션 배경 그리기
