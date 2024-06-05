@@ -306,10 +306,6 @@ class Screw {
     this.y = y; // 나사의 y 좌표
     this.size = 50; // 나사의 크기
     this.depth = 0; // 나사의 깊이
-    this.threadTurns = 8; // 나사 회전 수
-    this.threadHeight = 100; // 나사 높이
-    this.threadWidth = 10; // 나사 너비
-    this.spacing = this.threadHeight / this.threadTurns; // 나사 회전 간격
     this.angle = 0; // 나사의 각도
     this.successed = false; // 나사 성공 여부
     this.imageIndex = 0; // 이미지 인덱스 초기화
