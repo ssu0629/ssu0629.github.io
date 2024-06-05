@@ -28,7 +28,8 @@ let dodgeBgY6;
 let game; // 게임 인스턴스를 전역으로 선언하여 draw 함수에서 접근 가능하게 함
 
 let introActive = true; // 인트로 활성 상태 변수
-let startButtonPressed = false; // 버튼이 눌린 상태 변수
+let startButtonPressed = false;
+let restartButtonPressed = false;  // 버튼이 눌린 상태 변수
 
 // 시작버튼
 let startW = 200;
@@ -211,20 +212,13 @@ function drawRestartButton() {
   let restartX = windowWidth / 2 - restartW / 2;
   let restartY = windowHeight / 5 * 4 - restartH / 2;
 
-  if (mouseX > restartX && mouseX < restartX + restartW && mouseY > restartY && mouseY < restartY + restartH) {
-    if (mouseIsPressed) {
-      image(buttonAgainPressedImg, restartX, restartY, restartW, restartH);
-    } else {
-      image(buttonAgainOverImg, restartX, restartY, restartW, restartH);
-    }
+  if (restartButtonPressed) {
+    image(buttonAgainPressedImg, restartX, restartY, restartW, restartH);
+  } else if (mouseX > restartX && mouseX < restartX + restartW && mouseY > restartY && mouseY < restartY + restartH) {
+    image(buttonAgainOverImg, restartX, restartY, restartW, restartH);
   } else {
     image(buttonAgainImg, restartX, restartY, restartW, restartH);
   }
-}
-
-function startGame() {
-  introActive = false;
-  loop(); // 게임 루프 재시작
 }
 
 function mousePressed() {
@@ -239,10 +233,19 @@ function mousePressed() {
     let restartY = windowHeight / 5 * 4 - restartH / 2;
 
     if (mouseX > restartX && mouseX < restartX + restartW && mouseY > restartY && mouseY < restartY + restartH) {
-      game.reset();
+      restartButtonPressed = true;
     }
   }
 }
+
+
+function startGame() {
+  introActive = false;
+  loop(); // 게임 루프 재시작
+}
+
+
+
 
 function mouseReleased() {
   if (introActive && startButtonPressed) {
@@ -250,6 +253,16 @@ function mouseReleased() {
       startGame();
     }
     startButtonPressed = false;
+  } else if (game.gameOver && restartButtonPressed) {
+    let restartW = 200;
+    let restartH = 100;
+    let restartX = windowWidth / 2 - restartW / 2;
+    let restartY = windowHeight / 5 * 4 - restartH / 2;
+
+    if (mouseX > restartX && mouseX < restartX + restartW && mouseY > restartY && mouseY < restartY + restartH) {
+      game.reset();
+    }
+    restartButtonPressed = false;
   }
 }
 
