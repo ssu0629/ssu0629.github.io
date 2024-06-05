@@ -39,11 +39,22 @@ function onClick() {
 }
 
 // deviceorientation 이벤트 콜백 함수
+let lastGamma = null; // 이전 gamma 값을 저장
 function cb(event) {
   console.log("event");
   console.log(event.gamma);
   if (event.gamma !== null) {
-    me.degY = radians(event.gamma); // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
+    if (lastGamma !== null) {
+      let deltaGamma = event.gamma - lastGamma; // 현재 gamma와 이전 gamma의 차이 계산
+      if (deltaGamma > 180) {
+        deltaGamma -= 360; // 기기가 회전한 방향 보정
+      } else if (deltaGamma < -180) {
+        deltaGamma += 360;
+      }
+      totalDeg += radians(deltaGamma); // 차이를 누적하여 총 회전각에 추가
+    }
+    lastGamma = event.gamma; // 현재 gamma 값을 이전 값으로 저장
+    me.degY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
   }
 }
 
@@ -140,7 +151,7 @@ function draw() {
   // 게임 오버 상태와 관계없이 항상 텍스트를 그립니다.
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   fill("#000066"); // 텍스트 색상 설정
-  text(totalDeg.toFixed(2) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
+  text(totalDeg.toFixed(5) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
 
   // console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
 }
@@ -163,10 +174,12 @@ function updateRotation() {
     rotationCount++;
     game.selectedScrew.move();
     checkpointPassed = [false, false, false]; // 체크포인트 초기화
-    
   }
-  console.log(rotationCount);
-  console.log(checkpoints[0]);
+}
+
+// radians() 함수는 degrees를 라디안으로 변환합니다.
+function radians(degrees) {
+  return degrees * (Math.PI / 180);
 }
 
 // 미니게임1 나사돌리기 실행 class
