@@ -55,7 +55,6 @@ function cb(event) {
     }
     lastGamma = event.gamma; // 현재 gamma 값을 이전 값으로 저장
     me.degY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
-    lastGamma = 
   }
 }
 
@@ -154,7 +153,7 @@ function draw() {
   fill("#000066"); // 텍스트 색상 설정
   text(totalDeg.toFixed(5) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
 
-  console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
+ console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
 }
 
 // 기기의 회전 상태를 업데이트하고 나사의 move 함수를 호출하는 함수
