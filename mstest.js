@@ -145,6 +145,7 @@ function draw() {
 
   // 360도 회전을 인식하기 위한 체크포인트 로직
   updateRotation();
+  console.log(checkpointPassed[0]);
 
   game.draw(); // 미니게임1 그림
 
@@ -333,7 +334,6 @@ class Screw {
   }
 
   highlight() {
-    console.log("s");
     push();
     translate(this.x, this.y + this.depth); // 나사의 위치로 이동
     noFill();
