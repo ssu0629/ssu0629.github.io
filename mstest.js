@@ -41,6 +41,7 @@ function onClick() {
 // deviceorientation 이벤트 콜백 함수
 let lastGamma = null; // 이전 gamma 값을 저장
 function cb(event) {
+  let totalDeg_ = 0;
   if (event.gamma !== null) {
     if (lastGamma !== null) {
       let deltaGamma = event.gamma - lastGamma; // 현재 gamma와 이전 gamma의 차이 계산
@@ -49,10 +50,12 @@ function cb(event) {
       } else if (deltaGamma < -180) {
         deltaGamma += 360;
       }
-      totalDeg += radians(deltaGamma); // 차이를 누적하여 총 회전각에 추가
+      totalDeg_ += radians(deltaGamma); // 차이를 누적하여 총 회전각에 추가
     }
+    console.log("gamma");
+    console.log(event.gamma);
     lastGamma = event.gamma; // 현재 gamma 값을 이전 값으로 저장
-    me.degY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
+    me.degY = totalDeg_; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
   }
 }
 
@@ -159,7 +162,7 @@ function draw() {
 // 기기의 회전 상태를 업데이트하고 나사의 move 함수를 호출하는 함수
 function updateRotation() {
   const checkpoints = [radians(120), radians(240), radians(360)];
-  let absoluteDeg = Math.abs(totalDeg) % (2 * Math.PI);
+  let absoluteDeg = totalDeg % (2 * Math.PI);
   console.log(absoluteDeg);
 
   if (absoluteDeg >= checkpoints[0] && !checkpointPassed[0]) {
