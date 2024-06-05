@@ -168,16 +168,16 @@ function mousePressed() {
     shared.y = mouseY;
     clickCount.value++;
 
-    if (game2.gameState === "success") {
-      let buttonX = window.innerWidth /2;
-      let buttonY = windowHeight / 2 + 100;
-      let buttonWidth = 160;
-      let buttonHeight = 70;
+    // if (game2.gameState === "success") {
+    //   let buttonX = window.innerWidth /2;
+    //   let buttonY = windowHeight / 2 + 100;
+    //   let buttonWidth = 160;
+    //   let buttonHeight = 70;
 
-      if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
-        game2.reset();
-      }
-    }
+    //   if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+    //     game2.reset();
+    //   }
+    // }
   }
 }
 
@@ -305,8 +305,8 @@ class Motorgame {
       textAlign(CENTER, CENTER);
       text("게임 성공!", window.innerWidth / 2, window.innerHeight / 2);
 
-      // 다시 도전 버튼 그리기
-      this.drawRetryButton();
+      // // 다시 도전 버튼 그리기
+      // this.drawRetryButton();
     }
   }
 
@@ -321,14 +321,14 @@ class Motorgame {
     rect(width / 2 - gaugeWidth / 2, height - 40, filledWidth, gaugeHeight);
   }
 
-  drawRetryButton() {
-    fill(0, 255, 0);
-    rect(width / 2 - 100, height / 2 + 50, 200, 50);
-    fill(0);
-    textSize(32);
-    textAlign(CENTER, CENTER);
-    text("다시 도전", width / 2, height / 2 + 75);
-  }
+  // drawRetryButton() {
+  //   fill(0, 255, 0);
+  //   rect(width / 2 - 100, height / 2 + 50, 200, 50);
+  //   fill(0);
+  //   textSize(32);
+  //   textAlign(CENTER, CENTER);
+  //   text("다시 도전", width / 2, height / 2 + 75);
+  // }
 
   reset() {
     this.acceleration = 0;

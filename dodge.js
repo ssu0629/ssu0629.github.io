@@ -18,16 +18,25 @@ let dodgeImgBgStars = []; //배경에 있는 별은 레이어 2개 있습니다
 let dodgeImgObstacles = []; //장애물 이미지 5개 있습니다
 
 let dodgeBgSpeed;
-let dodgeBgY=0 //배경 스크롤 초기 위치 변수
+let dodgeBgY = 0 //배경 스크롤 초기 위치 변수
 let dodgeBgY2; //!!setup()에서 초기화 해요
-let dodgeBgY3=0
+let dodgeBgY3 = 0
 let dodgeBgY4;
-let dodgeBgY5=0
+let dodgeBgY5 = 0
 let dodgeBgY6;
-  
 
+let game; // 게임 인스턴스를 전역으로 선언하여 draw 함수에서 접근 가능하게 함
 
-document.addEventListener("DOMContentLoaded", function() {
+let introActive = true; // 인트로 활성 상태 변수
+let startButtonPressed = false; // 버튼이 눌린 상태 변수
+
+//시작버튼
+// let startW = 200;
+// let startH = 100;
+// let startX = windowWidth / 2 - startW / 2;
+// let startY = windowHeight / 5*4 - startH / 2 - 20;
+
+document.addEventListener("DOMContentLoaded", function () {
   const activateButton = document.getElementById('activateButton');
   activateButton.addEventListener('click', onClick);
 });
@@ -60,7 +69,6 @@ function preload() {
   guests = partyLoadGuestShareds();
   me = partyLoadMyShared({ degX: 0 });
 
-
   //이미지 프리로드
   for (let i = 0; i < 2; i++) { // 파일이름 0부터 1까지 불러오기
     dodgeImgRobots[i] = loadImage("assets/dodge/dodgeRobot" + i + ".png");
@@ -70,17 +78,24 @@ function preload() {
     dodgeImgObstacles[i] = loadImage("assets/dodge/dodgeObstacle" + i + ".png");
   }
   dodgeImgBg = loadImage("assets/dodge/dodgeBgSpace.png");
+  introImg = loadImage("assets/assets for use/introBg/dodgeIntroBg.png"); // 시작 화면 이미지 파일 로드
 
+  // 버튼 이미지 불러오기
+  buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
+  buttonStartOverImg = loadImage("assets/assets for use/buttons 200_100/buttonStartOver.png");
+  buttonStartPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonStartPressed.png");
+
+  buttonAgainImg = loadImage("assets/assets for use/buttons 200_100/buttonAgain.png");
+  buttonAgainOverImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainOver.png");
+  buttonAgainPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainPressed.png");
 }
-
-let game; // 게임 인스턴스를 전역으로 선언하여 draw 함수에서 접근 가능하게 함
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   //배경 이미지 루프를 위한 초기화, 배경 이미지 세로 길이가 -windowWidth*2
-  dodgeBgY2 = -windowWidth*2
-  dodgeBgY4 = -windowWidth*2
-  dodgeBgY6 = -windowWidth*2
+  dodgeBgY2 = -windowWidth * 2
+  dodgeBgY4 = -windowWidth * 2
+  dodgeBgY6 = -windowWidth * 2
 
   noStroke();
 
@@ -110,34 +125,60 @@ function draw() {
   // 배경 색상 설정
   background('#41388d');
 
+  if (introActive) {
+    drawIntro();
+  } else {
+    drawGame();
+  }
+}
 
+function drawIntro() {
+  image(introImg, windowWidth/2-400,windowHeight/2-300,800,600);
+  drawStartButton();
+}
+
+function drawStartButton() {
+    let startW = 200;
+    let startH = 100;
+    let startX = windowWidth / 2 - startW / 2;
+    let startY = windowHeight / 5*4 - startH / 2 - 20;
+
+
+  if (startButtonPressed) {
+    image(buttonStartPressedImg, startX, startY, startW, startH);
+  } else if (mouseX > startX && mouseX < startX + startW && mouseY > startY && mouseY < startY + startH) {
+    image(buttonStartOverImg, startX, startY, startW, startH);
+  } else {
+    image(buttonStartImg, startX, startY, startW, startH);
+  }
+}
+
+function drawGame() {
   // 무한 루프되는 배경
   // 배경 비율은 1:2(세로가 더 김), 가로길이는 windowWidth, 세로는 2배
-  dodgeBgHeight = windowWidth*2 //배경 이미지의 세로 길이
+  dodgeBgHeight = windowWidth * 2 //배경 이미지의 세로 길이
   dodgeBgSpeed = 3 // 스크롤의 속도를 조절함
   dodgeBgY += dodgeBgSpeed  //우주
   dodgeBgY2 += dodgeBgSpeed //우주2
-  dodgeBgY3 += dodgeBgSpeed *0.3 //별1
-  dodgeBgY4 += dodgeBgSpeed *0.3 //별2
-  dodgeBgY5 += dodgeBgSpeed *0.1 //별3
-  dodgeBgY6 += dodgeBgSpeed *0.1 //별4
+  dodgeBgY3 += dodgeBgSpeed * 0.3 //별1
+  dodgeBgY4 += dodgeBgSpeed * 0.3 //별2
+  dodgeBgY5 += dodgeBgSpeed * 0.1 //별3
+  dodgeBgY6 += dodgeBgSpeed * 0.1 //별4
 
-  image(dodgeImgBg,0,dodgeBgY,windowWidth,dodgeBgHeight) //첫 이미지
-  image(dodgeImgBg,0,dodgeBgY2,windowWidth,dodgeBgHeight) //그 위 이미지
+  image(dodgeImgBg, 0, dodgeBgY, windowWidth, dodgeBgHeight) //첫 이미지
+  image(dodgeImgBg, 0, dodgeBgY2, windowWidth, dodgeBgHeight) //그 위 이미지
   blendMode(LIGHTEST)  //블렌드 모드
-  image(dodgeImgBgStars[0],0,dodgeBgY3,windowWidth,dodgeBgHeight)
-  image(dodgeImgBgStars[0],0,dodgeBgY4,windowWidth,dodgeBgHeight)
-  image(dodgeImgBgStars[1],0,dodgeBgY5,windowWidth,dodgeBgHeight)
-  image(dodgeImgBgStars[1],0,dodgeBgY6,windowWidth,dodgeBgHeight)
-  if (dodgeBgY >= dodgeBgHeight-10) dodgeBgY=-dodgeBgHeight; //다 내려오면 위로 올림
-  if (dodgeBgY2 >= dodgeBgHeight-10) dodgeBgY2=-dodgeBgHeight;
-  if (dodgeBgY3 >= dodgeBgHeight-10) dodgeBgY3=-dodgeBgHeight; 
-  if (dodgeBgY4 >= dodgeBgHeight-10) dodgeBgY4=-dodgeBgHeight;
-  if (dodgeBgY5 >= dodgeBgHeight-10) dodgeBgY5=-dodgeBgHeight; 
-  if (dodgeBgY6 >= dodgeBgHeight-10) dodgeBgY6=-dodgeBgHeight;
+  image(dodgeImgBgStars[0], 0, dodgeBgY3, windowWidth, dodgeBgHeight)
+  image(dodgeImgBgStars[0], 0, dodgeBgY4, windowWidth, dodgeBgHeight)
+  image(dodgeImgBgStars[1], 0, dodgeBgY5, windowWidth, dodgeBgHeight)
+  image(dodgeImgBgStars[1], 0, dodgeBgY6, windowWidth, dodgeBgHeight)
+  if (dodgeBgY >= dodgeBgHeight - 10) dodgeBgY = -dodgeBgHeight; //다 내려오면 위로 올림
+  if (dodgeBgY2 >= dodgeBgHeight - 10) dodgeBgY2 = -dodgeBgHeight;
+  if (dodgeBgY3 >= dodgeBgHeight - 10) dodgeBgY3 = -dodgeBgHeight;
+  if (dodgeBgY4 >= dodgeBgHeight - 10) dodgeBgY4 = -dodgeBgHeight;
+  if (dodgeBgY5 >= dodgeBgHeight - 10) dodgeBgY5 = -dodgeBgHeight;
+  if (dodgeBgY6 >= dodgeBgHeight - 10) dodgeBgY6 = -dodgeBgHeight;
   blendMode(BLEND) //블렌드 모드 초기화
-
-
 
   fill("#000066");
 
@@ -166,6 +207,37 @@ function draw() {
 
   // 미니맵 그리기
   game.drawMiniMap();
+}
+
+function startGame() {
+  introActive = false;
+}
+
+function mousePressed() {
+  if (introActive) {
+    let startW = 200;
+    let startH = 100;
+    let startX = windowWidth / 2 - startW / 2;
+    let startY = windowHeight / 5*4 - startH / 2 - 20;
+
+    if (mouseX > startX && mouseX < startX + startW && mouseY > startY && mouseY < startY + startH) {
+      startButtonPressed = true;
+    }
+  }
+}
+
+function mouseReleased() {
+  if (introActive && startButtonPressed) {
+    let startW = 200;
+    let startH = 100;
+    let startX = windowWidth / 2 - startW / 2;
+    let startY = windowHeight / 5*4 - startH / 2 - 20;
+
+    if (mouseX > startX && mouseX < startX + startW && mouseY > startY && mouseY < startY + startH) {
+      startGame();
+    }
+    startButtonPressed = false;
+  }
 }
 
 class ObstacleGame {
@@ -241,27 +313,24 @@ class ObstacleGame {
 
   display(t) { //로봇 애니메이션을 위해 변수 t 로 frameCount를 받음
     //플레이어 이미지
-     imageMode(CENTER);
-     fill(0, 0, 255,100);
-    dodgeImgFrame = int(t/5)%2;
-    image(dodgeImgRobots[dodgeImgFrame],this.player.x, this.player.y, this.player.size, this.player.size)
+    imageMode(CENTER);
+    fill(0, 0, 255, 100);
+    dodgeImgFrame = int(t / 5) % 2;
+    image(dodgeImgRobots[dodgeImgFrame], this.player.x, this.player.y, this.player.size, this.player.size)
     ellipse(this.player.x, this.player.y, this.player.size, this.player.size);
 
-
-     console.log(dodgeImgFrame);
-
-    fill(255, 0, 0,100);
+    fill(255, 0, 0, 100);
     for (let obstacle of this.obstacles) {
       //장애물 이미지
       noSmooth();
       push();
       translate(obstacle.x, obstacle.y);
-      rotate(t/80*obstacle.r)
-      image(dodgeImgObstacles[obstacle.i],0,0, obstacle.size,obstacle.size);
+      rotate(t / 80 * obstacle.r)
+      image(dodgeImgObstacles[obstacle.i], 0, 0, obstacle.size, obstacle.size);
       pop();
       rectMode(CENTER)
-      rect(obstacle.x,obstacle.y, obstacle.size, obstacle.size);
-    } 
+      rect(obstacle.x, obstacle.y, obstacle.size, obstacle.size);
+    }
     imageMode(CORNER); //이미지모드 초기화
     rectMode(CORNER);//초기화
   }
@@ -289,9 +358,9 @@ class ObstacleGame {
     let size = 80;
     let x = random(0, width - size);
 
-    let i = int(random(0,5)) //랜덤 이미지 고르기
-    let r = random(-3,3) //랜덤회전 속도
-    this.obstacles.push({ x: x, y: 0, size: size , i: i, r: r});
+    let i = int(random(0, 5)) //랜덤 이미지 고르기
+    let r = random(-3, 3) //랜덤회전 속도
+    this.obstacles.push({ x: x, y: 0, size: size, i: i, r: r });
   }
 
   isColliding(player, obstacle) {
@@ -323,4 +392,3 @@ function keyReleased(event) {
     moveRight = false;
   }
 }
-
