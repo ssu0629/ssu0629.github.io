@@ -161,13 +161,13 @@ function updateRotation() {
   const checkpoints = [radians(120), radians(240), radians(360)];
   let absoluteDeg = Math.abs(totalDeg) % (2 * Math.PI);
 
-  if (Math.abs(totalDeg) >= checkpoints[0] && !checkpointPassed[0]) {
+  if (absoluteDeg >= checkpoints[0] && !checkpointPassed[0]) {
     checkpointPassed[0] = true;
   }
-  if (Math.abs(totalDeg) >= checkpoints[1] && !checkpointPassed[1]) {
+  if (absoluteDeg >= checkpoints[1] && !checkpointPassed[1]) {
     checkpointPassed[1] = true;
   }
-  if (Math.abs(totalDeg) >= checkpoints[2] && !checkpointPassed[2]) {
+  if (absoluteDeg >= checkpoints[2] && !checkpointPassed[2]) {
     checkpointPassed[2] = true;
   }
 
