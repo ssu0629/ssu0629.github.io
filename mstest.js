@@ -6,6 +6,7 @@ let me;
 let game;
 let checkpointPassed = [false, false, false]; // 체크포인트 통과 여부를 저장
 let rotationCount = 0; // 회전 수를 저장
+let screwImgs = new Array(8);
 let screwselectedImgs = new Array(8);
 let screwBgImg;
 let introImg;
@@ -69,6 +70,11 @@ function preload() {
   for (let i = 0; i < 8; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
     screwselectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected/screwSelected" + (i+1) + ".png");
   }
+
+  for (let i = 0; i < 8; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
+    screwImgs[i] = loadImage("assets/assets for use/minigame_screw/screw/screw" + (i+1) + ".png");
+  }
+
   screwBgImg = loadImage("assets/assets for use/minigame_screw/screwBg.png");
   //introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
 
@@ -179,9 +185,11 @@ function updateRotation() {
 
   if (checkpointPassed.every(Boolean)) {
     rotationCount++;
+    if (game.selectedScrew != null){ 
     game.selectedScrew.move();
     checkpointPassed = [false, false, false]; // 체크포인트 초기화
     totalDeg = 0;
+    }
   }
 }
 

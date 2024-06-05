@@ -113,7 +113,7 @@ function preload() {
     motorBatteryImgs[i] = loadImage("assets/motor_battery" + i + ".png");
   }
   motorBgImg = loadImage("assets/motor_bg.png");
-  introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
+  introImg = loadImage("assets/assets for use/introBg/motorIntroBg.png"); // 시작 화면 이미지 파일 로드
 
   // 버튼 이미지 불러오기
   buttonStartImg = loadImage("assets/buttonStart.png");
@@ -146,10 +146,10 @@ function setup() {
   game2 = new Motorgame();
 
   // 버튼 위치 및 크기 설정
-  buttonX = windowWidth / 2 - 100;
-  buttonY = windowHeight / 2 + 150;
-  buttonWidth = 200;
-  buttonHeight = 50;
+  buttonX = windowWidth / 2 - buttonWidth/2;
+  buttonY = height / 2 +50;
+  buttonWidth = 320;
+  buttonHeight = 140;
 }
 
 // 마우스를 클릭하면 공유 객체의 위치를 업데이트하고 클릭 수를 증가
@@ -165,10 +165,10 @@ function mousePressed() {
     clickCount.value++;
 
     if (game2.gameState === "success") {
-      let buttonX = width / 2 - 100;
+      let buttonX = windowWidth / 2;
       let buttonY = height / 2 + 50;
-      let buttonWidth = 200;
-      let buttonHeight = 50;
+      let buttonWidth = 320;
+      let buttonHeight = 140;
 
       if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
         game2.reset();
@@ -204,7 +204,8 @@ function draw() {
 
   if (game2.gameState === "intro") {
     // 시작 화면 표시
-    image(introImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
+    image(introImg ,windowWidth/2-400,windowHeight/2-300,800,600); //맵 중앙에 800*600
+
     let buttonImg;
     if (buttonState === "normal") {
       buttonImg = buttonStartImg;
@@ -214,7 +215,7 @@ function draw() {
       buttonImg = buttonStartPressedImg;
     }
 
-    image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+    image(buttonImg, buttonX-buttonWidth/2, buttonY, buttonWidth, buttonHeight);
   } else {
     // 게임 화면 표시
     // 애니메이션 배경 그리기
