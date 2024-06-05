@@ -160,7 +160,7 @@ function draw() {
 
 // 기기의 회전 상태를 업데이트하고 나사의 move 함수를 호출하는 함수
 function updateRotation() {
-  const checkpoints = [radians(60), radians(120), radians(180)];
+  const checkpoints = [radians(60), radians(120), radians(160)];
   let absoluteDeg = totalDeg;
   if (absoluteDeg < 0) {
     absoluteDeg += Math.PI;
