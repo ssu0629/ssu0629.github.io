@@ -163,6 +163,7 @@ function updateRotation() {
     rotationCount++;
     game.selectedScrew.move();
     checkpointPassed = [false, false, false]; // 체크포인트 초기화
+    console.log(rotationCount);
   }
 }
 
