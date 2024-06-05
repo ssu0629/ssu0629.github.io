@@ -144,6 +144,8 @@ function draw() {
 
   // 360도 회전을 인식하기 위한 체크포인트 로직
   updateRotation();
+  console.log(checkpointPassed[0]);
+  console.log(checkpointPassed[1]);
   console.log(checkpointPassed[2]);
 
   game.draw(); // 미니게임1 그림
