@@ -160,6 +160,7 @@ function draw() {
 function updateRotation() {
   const checkpoints = [radians(120), radians(240), radians(360)];
   let absoluteDeg = Math.abs(totalDeg) % (2 * Math.PI);
+  console.log(absoluteDeg);
 
   if (absoluteDeg >= checkpoints[0] && !checkpointPassed[0]) {
     checkpointPassed[0] = true;
