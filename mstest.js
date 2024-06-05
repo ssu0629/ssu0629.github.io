@@ -41,8 +41,6 @@ function onClick() {
 // deviceorientation 이벤트 콜백 함수
 let lastGamma = null; // 이전 gamma 값을 저장
 function cb(event) {
-  console.log("event");
-  console.log(event.gamma);
   if (event.gamma !== null) {
     if (lastGamma !== null) {
       let deltaGamma = event.gamma - lastGamma; // 현재 gamma와 이전 gamma의 차이 계산
@@ -57,6 +55,7 @@ function cb(event) {
     me.degY = totalDeg; // 기기의 y축 기울기 값을 라디안으로 변환하여 degY에 저장
   }
 }
+
 
 // p5.js preload 함수로 party.js 연결 및 공유 데이터 초기화
 function preload() {
@@ -161,13 +160,13 @@ function draw() {
 function updateRotation() {
   const checkpoints = [radians(120), radians(240), radians(360)];
 
-  if (totalDeg >= checkpoints[0] && !checkpointPassed[0]) {
+  if (Math.abs(totalDeg) >= checkpoints[0] && !checkpointPassed[0]) {
     checkpointPassed[0] = true;
   }
-  if (totalDeg >= checkpoints[1] && !checkpointPassed[1]) {
+  if (Math.abs(totalDeg) >= checkpoints[1] && !checkpointPassed[1]) {
     checkpointPassed[1] = true;
   }
-  if (totalDeg >= checkpoints[2] && !checkpointPassed[2]) {
+  if (Math.abs(totalDeg) >= checkpoints[2] && !checkpointPassed[2]) {
     checkpointPassed[2] = true;
   }
 
@@ -177,6 +176,7 @@ function updateRotation() {
     checkpointPassed = [false, false, false]; // 체크포인트 초기화
   }
 }
+
 
 // radians() 함수는 degrees를 라디안으로 변환합니다.
 function radians(degrees) {
