@@ -163,8 +163,10 @@ function updateRotation() {
     rotationCount++;
     game.selectedScrew.move();
     checkpointPassed = [false, false, false]; // 체크포인트 초기화
-    console.log(rotationCount);
+    
   }
+  console.log(rotationCount);
+  console.log(checkpoints[0]);
 }
 
 // 미니게임1 나사돌리기 실행 class
