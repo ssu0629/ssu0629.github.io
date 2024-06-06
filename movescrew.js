@@ -6,7 +6,7 @@ let me;
 let game;
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   const activateButton = document.getElementById('activateButton');
   if (activateButton) {
     activateButton.addEventListener('click', onClick);
@@ -129,16 +129,16 @@ class Game {
       console.log(this.previousDeg)
       console.log(this.previousDeg_1)
       console.log(this.previousDeg_2)
-      if (totalDeg > 0 && this.previousDeg != 10){
+      if (totalDeg > 0 && this.previousDeg != 10) {
         this.previousDeg = this.previousDeg_1
         if (totalDeg > this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
             this.selectedScrew.move(); // 나사 회전
             this.previousDeg = 10
           }
-        } 
-      }   
-      else if (totalDeg < 0 && this.previousDeg != 0){
+        }
+      }
+      else if (totalDeg < 0 && this.previousDeg != 0) {
         this.previousDeg = - this.previousDeg_2
         if (totalDeg > this.previousDeg) { // 기울기 값 임계값을 초과하면 (기울기 값은 0 ~ 180도 범위)
           if (!this.isGameOver && !this.isGameSuccess) { // 게임 오버 또는 성공 시 무시
@@ -147,11 +147,11 @@ class Game {
           }
         }
       }
-    }    
+    }
     this.show(); // 게임 상태 표시 (항상 호출되도록 위치 조정)
   }
-    
-  
+
+
 
   mousePressed() {
     if (this.isGameOver || this.isGameSuccess) return; // 게임 오버 또는 성공 시 무시
@@ -326,7 +326,6 @@ class Screw {
         if (i == game.frame - 1) {
           this.threadTurns -= 1; // 나사 회전 수 감소
         }
-        this.update(); // 나사 각도 업데이트
       }
       if (!this.successed && this.depth + this.spacing >= game.holeDepth) { // 나사가 성공적으로 들어간 경우
         game.successed += 1; // 게임 성공 수 증가

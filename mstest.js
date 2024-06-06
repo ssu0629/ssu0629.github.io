@@ -295,7 +295,7 @@ class Screw {
     translate(this.x, this.y + this.depth); // 나사의 위치로 이동
 
     // 나사 이미지 애니메이션 표시
-    if (this.selected) {
+    if (this.selected || this.successed) {
       image(screwSelectedImgs[this.imageIndex], -this.imageWidth / 2, -this.imageHeight / 2, this.imageWidth, this.imageHeight);
     } else {
       image(screwImgs[this.imageIndex], -this.imageWidth / 2, -this.imageHeight / 2, this.imageWidth, this.imageHeight);
@@ -336,7 +336,7 @@ class Screw {
         this.successed = true; // 나사 성공 상태로 설정
       }
     } else {
-      this.imageIndex = 7; // 나사 깊이 고정
+      this.imageIndex = 3; // 나사 깊이 고정
     }
   }
 
@@ -377,10 +377,10 @@ class Game_test {
     this.selectedScrew = null; // 선택된 나사 초기화
     for (let screw of this.screws) {
       if (screw.isMouseOver()) { // 마우스가 나사 위에 있을 때
+        this.selectedScrew = screw; // 나사 선택
         halfCount = 0
         count = 0
         pCount = 0
-        this.selectedScrew = screw; // 나사 선택
         this.selectedScrew.selected = true; // 나사 선택 상태 설정
         this.mode = "rotate"; // 모드 변경
         // if (game.selectedScrew) { // 선택된 나사가 있는 경우
