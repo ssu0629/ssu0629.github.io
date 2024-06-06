@@ -413,7 +413,7 @@ class Game_test {
 
       updateDirection();
       updateCount();
-      if (pCount < count && !game.selectedScrew.successed) {
+      if (pCount < count && !game.selectedScrew.successed && !game.isGameOver) {
         game.selectedScrew.move()
       }
 
