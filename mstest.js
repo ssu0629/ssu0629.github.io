@@ -15,7 +15,9 @@ let buttonState;
 
 let centerX, centerY;
 let totalDeg, pTotalDeg;
+let halfCount = 0
 let count = 0;
+let pCount
 let pANum = 0;
 let areaNum = 0;
 let clockWise = {
@@ -30,7 +32,7 @@ let antiClockWise = {
 };
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   const activateButton = document.getElementById('activateButton');
   if (activateButton) {
     activateButton.addEventListener('click', onClick);
@@ -84,31 +86,31 @@ function preload() {
 
   // 애니메이션 파일 불러오기
   for (let i = 0; i < 4; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
-    screwSelectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected(4frame)/screwSelected" + (i+1) + ".png");
+    screwSelectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected(4frame)/screwSelected" + (i + 1) + ".png");
   }
 
   for (let i = 0; i < 8; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
-    screwImgs[i] = loadImage("assets/assets for use/minigame_screw/screw/screw" + (i+1) + ".png");
-    
+    screwImgs[i] = loadImage("assets/assets for use/minigame_screw/screw/screw" + (i + 1) + ".png");
 
-  screwBgImg = loadImage("assets/assets for use/minigame_screw/screwBg.png");
-  //introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
 
-  // 버튼 이미지 불러오기
-  buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
-  buttonStartOverImg = loadImage("assets/assets for use/buttons 200_100/buttonStartOver.png");
-  buttonStartPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonStartPressed.png");
+    screwBgImg = loadImage("assets/assets for use/minigame_screw/screwBg.png");
+    //introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
 
-  buttonAgainImg = loadImage("assets/assets for use/buttons 200_100/buttonAgain.png");
-  buttonAgainOverImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainOver.png");
-  buttonAgainPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainPressed.png");
-  shared = partyLoadShared("shared", { x: 200, y: 200 });
-  clickCount = partyLoadShared("clickCount", { value: 0 });
-  guests = partyLoadGuestShareds();
-  me = partyLoadMyShared({ degY: 0 });
+    // 버튼 이미지 불러오기
+    buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
+    buttonStartOverImg = loadImage("assets/assets for use/buttons 200_100/buttonStartOver.png");
+    buttonStartPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonStartPressed.png");
 
-  neoDunggeunmoProFont = loadFont("assets/NeoDunggeunmoPro-Regular.ttf"); // 폰트 로드
-}
+    buttonAgainImg = loadImage("assets/assets for use/buttons 200_100/buttonAgain.png");
+    buttonAgainOverImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainOver.png");
+    buttonAgainPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainPressed.png");
+    shared = partyLoadShared("shared", { x: 200, y: 200 });
+    clickCount = partyLoadShared("clickCount", { value: 0 });
+    guests = partyLoadGuestShareds();
+    me = partyLoadMyShared({ degY: 0 });
+
+    neoDunggeunmoProFont = loadFont("assets/NeoDunggeunmoPro-Regular.ttf"); // 폰트 로드
+  }
 }
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
@@ -168,33 +170,32 @@ function draw() {
   console.log("totalDeg");
   console.log(totalDeg);
 
-  areaNum = area(totalDeg);
-  updateDirection();
-  updateCount();
-  pANum = areaNum;
-  pTotalDeg = totalDeg;
-  text(int(count/2), width / 2, height / 2);
+  // areaNum = area(totalDeg);
 
+  // updateDirection();
+  // updateCount();
+  // if (pCount < count){
+  //   game.selectedScrew.move()
+  // }
 
-  // // 360도 회전을 인식하기 위한 체크포인트 로직
-  // updateRotation();
-  // console.log(checkpointPassed[0]);
-  // console.log(checkpointPassed[1]);
-  // console.log(checkpointPassed[2]);
+  // pANum = areaNum;
+  // pTotalDeg = totalDeg;
+  // pCount = count
+
 
   game.draw(); // 미니게임1 그림
-  
-  if (game.selectedScrew) { // 선택된 나사가 있는 경우
-  updateDirection();
-  updateCount();
-}
+
+  //   if (game.selectedScrew) { // 선택된 나사가 있는 경우
+  //   updateDirection();
+  //   updateCount();
+  // }
 
   // 게임 오버 상태와 관계없이 항상 텍스트를 그립니다.
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
   fill("#000066"); // 텍스트 색상 설정
   text(totalDeg.toFixed(5) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
 
- console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
+  console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
 }
 
 
@@ -245,20 +246,20 @@ function updateCount() {
   if (totalDeg < 0 && pTotalDeg > 0) {
     // anticlockwise
     if (antiClockWise[1] && antiClockWise[2] && antiClockWise[3]) {
-      count += 1;
+      halfCount += 1;
       anitiClockWise = {
         1: false,
         2: false,
         3: false,
       };
-      game.selectedScrew.move();
-      count =0; // 카운트 초기화 // 나사를 회전시킴
+      // game.selectedScrew.move();
+      // halfCount =0; // 카운트 초기화 // 나사를 회전시킴
     }
   }
-  if (totalDeg >0  && pTotalDeg < 0) {
+  if (totalDeg > 0 && pTotalDeg < 0) {
     // clockwise
     if (clockWise[1] && clockWise[2] && clockWise[3]) {
-      count -= 1;
+      halfCount -= 1;
       clockWise = {
         1: false,
         2: false,
@@ -266,6 +267,7 @@ function updateCount() {
       };
     }
   }
+  count = int(halfCount / 2)
 }
 
 // radians() 함수는 degrees를 라디안으로 변환합니다.
@@ -321,9 +323,9 @@ class Screw {
 
   isMouseOver() {
     return mouseX > this.x - this.imageWidth / 2 &&
-           mouseX < this.x + this.imageWidth / 2 &&
-           mouseY > this.y + this.depth - this.imageHeight / 2 &&
-           mouseY < this.y + this.depth + this.imageHeight / 2;
+      mouseX < this.x + this.imageWidth / 2 &&
+      mouseY > this.y + this.depth - this.imageHeight / 2 &&
+      mouseY < this.y + this.depth + this.imageHeight / 2;
   }
 
   move() {
@@ -375,9 +377,15 @@ class Game_test {
     this.selectedScrew = null; // 선택된 나사 초기화
     for (let screw of this.screws) {
       if (screw.isMouseOver()) { // 마우스가 나사 위에 있을 때
+        halfCount = 0
+        count = 0
+        pCount = 0
         this.selectedScrew = screw; // 나사 선택
         this.selectedScrew.selected = true; // 나사 선택 상태 설정
         this.mode = "rotate"; // 모드 변경
+        // if (game.selectedScrew) { // 선택된 나사가 있는 경우
+
+        // }
         break;
       } else {
         screw.selected = false; // 다른 나사 선택 상태 해제
@@ -400,6 +408,19 @@ class Game_test {
 
     if (this.selectedScrew) {
       this.selectedScrew.highlight(); // 선택된 나사 하이라이트
+
+      areaNum = area(totalDeg);
+
+      updateDirection();
+      updateCount();
+      if (pCount < count && !game.selectedScrew.successed) {
+        game.selectedScrew.move()
+      }
+
+      pANum = areaNum;
+      pTotalDeg = totalDeg;
+      pCount = count
+
     }
 
     if (this.successed == 4) { // 모든 나사가 성공한 경우
