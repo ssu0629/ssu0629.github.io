@@ -199,7 +199,7 @@ function drawGame() {
     fill(255, 0, 0);
     text("Game Over", width / 2, height / 2);
     drawRestartButton(); // 게임 오버 시 다시 시작 버튼 표시
-    noLoop(); // 게임 루프 정지
+    // noLoop(); // 게임 루프 정지
   }
 
   // 미니맵 그리기
@@ -211,6 +211,7 @@ function drawRestartButton() {
   let restartH = 100;
   let restartX = windowWidth / 2 - restartW / 2;
   let restartY = windowHeight / 5 * 4 - restartH / 2;
+  console.log(restartX, restartY, restartW, restartH)
 
   if (restartButtonPressed) {
     image(buttonAgainPressedImg, restartX, restartY, restartW, restartH);

@@ -1,17 +1,33 @@
 let shared;
 let clickCount;
-let totalDeg;
+// let totalDeg;
 let guests;
 let me;
 let game;
 let checkpointPassed = [false, false, false]; // 체크포인트 통과 여부를 저장
 let rotationCount = 0; // 회전 수를 저장
 let screwImgs = new Array(8);
-let screwselectedImgs = new Array(8);
+let screwSelectedImgs = new Array(8);
 let screwBgImg;
 let introImg;
 let buttonState;
 // let gameState;
+
+let centerX, centerY;
+let totalDeg, pTotalDeg;
+let count = 0;
+let pANum = 0;
+let areaNum = 0;
+let clockWise = {
+  1: false,
+  2: false,
+  3: false,
+};
+let antiClockWise = {
+  1: false,
+  2: false,
+  3: false,
+};
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function() {
@@ -68,27 +84,31 @@ function preload() {
 
   // 애니메이션 파일 불러오기
   for (let i = 0; i < 8; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
-    screwselectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected/screwSelected" + (i+1) + ".png");
+    screwSelectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected/screwSelected" + (i+1) + ".png");
   }
 
   for (let i = 0; i < 8; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
     screwImgs[i] = loadImage("assets/assets for use/minigame_screw/screw/screw" + (i+1) + ".png");
-  }
+    
 
   screwBgImg = loadImage("assets/assets for use/minigame_screw/screwBg.png");
   //introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
 
   // 버튼 이미지 불러오기
-  buttonStartImg = loadImage("assets/buttonStart.png");
-  buttonStartOverImg = loadImage("assets/buttonStartOver.png");
-  buttonStartPressedImg = loadImage("assets/buttonStartPressed.png");
+  buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
+  buttonStartOverImg = loadImage("assets/assets for use/buttons 200_100/buttonStartOver.png");
+  buttonStartPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonStartPressed.png");
 
+  buttonAgainImg = loadImage("assets/assets for use/buttons 200_100/buttonAgain.png");
+  buttonAgainOverImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainOver.png");
+  buttonAgainPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainPressed.png");
   shared = partyLoadShared("shared", { x: 200, y: 200 });
   clickCount = partyLoadShared("clickCount", { value: 0 });
   guests = partyLoadGuestShareds();
   me = partyLoadMyShared({ degY: 0 });
 
   neoDunggeunmoProFont = loadFont("assets/NeoDunggeunmoPro-Regular.ttf"); // 폰트 로드
+}
 }
 
 // p5.js setup 함수로 캔버스 설정 및 초기 값 설정
@@ -148,11 +168,19 @@ function draw() {
   console.log("totalDeg");
   console.log(totalDeg);
 
-  // 360도 회전을 인식하기 위한 체크포인트 로직
-  updateRotation();
-  console.log(checkpointPassed[0]);
-  console.log(checkpointPassed[1]);
-  console.log(checkpointPassed[2]);
+  areaNum = area(totalDeg);
+  updateDirection();
+  updateCount();
+  pANum = areaNum;
+  pTotalDeg = totalDeg;
+  text(count, width / 2, height / 2);
+
+
+  // // 360도 회전을 인식하기 위한 체크포인트 로직
+  // updateRotation();
+  // console.log(checkpointPassed[0]);
+  // console.log(checkpointPassed[1]);
+  // console.log(checkpointPassed[2]);
 
   game.draw(); // 미니게임1 그림
 
@@ -164,42 +192,179 @@ function draw() {
  console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
 }
 
-// 기기의 회전 상태를 업데이트하고 나사의 move 함수를 호출하는 함수
-function updateRotation() {
-  const checkpoints = [radians(60), radians(120), radians(160)];
-  let absoluteDeg = totalDeg;
-  if (absoluteDeg < 0) {
-    absoluteDeg += Math.PI;
-  }
-  console.log(absoluteDeg);
+// // 기기의 회전 상태를 업데이트하고 나사의 move 함수를 호출하는 함수
+// function updateRotation() {
+//   const checkpoints = [radians(60), radians(120), radians(160)];
+//   let absoluteDeg = totalDeg;
+//   if (absoluteDeg < 0) {
+//     absoluteDeg += Math.PI;
+//   }
+//   console.log(absoluteDeg);
 
-  if (absoluteDeg >= checkpoints[0] && !checkpointPassed[0]) {
-    checkpointPassed[0] = true;
-  }
-  if (absoluteDeg >= checkpoints[1] && !checkpointPassed[1]) {
-    checkpointPassed[1] = true;
-  }
-  if (absoluteDeg >= checkpoints[2] && !checkpointPassed[2]) {
-    checkpointPassed[2] = true;
-  }
+//   if (absoluteDeg >= checkpoints[0] && !checkpointPassed[0]) {
+//     checkpointPassed[0] = true;
+//   }
+//   if (absoluteDeg >= checkpoints[1] && !checkpointPassed[1]) {
+//     checkpointPassed[1] = true;
+//   }
+//   if (absoluteDeg >= checkpoints[2] && !checkpointPassed[2]) {
+//     checkpointPassed[2] = true;
+//   }
 
-  if (checkpointPassed.every(Boolean)) {
-    rotationCount++;
-    if (game.selectedScrew != null){ 
-    game.selectedScrew.move();
-    checkpointPassed = [false, false, false]; // 체크포인트 초기화
-    totalDeg = 0;
+//   if (checkpointPassed.every(Boolean)) {
+//     rotationCount++;
+//     if (game.selectedScrew != null){ 
+//     game.selectedScrew.move();
+//     checkpointPassed = [false, false, false]; // 체크포인트 초기화
+//     totalDeg = 0;
+//     }
+//   }
+// }
+
+function area(totalDeg) {
+  if (totalDeg > PI / 2 / 4 && totalDeg < (PI / 2 * 3) / 4) {
+    return 1;
+  } else if (totalDeg > -PI / 2 / 4 && totalDeg < PI / 2 / 4) {
+    return 2;
+  } else if (totalDeg > (-PI / 2 * 3) / 4 && totalDeg < -PI / 2 / 4) {
+    return 3;
+  }
+  return 0;
+}
+
+function updateDirection() {
+  if (pANum == 0) {
+    if (areaNum == 1) {
+      clockWise[1] = true;
+    } else if (areaNum == 3) {
+      antiClockWise[3] = true;
+    }
+  } else if (pANum == 1) {
+    if (areaNum == 0) {
+      clockWise[1] = false;
+    } else if (areaNum == 2) {
+      clockWise[2] = true;
+      antiClockWise[1] = false;
+    }
+  } else if (pANum == 2) {
+    if (areaNum == 1) {
+      clockWise[2] = false;
+      antiClockWise[1] = true;
+    } else if (areaNum == 3) {
+      clockWise[3] = true;
+      antiClockWise[2] = false;
+    }
+  } else if (pANum == 3) {
+    if (areaNum == 0) {
+      antiClockWise[3] = false;
+    } else if (areaNum == 2) {
+      clockWise[3] = false;
+      antiClockWise[2] = true;
     }
   }
 }
 
+function updateCount() {
+  if (totalDeg < 0 && pTotalDeg > 0) {
+    // anticlockwise
+    if (antiClockWise[1] && antiClockWise[2] && antiClockWise[3]) {
+      count -= 1;
+      anitiClockWise = {
+        1: false,
+        2: false,
+        3: false,
+      };
+    }
+  }
+  if (totalDeg >0  && pTotalDeg < 0) {
+    // clockwise
+    if (clockWise[1] && clockWise[2] && clockWise[3]) {
+      count += 1;
+      clockWise = {
+        1: false,
+        2: false,
+        3: false,
+      };
+    }
+  }
+}
 
 // radians() 함수는 degrees를 라디안으로 변환합니다.
 function radians(degrees) {
   return degrees * (Math.PI / 180);
 }
 
-// 미니게임1 나사돌리기 실행 class
+// 나사 생성 class
+class Screw {
+  constructor(x, y) {
+    this.x = x; // 나사의 x 좌표
+    this.y = y; // 나사의 y 좌표
+    this.size = 40; // 나사의 크기
+    this.depth = 0; // 나사의 깊이
+    this.angle = 0; // 나사의 각도
+    this.successed = false; // 나사 성공 여부
+    this.imageIndex = 0; // 이미지 인덱스 초기화
+    this.imageWidth = 75;
+    this.imageHeight = 150;
+    this.selected = false; // 나사 선택 여부 초기화
+  }
+
+  show() {
+    push();
+    translate(this.x, this.y + this.depth); // 나사의 위치로 이동
+
+    // 나사 이미지 애니메이션 표시
+    if (this.selected) {
+      image(screwSelectedImgs[this.imageIndex], -this.imageWidth / 2, -this.imageHeight / 2, this.imageWidth, this.imageHeight);
+    } else {
+      image(screwImgs[this.imageIndex], -this.imageWidth / 2, -this.imageHeight / 2, this.imageWidth, this.imageHeight);
+    }
+
+    pop();
+  }
+
+  update() {
+    this.angle += PI / (2 * game.frame); // 나사의 각도 업데이트
+    if (this.angle >= TWO_PI) {
+      this.angle = 0;
+    }
+  }
+
+  highlight() {
+    push();
+    translate(this.x, this.y + this.depth); // 나사의 위치로 이동
+    noFill();
+    stroke(255, 0, 0);
+    strokeWeight(3);
+    ellipse(0, 0, this.size + 100, this.size + 100); // 하이라이트 그림
+    pop();
+  }
+
+  isMouseOver() {
+    return mouseX > this.x - this.imageWidth / 2 &&
+           mouseX < this.x + this.imageWidth / 2 &&
+           mouseY > this.y + this.depth - this.imageHeight / 2 &&
+           mouseY < this.y + this.depth + this.imageHeight / 2;
+  }
+
+  move() {
+    if (this.imageIndex < 7) { // 나사가 구멍 깊이보다 깊지 않은 경우
+      this.updateImageIndex(); // 이미지 인덱스 업데이트
+      if (!this.successed && this.imageIndex == 7) { // 나사가 성공적으로 들어간 경우
+        game.successed += 1; // 게임 성공 수 증가
+        this.successed = true; // 나사 성공 상태로 설정
+      }
+    } else {
+      this.imageIndex = 7; // 나사 깊이 고정
+    }
+  }
+
+  updateImageIndex() {
+    this.imageIndex = (this.imageIndex + 1); // 이미지 인덱스 업데이트
+  }
+}
+
+// Game_test 클래스의 mousePressed 메서드에서 나사 선택 상태를 업데이트
 class Game_test {
   constructor() {
     this.screws = []; // 나사 객체를 담을 배열
@@ -232,8 +397,11 @@ class Game_test {
     for (let screw of this.screws) {
       if (screw.isMouseOver()) { // 마우스가 나사 위에 있을 때
         this.selectedScrew = screw; // 나사 선택
+        this.selectedScrew.selected = true; // 나사 선택 상태 설정
         this.mode = "rotate"; // 모드 변경
         break;
+      } else {
+        screw.selected = false; // 다른 나사 선택 상태 해제
       }
     }
   }
@@ -313,70 +481,5 @@ class Game_test {
     this.isGameSuccess = false; // 게임 성공 상태 초기화
     checkpointPassed = [false, false, false]; // 체크포인트 초기화
     rotationCount = 0; // 회전 수 초기화
-  }
-}
-
-// 나사 생성 class
-class Screw {
-  constructor(x, y) {
-    this.x = x; // 나사의 x 좌표
-    this.y = y; // 나사의 y 좌표
-    this.size = 50; // 나사의 크기
-    this.depth = 0; // 나사의 깊이
-    this.angle = 0; // 나사의 각도
-    this.successed = false; // 나사 성공 여부
-    this.imageIndex = 0; // 이미지 인덱스 초기화
-    this.imageWidth = 150;
-    this.imageHeight = 300;
-  }
-
-  show() {
-    push();
-    translate(this.x, this.y + this.depth); // 나사의 위치로 이동
-
-    // 나사 이미지 애니메이션 표시
-    image(screwselectedImgs[this.imageIndex], 0, 0, this.imageWidth, this.imageHeight);
-
-    pop();
-  }
-
-  
-
-  update() {
-    this.angle += PI / (2 * game.frame); // 나사의 각도 업데이트
-    if (this.angle >= TWO_PI) {
-      this.angle = 0;
-    }
-  }
-
-  highlight() {
-    push();
-    translate(this.x, this.y + this.depth); // 나사의 위치로 이동
-    noFill();
-    stroke(255, 0, 0);
-    strokeWeight(3);
-    ellipse(0, 0, this.size + 100, this.size + 100); // 하이라이트 그림
-    pop();
-  }
-
-  isMouseOver() {
-    let d = dist(mouseX, mouseY, this.x + this.imageWidth/2, this.y + this.imageHeight/2 + this.depth); // 마우스 위치와 나사 위치의 거리 계산
-    return d < this.imageWidth / 2; // 마우스가 나사 위에 있는지 확인
-  }
-
-  move() {
-    if (this.imageIndex < 7) { // 나사가 구멍 깊이보다 깊지 않은 경우
-      this.updateImageIndex(); // 이미지 인덱스 업데이트
-      if (!this.successed && this.imageIndex == 7) { // 나사가 성공적으로 들어간 경우
-        game.successed += 1; // 게임 성공 수 증가
-        this.successed = true; // 나사 성공 상태로 설정
-      }
-    } else {
-      this.imageIndex = 7; // 나사 깊이 고정
-    }
-  }
-
-  updateImageIndex() {
-    this.imageIndex = (this.imageIndex + 1); // 이미지 인덱스 업데이트
   }
 }
