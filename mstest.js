@@ -173,7 +173,7 @@ function draw() {
   updateCount();
   pANum = areaNum;
   pTotalDeg = totalDeg;
-  text(count, width / 2, height / 2);
+  text(int(count/2), width / 2, height / 2);
 
 
   // // 360도 회전을 인식하기 위한 체크포인트 로직
@@ -268,7 +268,7 @@ function updateCount() {
   if (totalDeg < 0 && pTotalDeg > 0) {
     // anticlockwise
     if (antiClockWise[1] && antiClockWise[2] && antiClockWise[3]) {
-      count -= 1;
+      count += 1;
       anitiClockWise = {
         1: false,
         2: false,
@@ -279,7 +279,7 @@ function updateCount() {
   if (totalDeg >0  && pTotalDeg < 0) {
     // clockwise
     if (clockWise[1] && clockWise[2] && clockWise[3]) {
-      count += 1;
+      count -= 1;
       clockWise = {
         1: false,
         2: false,
