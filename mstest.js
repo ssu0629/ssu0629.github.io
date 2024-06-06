@@ -395,10 +395,10 @@ class Game_test {
 
   createScrews() {
     this.screws = []; // 나사 배열 초기화
-    this.screws.push(new Screw(200, 200)); // 나사 객체 생성 및 배열에 추가
-    this.screws.push(new Screw(600, 200));
-    this.screws.push(new Screw(200, 400));
-    this.screws.push(new Screw(600, 400));
+    this.screws.push(new Screw(windowWidth / 2 - 150, windowHeight / 2 - 90)); // 나사 객체 생성 및 배열에 추가
+    this.screws.push(new Screw(windowWidth / 2 - 150, windowHeight / 2 + 90));
+    this.screws.push(new Screw(windowWidth / 2 + 150, windowHeight / 2 - 90));
+    this.screws.push(new Screw(windowWidth / 2 + 150, windowHeight / 2 + 90));
   }
 
   show() {
@@ -407,7 +407,7 @@ class Game_test {
     }
 
     if (this.selectedScrew) {
-      this.selectedScrew.highlight(); // 선택된 나사 하이라이트
+      //this.selectedScrew.highlight(); // 선택된 나사 하이라이트
 
       areaNum = area(totalDeg);
 
@@ -447,7 +447,7 @@ class Game_test {
 
     let timePassed = millis() - this.timerStart; // 경과 시간 계산
     let timeLeft = this.timeLimit - timePassed; // 남은 시간 계산
-    let barWidth = map(timeLeft, 0, this.timeLimit, 0, width - 20); // 타이머 바 너비 계산
+    let barWidth = map(timeLeft, 0, this.timeLimit, 0, windowWidth / 2 - 40); // 타이머 바 너비 계산
 
     if (timeLeft <= 0) { // 시간이 다 지난 경우
       this.gameOver(); // 게임 오버 처리
@@ -458,7 +458,7 @@ class Game_test {
       this.restartButton.show(); // 다시 시작 버튼 표시
     } else if (!this.isGameSuccess) { // 게임 성공이 아닌 경우
       fill(255, 0, 0);
-      rect(10, height - 100, barWidth, 20); // 타이머 바 표시
+      rect(windowWidth / 2 - 350, windowHeight / 2 - 250, barWidth, 20); // 타이머 바 표시
     }
   }
 
