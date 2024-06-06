@@ -83,8 +83,8 @@ function preload() {
   );
 
   // 애니메이션 파일 불러오기
-  for (let i = 0; i < 8; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
-    screwSelectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected/screwSelected" + (i+1) + ".png");
+  for (let i = 0; i < 4; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
+    screwSelectedImgs[i] = loadImage("assets/assets for use/minigame_screw/screwSelected(4frame)/screwSelected" + (i+1) + ".png");
   }
 
   for (let i = 0; i < 8; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
@@ -183,6 +183,11 @@ function draw() {
   // console.log(checkpointPassed[2]);
 
   game.draw(); // 미니게임1 그림
+  
+  if (game.selectedScrew) { // 선택된 나사가 있는 경우
+  updateDirection();
+  updateCount();
+}
 
   // 게임 오버 상태와 관계없이 항상 텍스트를 그립니다.
   textAlign(CENTER, CENTER); // 텍스트 정렬 설정
@@ -192,34 +197,6 @@ function draw() {
  console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
 }
 
-// // 기기의 회전 상태를 업데이트하고 나사의 move 함수를 호출하는 함수
-// function updateRotation() {
-//   const checkpoints = [radians(60), radians(120), radians(160)];
-//   let absoluteDeg = totalDeg;
-//   if (absoluteDeg < 0) {
-//     absoluteDeg += Math.PI;
-//   }
-//   console.log(absoluteDeg);
-
-//   if (absoluteDeg >= checkpoints[0] && !checkpointPassed[0]) {
-//     checkpointPassed[0] = true;
-//   }
-//   if (absoluteDeg >= checkpoints[1] && !checkpointPassed[1]) {
-//     checkpointPassed[1] = true;
-//   }
-//   if (absoluteDeg >= checkpoints[2] && !checkpointPassed[2]) {
-//     checkpointPassed[2] = true;
-//   }
-
-//   if (checkpointPassed.every(Boolean)) {
-//     rotationCount++;
-//     if (game.selectedScrew != null){ 
-//     game.selectedScrew.move();
-//     checkpointPassed = [false, false, false]; // 체크포인트 초기화
-//     totalDeg = 0;
-//     }
-//   }
-// }
 
 function area(totalDeg) {
   if (totalDeg > PI / 2 / 4 && totalDeg < (PI / 2 * 3) / 4) {
@@ -274,6 +251,8 @@ function updateCount() {
         2: false,
         3: false,
       };
+      game.selectedScrew.move();
+      count =0; // 카운트 초기화 // 나사를 회전시킴
     }
   }
   if (totalDeg >0  && pTotalDeg < 0) {
@@ -348,9 +327,9 @@ class Screw {
   }
 
   move() {
-    if (this.imageIndex < 7) { // 나사가 구멍 깊이보다 깊지 않은 경우
+    if (this.imageIndex < 3) { // 나사가 구멍 깊이보다 깊지 않은 경우
       this.updateImageIndex(); // 이미지 인덱스 업데이트
-      if (!this.successed && this.imageIndex == 7) { // 나사가 성공적으로 들어간 경우
+      if (!this.successed && this.imageIndex == 3) { // 나사가 성공적으로 들어간 경우
         game.successed += 1; // 게임 성공 수 증가
         this.successed = true; // 나사 성공 상태로 설정
       }
