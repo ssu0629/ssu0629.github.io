@@ -180,15 +180,17 @@ function drawGame() {
     game.display(frameCount); // 게임 화면 표시
   } else {
     if (game.win) {
-      image(successBg, 0, 0, windowWidth, windowHeight); // 게임 성공 배경 이미지 표시
-      // textSize(50);
-      // fill(0, 255, 0);
-      // text("You Win!", width / 2, height / 2);
+      fill(0, 120);
+      rect(0, 0, windowWidth, windowHeight)
+      imageMode(CENTER)
+      image(successBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 게임 성공 배경 이미지 표시
+      imageMode(CORNER)
     } else {
-      image(gameOverBg, 0, 0, windowWidth, windowHeight); // 게임 오버 배경 이미지 표시
-      // textSize(50);
-      // fill(255, 0, 0);
-      // text("Game Over", width / 2, height / 2);
+      fill(0, 120);
+      rect(0, 0, windowWidth, windowHeight)
+      imageMode(CENTER)
+      image(gameoverBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 실패 배경 이미지 표시
+      imageMode(CORNER)
       drawRestartButton(); // 다시 시작 버튼 표시
     }
     // drawRestartButton(); // 다시 시작 버튼 표시
