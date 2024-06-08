@@ -210,13 +210,13 @@ function drawGame() {
       fill(0, 120);
       rect(0, 0, windowWidth, windowHeight)
       imageMode(CENTER)
-      image(dodgesuccessBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 게임 성공 배경 이미지 표시
+      image(successBg, windowWidth / 2, windowHeight / 2); // 게임 성공 배경 이미지 표시
       imageMode(CORNER)
     } else {
       fill(0, 120);
       rect(0, 0, windowWidth, windowHeight)
       imageMode(CENTER)
-      image(dodgegameoverBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 실패 배경 이미지 표시
+      image(gameOverBg, windowWidth / 2, windowHeight / 2); // 실패 배경 이미지 표시
       imageMode(CORNER)
       drawRestartButton(); // 다시 시작 버튼 표시
     }
@@ -402,20 +402,3 @@ class ObstacleGame {
     );
   }
 }
-
-// 필요 없는 코드 주석처리
-// function keyPressed(event) {
-//   if (event.code === 'ArrowLeft') {
-//     moveLeft = true;
-//   } else if (event.code === 'ArrowRight') {
-//     moveRight = true;
-//   }
-// }
-
-// function keyReleased(event) {
-//   if (event.code === 'ArrowLeft') {
-//     moveLeft = false;
-//   } else if (event.code === 'ArrowRight') {
-//     moveRight = false;
-//   }
-// }
