@@ -228,8 +228,8 @@ function draw() {
 
     image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
   } else {
-    background('#ffcccc'); // 배경색 설정
-    fill("#000066"); // 도형 색상 설정
+    // background('#ffcccc'); // 배경색 설정
+    // fill("#000066"); // 도형 색상 설정
 
     // 게임 화면 표시
     // 애니메이션 배경 그리기
