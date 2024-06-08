@@ -114,6 +114,7 @@ function preload() {
   }
   motorBgImg = loadImage("assets/motor_bg.png");
   introImg = loadImage("assets/assets for use/introBg/motorIntroBg.png"); // 시작 화면 이미지 파일 로드
+  successBg = loadImage("assets/successBg.png");
 
   // 버튼 이미지 불러오기
   buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
@@ -205,10 +206,10 @@ function mouseMoved() {
 function draw() {
   if (game2.gameState === "intro") {
     // 시작 화면 표시
-    image(introImg ,windowWidth/2-400,windowHeight/2-300,800,600); //맵 중앙에 800*600
+    image(introImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); //맵 중앙에 800*600
 
     buttonX = windowWidth / 2 - buttonWidth / 2;
-    buttonY = windowHeight / 5*4 - buttonHeight / 2 - 20;
+    buttonY = windowHeight / 5 * 4 - buttonHeight / 2 - 20;
 
     let buttonImg;
     if (buttonState === "normal") {
@@ -298,15 +299,16 @@ class Motorgame {
     }
 
     if (this.gameState === "success") {
-      // 게임 성공 메시지 그리기
-      textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
-      textSize(64);
-      fill(0);
-      textAlign(CENTER, CENTER);
-      text("게임 성공!", window.innerWidth / 2, window.innerHeight / 2);
+      image(successBg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); // 성공 배경 이미지 표시
+      // // 게임 성공 메시지 그리기
+      // textFont(neoDunggeunmoProFont); // NeoDunggeunmoPro-Regular 폰트 설정
+      // textSize(64);
+      // fill(0);
+      // textAlign(CENTER, CENTER);
+      // text("게임 성공!", window.innerWidth / 2, window.innerHeight / 2);
 
-      // // 다시 도전 버튼 그리기
-      // this.drawRetryButton();
+      // // // 다시 도전 버튼 그리기
+      // // this.drawRetryButton();
     }
   }
 

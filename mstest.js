@@ -1,5 +1,6 @@
 let shared;
 let clickCount;
+
 let guests;
 let me;
 let game;
@@ -100,6 +101,9 @@ function preload() {
 
     screwBgImg = loadImage("assets/assets for use/minigame_screw/screwBg.png");
     introImg = loadImage("assets/assets for use/introBg/screwIntroBg.png"); // 시작 화면 이미지 파일 로드
+    gameOverBg = loadImage("assets/gameoverBg.png");
+    successBg = loadImage("assets/successBg.png");
+
 
     // 버튼 이미지 불러오기
     buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
@@ -109,6 +113,7 @@ function preload() {
     buttonAgainImg = loadImage("assets/assets for use/buttons 200_100/buttonAgain.png");
     buttonAgainOverImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainOver.png");
     buttonAgainPressedImg = loadImage("assets/assets for use/buttons 200_100/buttonAgainPressed.png");
+
     shared = partyLoadShared("shared", { x: 200, y: 200 });
     clickCount = partyLoadShared("clickCount", { value: 0 });
     guests = partyLoadGuestShareds();
@@ -150,11 +155,16 @@ function mousePressed() {
     if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
       buttonState = "pressed";
     }
+  } else if (game.isGameOver || game.isGameSuccess) {
+    // 게임 오버 또는 성공 화면에서 다시 시작 버튼을 누르면 게임 리셋
+    if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+      game.resetGame();
+      buttonState = "pressed";
+    }
   } else {
     shared.x = mouseX;
     shared.y = mouseY;
     clickCount.value++;
-
   }
 }
 
@@ -163,13 +173,24 @@ function mouseReleased() {
     if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
       game.gameState = "playing";
     }
-
+    buttonState = "normal";
+  } else if ((game.isGameOver || game.isGameSuccess) && buttonState === "pressed") {
+    if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+      game.resetGame();
+    }
     buttonState = "normal";
   }
 }
 
 function mouseMoved() {
   if (game.gameState === "intro") {
+    if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
+      buttonState = "over";
+    } else {
+      buttonState = "normal";
+    }
+  } else if (game.isGameOver || game.isGameSuccess) {
+    // 게임 오버 또는 성공 화면에서 버튼 위에 마우스가 있을 때 상태 업데이트
     if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
       buttonState = "over";
     } else {
@@ -302,7 +323,7 @@ function updateCount() {
     // anticlockwise
     if (antiClockWise[1] && antiClockWise[2] && antiClockWise[3]) {
       halfCount += 1;
-      anitiClockWise = {
+      antiClockWise = {
         1: false,
         2: false,
         3: false,
@@ -417,10 +438,10 @@ class screwGame {
   setup() {
     console.log("Game setup called");
     this.createScrews(); // 나사 객체 생성
-    this.restartButton = createButton("다시 시작"); // 다시 시작 버튼 생성
-    this.restartButton.position(width / 2 - 50, height / 2); // 버튼 위치 설정
-    this.restartButton.mousePressed(this.resetGame.bind(this)); // 버튼 클릭 시 게임 리셋
-    this.restartButton.hide(); // 버튼 숨기기
+    // this.restartButton = createButton("다시 시작"); // 다시 시작 버튼 생성
+    // this.restartButton.position(width / 2 - 50, height / 2); // 버튼 위치 설정
+    // this.restartButton.mousePressed(this.resetGame.bind(this)); // 버튼 클릭 시 게임 리셋
+    // this.restartButton.hide(); // 버튼 숨기기
     this.resetTimer(); // 타이머 초기화
   }
 
@@ -496,7 +517,27 @@ class screwGame {
         text("게임 성공!", width / 2, height / 2 - 50); // 성공 메시지 표시
       }
     }
+
+    if (this.isGameSuccess) {
+      image(successBg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); // 성공 배경 이미지 표시
+    } else if (this.isGameOver) {
+      image(gameOverBg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); // 게임 오버 배경 이미지 표시
+      this.displayRestartButton(); // 다시 시작 버튼 표시
+    }
   }
+
+  displayRestartButton() {
+    let buttonImg;
+    if (buttonState === "normal") {
+      buttonImg = buttonAgainImg;
+    } else if (buttonState === "over") {
+      buttonImg = buttonAgainOverImg;
+    } else if (buttonState === "pressed") {
+      buttonImg = buttonAgainPressedImg;
+    }
+    image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+  }
+
 
   displayTimer() {
     if (this.isGameSuccess) return; // 게임 성공 시 타이머 멈춤
@@ -511,7 +552,7 @@ class screwGame {
       textSize(32);
       textAlign(CENTER);
       text("시간 초과! 게임 오버", width / 2, height / 2 - 50); // 게임 오버 메시지 표시
-      this.restartButton.show(); // 다시 시작 버튼 표시
+      //this.restartButton.show(); // 다시 시작 버튼 표시
     } else if (!this.isGameSuccess) { // 게임 성공이 아닌 경우
       fill(255, 0, 0);
       rect(windowWidth / 2 - 350, windowHeight / 2 - 250, barWidth, 20); // 타이머 바 표시
@@ -528,7 +569,6 @@ class screwGame {
   }
 
   resetGame() {
-    this.restartButton.hide(); // 다시 시작 버튼 숨기기
     this.successed = 0; // 성공한 나사 수 초기화
     this.selectedScrew = null; // 선택된 나사 초기화
     this.resetTimer(); // 타이머 초기화
@@ -538,4 +578,5 @@ class screwGame {
     checkpointPassed = [false, false, false]; // 체크포인트 초기화
     rotationCount = 0; // 회전 수 초기화
   }
+
 }
