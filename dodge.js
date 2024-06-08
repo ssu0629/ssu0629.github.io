@@ -3,13 +3,7 @@ let clickCount;
 let totalDeg;
 let guests;
 let me;
-////////수정사항/////////
-// 애니메이션 추가로 코드 수정한 곳
-// assets폴더
-// preload에 이미지 불러오기
-// draw에 루프하는 배경 추가
-// class안의 display, spawnObstacle
-// 캔버스 크기 바꿈
+
 let dodgeImgRobots = []; // 로봇 애니메이션 전체파일
 let dodgeImgFrame = 0; // 로봇 현재 프레임 저장
 let dodgeImgBg;
@@ -105,8 +99,6 @@ function handleMotionEvent(event) {
     game.accelerationX = accelerationX; // 기울기 데이터 공유
   }
 }
-
-
 function draw() {
   // 배경 색상 설정
   background('#41388d');
@@ -159,13 +151,7 @@ function drawGame() {
   for (let i = 0; i < guests.length; i++) {
     totalDeg += guests[i].degY;
   }
-
-  // textAlign(CENTER, CENTER);
-  // // text(clickCount.value, width / 2, height / 2);
-  // text(radians(totalDeg), width / 2, 100);
-
   totalDeg = 0;
-
   if (!game.gameOver) {
     // 공유된 기울기 데이터 가져오기
     let sharedAccelerationX = 0;
@@ -193,9 +179,7 @@ function drawGame() {
       imageMode(CORNER)
       drawRestartButton(); // 다시 시작 버튼 표시
     }
-    // drawRestartButton(); // 다시 시작 버튼 표시
   }
-
   // 미니맵 그리기
   game.drawMiniMap();
 }
@@ -204,8 +188,6 @@ function drawRestartButton() {
   let restartH = 100;
   let restartX = windowWidth / 2 - restartW / 2;
   let restartY = windowHeight / 5 * 4 - restartH / 2;
-  console.log(restartX, restartY, restartW, restartH)
-
   if (restartButtonPressed) {
     image(buttonAgainPressedImg, restartX, restartY, restartW, restartH);
   } else if (mouseX > restartX && mouseX < restartX + restartW && mouseY > restartY && mouseY < restartY + restartH) {
@@ -299,18 +281,13 @@ class ObstacleGame {
     if (this.distanceTraveled >= this.totalDistance) {
       this.gameOver = true;
       this.win = true; // 게임 성공 상태
-      //noLoop();
     }
   }
-
   display(t) { // 로봇 애니메이션을 위해 변수 t 로 frameCount를 받음
     // 플레이어 이미지
     imageMode(CENTER);
-    fill(0, 0, 255, 100);
     dodgeImgFrame = int(t / 5) % 2;
-    image(dodgeImgRobots[dodgeImgFrame], this.player.x, this.player.y, this.player.size, this.player.size)
-    //ellipse(this.player.x, this.player.y, this.player.size, this.player.size);
-
+    image(dodgeImgRobots[dodgeImgFrame], this.player.x, this.player.y, this.player.size, this.player.size);
     fill(255, 0, 0, 100);
     for (let obstacle of this.obstacles) {
       // 장애물 이미지
@@ -320,13 +297,9 @@ class ObstacleGame {
       rotate(t / 80 * obstacle.r)
       image(dodgeImgObstacles[obstacle.i], 0, 0, obstacle.size, obstacle.size);
       pop();
-      rectMode(CENTER)
-      //rect(obstacle.x, obstacle.y, obstacle.size, obstacle.size);
     }
     imageMode(CORNER); // 이미지모드 초기화
-    rectMode(CORNER);// 초기화
   }
-
   drawMiniMap() {
     let miniMapWidth = 50;
     let miniMapHeight = 200;
@@ -356,21 +329,5 @@ class ObstacleGame {
       player.y < obstacle.y + obstacle.size &&
       player.y + player.size > obstacle.y
     );
-  }
-}
-
-function keyPressed(event) {
-  if (event.code === 'ArrowLeft') {
-    moveLeft = true;
-  } else if (event.code === 'ArrowRight') {
-    moveRight = true;
-  }
-}
-
-function keyReleased(event) {
-  if (event.code === 'ArrowLeft') {
-    moveLeft = false;
-  } else if (event.code === 'ArrowRight') {
-    moveRight = false;
   }
 }
