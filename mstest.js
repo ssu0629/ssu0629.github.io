@@ -451,25 +451,27 @@ class screwGame {
 
   mousePressed() {
     if (this.isGameOver || this.isGameSuccess) return; // 게임 오버 또는 성공 시 무시
-    this.selectedScrew = null; // 선택된 나사 초기화
+
+    let newSelectedScrew = null;
     for (let screw of this.screws) {
       if (screw.isMouseOver()) { // 마우스가 나사 위에 있을 때
-        this.selectedScrew = screw; // 나사 선택
-        halfCount = 0
-        count = 0
-        pCount = 0
-        this.selectedScrew.selected = true; // 나사 선택 상태 설정
-        this.mode = "rotate"; // 모드 변경
-        // if (game.selectedScrew) { // 선택된 나사가 있는 경우
-
-        // }
+        newSelectedScrew = screw;
         break;
-      } else {
-        screw.selected = false; // 다른 나사 선택 상태 해제
       }
     }
-  }
 
+    if (newSelectedScrew && newSelectedScrew !== this.selectedScrew) {
+      if (this.selectedScrew) {
+        this.selectedScrew.selected = false; // 현재 선택된 나사의 선택 상태 해제
+      }
+      this.selectedScrew = newSelectedScrew; // 새로 선택된 나사
+      halfCount = 0;
+      count = 0;
+      pCount = 0;
+      this.selectedScrew.selected = true; // 나사 선택 상태 설정
+      this.mode = "rotate"; // 모드 변경
+    }
+  }
   createScrews() {
     this.screws = []; // 나사 배열 초기화
     this.screws.push(new Screw(windowWidth / 2 - 150, windowHeight / 2 - 90)); // 나사 객체 생성 및 배열에 추가
