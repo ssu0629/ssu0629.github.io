@@ -196,7 +196,8 @@ function drawGame() {
     // 공유된 기울기 데이터 가져오기
     let sharedAccelerationX = 0;
     for (let guest of guests) {
-      sharedAccelerationX += guest.accelerationX;
+      if (guest.accelerationX != NaN && guest.accelerationX != null)
+        sharedAccelerationX += guest.accelerationX;
     }
     if (guests.length > 0) {
       sharedAccelerationX /= guests.length; // 평균 기울기 값
