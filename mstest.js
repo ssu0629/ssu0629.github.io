@@ -1,6 +1,5 @@
 let shared;
 let clickCount;
-// let totalDeg;
 let guests;
 let me;
 let game;
@@ -10,8 +9,7 @@ let screwImgs = new Array(8);
 let screwSelectedImgs = new Array(8);
 let screwBgImg;
 let introImg;
-let buttonState;
-// let gameState;
+let gameState;
 
 let centerX, centerY;
 let totalDeg, pTotalDeg;
@@ -30,6 +28,13 @@ let antiClockWise = {
   2: false,
   3: false,
 };
+
+// 버튼 상태 이미지
+let buttonStartImg;
+let buttonStartOverImg;
+let buttonStartPressedImg;
+let buttonState = "normal"; // 버튼 상태: "normal", "over", "pressed"
+let buttonX, buttonY, buttonWidth, buttonHeight;
 
 // DOMContentLoaded 이벤트 리스너를 추가하여 HTML 문서가 완전히 로드된 후 onClick 함수를 버튼 클릭 이벤트에 연결
 document.addEventListener("DOMContentLoaded", function () {
@@ -94,7 +99,7 @@ function preload() {
 
 
     screwBgImg = loadImage("assets/assets for use/minigame_screw/screwBg.png");
-    //introImg = loadImage("assets/intro.png"); // 시작 화면 이미지 파일 로드
+    introImg = loadImage("assets/assets for use/introBg/screwIntroBg.png"); // 시작 화면 이미지 파일 로드
 
     // 버튼 이미지 불러오기
     buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
@@ -126,7 +131,7 @@ function setup() {
     shared.y = 200;
   }
 
-  game = new Game_test();
+  game = new screwGame();
   game.setup(); // 미니게임1 설정
   totalDeg = 0; // 총 회전 각도 초기화
 
@@ -134,12 +139,43 @@ function setup() {
   buttonX = windowWidth / 2 - 100;
   buttonY = windowHeight / 2 + 150;
   buttonWidth = 200;
-  buttonHeight = 50;
+  buttonHeight = 100;
 }
 
 // 마우스를 클릭하면 공유 객체의 위치를 업데이트하고 클릭 수를 증가
 function mousePressed() {
   game.mousePressed(); // 미니게임 1 마우스 클릭 처리
+  if (game.gameState === "intro") {
+    // 시작 화면에서 시작 버튼을 누르면 게임 시작
+    if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+      buttonState = "pressed";
+    }
+  } else {
+    shared.x = mouseX;
+    shared.y = mouseY;
+    clickCount.value++;
+
+  }
+}
+
+function mouseReleased() {
+  if (game.gameState === "intro" && buttonState === "pressed") {
+    if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+      game.gameState = "playing";
+    }
+
+    buttonState = "normal";
+  }
+}
+
+function mouseMoved() {
+  if (game.gameState === "intro") {
+    if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
+      buttonState = "over";
+    } else {
+      buttonState = "normal";
+    }
+  }
 }
 
 // 키가 눌렸을 때 호출되는 함수
@@ -153,49 +189,68 @@ function keyPressed() {
 
 // p5.js draw 함수로 매 프레임마다 호출되며 화면을 업데이트
 function draw() {
-  background('#ffcccc'); // 배경색 설정
-  fill("#000066"); // 도형 색상 설정
+  if (game.gameState === "intro") {
+    // 시작 화면 표시
+    image(introImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600); //맵 중앙에 800*600
 
-  // 게임 화면 표시
-  // 애니메이션 배경 그리기
-  noSmooth();
-  noStroke();
-  image(screwBgImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
+    buttonX = windowWidth / 2 - buttonWidth / 2;
+    buttonY = windowHeight / 5 * 4 - buttonHeight / 2 - 20;
 
-  // 각 게스트의 회전 값을 합산
-  totalDeg = 0; // 합산된 회전 값을 초기화
-  for (let i = 0; i < guests.length; i++) {
-    totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
+    let buttonImg;
+    if (buttonState === "normal") {
+      buttonImg = buttonStartImg;
+    } else if (buttonState === "over") {
+      buttonImg = buttonStartOverImg;
+    } else if (buttonState === "pressed") {
+      buttonImg = buttonStartPressedImg;
+    }
+
+    image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+  } else {
+    background('#ffcccc'); // 배경색 설정
+    fill("#000066"); // 도형 색상 설정
+
+    // 게임 화면 표시
+    // 애니메이션 배경 그리기
+    noSmooth();
+    noStroke();
+    image(screwBgImg, windowWidth / 2 - 400, windowHeight / 2 - 300, 800, 600);
+
+    // 각 게스트의 회전 값을 합산
+    totalDeg = 0; // 합산된 회전 값을 초기화
+    for (let i = 0; i < guests.length; i++) {
+      totalDeg += guests[i].degY; // 각 게스트의 y축 기울기를 합산
+    }
+    console.log("totalDeg");
+    console.log(totalDeg);
+
+    // areaNum = area(totalDeg);
+
+    // updateDirection();
+    // updateCount();
+    // if (pCount < count){
+    //   game.selectedScrew.move()
+    // }
+
+    // pANum = areaNum;
+    // pTotalDeg = totalDeg;
+    // pCount = count
+
+
+    game.draw(); // 미니게임1 그림
+
+    //   if (game.selectedScrew) { // 선택된 나사가 있는 경우
+    //   updateDirection();
+    //   updateCount();
+    // }
+
+    // 게임 오버 상태와 관계없이 항상 텍스트를 그립니다.
+    textAlign(CENTER, CENTER); // 텍스트 정렬 설정
+    fill("#000066"); // 텍스트 색상 설정
+    text(totalDeg.toFixed(5) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
+
+    console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
   }
-  console.log("totalDeg");
-  console.log(totalDeg);
-
-  // areaNum = area(totalDeg);
-
-  // updateDirection();
-  // updateCount();
-  // if (pCount < count){
-  //   game.selectedScrew.move()
-  // }
-
-  // pANum = areaNum;
-  // pTotalDeg = totalDeg;
-  // pCount = count
-
-
-  game.draw(); // 미니게임1 그림
-
-  //   if (game.selectedScrew) { // 선택된 나사가 있는 경우
-  //   updateDirection();
-  //   updateCount();
-  // }
-
-  // 게임 오버 상태와 관계없이 항상 텍스트를 그립니다.
-  textAlign(CENTER, CENTER); // 텍스트 정렬 설정
-  fill("#000066"); // 텍스트 색상 설정
-  text(totalDeg.toFixed(5) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
-
-  console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
 }
 
 
@@ -346,7 +401,7 @@ class Screw {
 }
 
 // Game_test 클래스의 mousePressed 메서드에서 나사 선택 상태를 업데이트
-class Game_test {
+class screwGame {
   constructor() {
     this.screws = []; // 나사 객체를 담을 배열
     this.selectedScrew = null; // 선택된 나사 객체
@@ -356,6 +411,7 @@ class Game_test {
     this.frame = 30; // 프레임 수
     this.isGameSuccess = false; // 게임 성공 여부
     this.isGameOver = false; // 게임 오버 여부
+    this.gameState = "intro"; // 게임 상태: "intro", "playing", "success", "fail"
   }
 
   setup() {
