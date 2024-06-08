@@ -95,7 +95,6 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   // 배경 이미지 루프를 위한 초기화, 배경 이미지 세로 길이가 -windowWidth*2
-
   dodgeBgY2 = -windowWidth * 2;
   dodgeBgY4 = -windowWidth * 2;
   dodgeBgY6 = -windowWidth * 2;
@@ -123,10 +122,9 @@ function handleMotionEvent(event) {
   const acceleration = event.accelerationIncludingGravity;
   if (acceleration) {
     const accelerationX = acceleration.x;
-    game.accelerationX = accelerationX; // 기울기 데이터 공유
+    me.accelerationX = accelerationX; // 내 기울기 데이터 공유
   }
 }
-
 
 function draw() {
   // 배경 색상 설정
@@ -189,9 +187,8 @@ function drawGame() {
     totalDeg += guests[i].degY;
   }
 
-  // textAlign(CENTER, CENTER);
-  // // text(clickCount.value, width / 2, height / 2);
-  // text(radians(totalDeg), width / 2, 100);
+  textAlign(CENTER, CENTER);
+  text(radians(totalDeg), width / 2, 100);
 
   totalDeg = 0;
 
@@ -211,19 +208,18 @@ function drawGame() {
   } else {
     if (game.win) {
       fill(0, 120);
-      rect(0, 0, windowWidth, windowHeight);
-      imageMode(CENTER);
+      rect(0, 0, windowWidth, windowHeight)
+      imageMode(CENTER)
       image(dodgesuccessBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 게임 성공 배경 이미지 표시
-      imageMode(CORNER);
+      imageMode(CORNER)
     } else {
       fill(0, 120);
-      rect(0, 0, windowWidth, windowHeight);
-      imageMode(CENTER);
+      rect(0, 0, windowWidth, windowHeight)
+      imageMode(CENTER)
       image(dodgegameoverBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 실패 배경 이미지 표시
-      imageMode(CORNER);
+      imageMode(CORNER)
       drawRestartButton(); // 다시 시작 버튼 표시
     }
-    // drawRestartButton(); // 다시 시작 버튼 표시
   }
 
   // 미니맵 그리기
@@ -235,7 +231,6 @@ function drawRestartButton() {
   let restartH = 100;
   let restartX = windowWidth / 2 - restartW / 2;
   let restartY = windowHeight / 5 * 4 - restartH / 2;
-  console.log(restartX, restartY, restartW, restartH)
 
   if (restartButtonPressed) {
     image(buttonAgainPressedImg, restartX, restartY, restartW, restartH);
@@ -347,7 +342,6 @@ class ObstacleGame {
     if (this.distanceTraveled >= this.totalDistance) {
       this.gameOver = true;
       this.win = true; // 게임 성공 상태
-      //noLoop();
     }
   }
 
@@ -357,7 +351,6 @@ class ObstacleGame {
     fill(0, 0, 255, 100);
     dodgeImgFrame = int(t / 5) % 2;
     image(dodgeImgRobots[dodgeImgFrame], this.player.x, this.player.y, this.player.size, this.player.size);
-    //ellipse(this.player.x, this.player.y, this.player.size, this.player.size);
 
     fill(255, 0, 0, 100);
     for (let obstacle of this.obstacles) {
@@ -368,11 +361,8 @@ class ObstacleGame {
       rotate(t / 80 * obstacle.r);
       image(dodgeImgObstacles[obstacle.i], 0, 0, obstacle.size, obstacle.size);
       pop();
-      rectMode(CENTER);
-      //rect(obstacle.x, obstacle.y, obstacle.size, obstacle.size);
     }
     imageMode(CORNER); // 이미지모드 초기화
-    rectMode(CORNER);// 초기화
   }
 
   drawMiniMap() {
@@ -413,18 +403,19 @@ class ObstacleGame {
   }
 }
 
-function keyPressed(event) {
-  if (event.code === 'ArrowLeft') {
-    moveLeft = true;
-  } else if (event.code === 'ArrowRight') {
-    moveRight = true;
-  }
-}
+// 필요 없는 코드 주석처리
+// function keyPressed(event) {
+//   if (event.code === 'ArrowLeft') {
+//     moveLeft = true;
+//   } else if (event.code === 'ArrowRight') {
+//     moveRight = true;
+//   }
+// }
 
-function keyReleased(event) {
-  if (event.code === 'ArrowLeft') {
-    moveLeft = false;
-  } else if (event.code === 'ArrowRight') {
-    moveRight = false;
-  }
-}
+// function keyReleased(event) {
+//   if (event.code === 'ArrowLeft') {
+//     moveLeft = false;
+//   } else if (event.code === 'ArrowRight') {
+//     moveRight = false;
+//   }
+// }
