@@ -211,16 +211,16 @@ function drawGame() {
   } else {
     if (game.win) {
       fill(0, 120);
-      rect(0, 0, windowWidth, windowHeight)
-      imageMode(CENTER)
+      rect(0, 0, windowWidth, windowHeight);
+      imageMode(CENTER);
       image(dodgesuccessBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 게임 성공 배경 이미지 표시
-      imageMode(CORNER)
+      imageMode(CORNER);
     } else {
       fill(0, 120);
-      rect(0, 0, windowWidth, windowHeight)
-      imageMode(CENTER)
+      rect(0, 0, windowWidth, windowHeight);
+      imageMode(CENTER);
       image(dodgegameoverBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 실패 배경 이미지 표시
-      imageMode(CORNER)
+      imageMode(CORNER);
       drawRestartButton(); // 다시 시작 버튼 표시
     }
     // drawRestartButton(); // 다시 시작 버튼 표시
@@ -356,7 +356,7 @@ class ObstacleGame {
     imageMode(CENTER);
     fill(0, 0, 255, 100);
     dodgeImgFrame = int(t / 5) % 2;
-    image(dodgeImgRobots[dodgeImgFrame], this.player.x, this.player.y, this.player.size, this.player.size)
+    image(dodgeImgRobots[dodgeImgFrame], this.player.x, this.player.y, this.player.size, this.player.size);
     //ellipse(this.player.x, this.player.y, this.player.size, this.player.size);
 
     fill(255, 0, 0, 100);
@@ -365,10 +365,10 @@ class ObstacleGame {
       noSmooth();
       push();
       translate(obstacle.x, obstacle.y);
-      rotate(t / 80 * obstacle.r)
+      rotate(t / 80 * obstacle.r);
       image(dodgeImgObstacles[obstacle.i], 0, 0, obstacle.size, obstacle.size);
       pop();
-      rectMode(CENTER)
+      rectMode(CENTER);
       //rect(obstacle.x, obstacle.y, obstacle.size, obstacle.size);
     }
     imageMode(CORNER); // 이미지모드 초기화
