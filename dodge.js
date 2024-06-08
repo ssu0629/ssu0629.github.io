@@ -122,9 +122,10 @@ function handleMotionEvent(event) {
   const acceleration = event.accelerationIncludingGravity;
   if (acceleration) {
     const accelerationX = acceleration.x;
-    game.handleMotion(accelerationX);
+    me.accelerationX = accelerationX; // 기울기 데이터 공유
   }
 }
+
 
 function draw() {
   // 배경 색상 설정
@@ -194,6 +195,16 @@ function drawGame() {
   totalDeg = 0;
 
   if (!game.gameOver) {
+    // 공유된 기울기 데이터 가져오기
+    let sharedAccelerationX = 0;
+    for (let guest of guests) {
+      sharedAccelerationX += guest.accelerationX;
+    }
+    if (guests.length > 0) {
+      sharedAccelerationX /= guests.length; // 평균 기울기 값
+    }
+    game.handleMotion(sharedAccelerationX); // 공유된 기울기 데이터 사용
+
     game.update(); // 게임 업데이트
     game.display(frameCount); // 게임 화면 표시
   } else {
@@ -285,6 +296,7 @@ class ObstacleGame {
     this.distanceTraveled = 0;
     this.totalDistance = 5000; // 총 이동 거리 (맵의 길이)
     this.gameOver = false;
+    this.win = false; // Initialize win state
   }
 
   reset() {
@@ -332,7 +344,7 @@ class ObstacleGame {
     if (this.distanceTraveled >= this.totalDistance) {
       this.gameOver = true;
       this.win = true; // 게임 성공 상태
-      noLoop();
+      //noLoop();
     }
   }
 
