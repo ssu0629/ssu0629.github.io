@@ -79,8 +79,8 @@ function preload() {
   }
   dodgeImgBg = loadImage("assets/dodge/dodgeBgSpace.png");
   introImg = loadImage("assets/assets for use/introBg/dodgeIntroBg.png"); // 시작 화면 이미지 파일 로드
-  gameOverBg = loadImage("assets/gameoverBg.png");
-  successBg = loadImage("assets/successBg.png");
+  gameOverBg = loadImage("assets/dodgegameoverBg.png");
+  successBg = loadImage("assets/dodgesuccessBg.png");
 
   // 버튼 이미지 불러오기
   buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
@@ -208,9 +208,16 @@ function drawGame() {
     game.display(frameCount); // 게임 화면 표시
   } else {
     if (game.win) {
-      image(successBg, 0, 0, windowWidth, windowHeight); // 게임 성공 배경 이미지 표시
+      rect(0, 0, windowWidth, windowHeight)
+      imageMode(CENTER)
+      image(dodgesuccessBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 게임 성공 배경 이미지 표시
+      imageMode(CORNER)
     } else {
-      image(gameOverBg, 0, 0, windowWidth, windowHeight); // 게임 오버 배경 이미지 표시
+      fill(0, 120);
+      rect(0, 0, windowWidth, windowHeight)
+      imageMode(CENTER)
+      image(dodgegameoverBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 실패 배경 이미지 표시
+      imageMode(CORNER)
       drawRestartButton(); // 다시 시작 버튼 표시
     }
   }
