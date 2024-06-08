@@ -79,6 +79,8 @@ function preload() {
   }
   dodgeImgBg = loadImage("assets/dodge/dodgeBgSpace.png");
   introImg = loadImage("assets/assets for use/introBg/dodgeIntroBg.png"); // 시작 화면 이미지 파일 로드
+  gameOverBg = loadImage("assets/gameoverBg.png");
+  successBg = loadImage("assets/successBg.png");
 
   // 버튼 이미지 불러오기
   buttonStartImg = loadImage("assets/assets for use/buttons 200_100/buttonStart.png");
@@ -195,11 +197,19 @@ function drawGame() {
     game.update(); // 게임 업데이트
     game.display(frameCount); // 게임 화면 표시
   } else {
-    textSize(50);
-    fill(255, 0, 0);
-    text("Game Over", width / 2, height / 2);
-    drawRestartButton(); // 게임 오버 시 다시 시작 버튼 표시
-    // noLoop(); // 게임 루프 정지
+    if (game.win) {
+      image(successBg, 0, 0, windowWidth, windowHeight); // 게임 성공 배경 이미지 표시
+      // textSize(50);
+      // fill(0, 255, 0);
+      // text("You Win!", width / 2, height / 2);
+    } else {
+      image(gameOverBg, 0, 0, windowWidth, windowHeight); // 게임 오버 배경 이미지 표시
+      // textSize(50);
+      // fill(255, 0, 0);
+      // text("Game Over", width / 2, height / 2);
+      drawRestartButton(); // 다시 시작 버튼 표시
+    }
+    // drawRestartButton(); // 다시 시작 버튼 표시
   }
 
   // 미니맵 그리기
@@ -283,6 +293,7 @@ class ObstacleGame {
     this.counter = 0;
     this.distanceTraveled = 0;
     this.gameOver = false;
+    this.win = false; // 게임 초기화
     loop(); // 게임 루프 재시작
   }
 
@@ -312,6 +323,7 @@ class ObstacleGame {
 
       if (this.isColliding(this.player, this.obstacles[i])) {
         this.gameOver = true; // 게임 오버 상태로 설정
+        this.win = false; // 게임 오버 상태
         break;
       }
     }
@@ -319,10 +331,7 @@ class ObstacleGame {
     // 목적지에 도달하면 게임 성공 처리
     if (this.distanceTraveled >= this.totalDistance) {
       this.gameOver = true;
-      textSize(32);
-      fill(0, 255, 0);
-      textAlign(CENTER, CENTER);
-      text("You Win!", width / 2, height / 2);
+      this.win = true; // 게임 성공 상태
       noLoop();
     }
   }

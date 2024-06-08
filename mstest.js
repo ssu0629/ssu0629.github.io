@@ -507,15 +507,15 @@ class screwGame {
     this.displayTimer(); // 타이머 표시
 
     if (!this.isGameOver) { // 게임 오버가 아닌 경우
-      fill(150);
-      textAlign(CENTER);
-      textSize(20);
+      //fill(150);
+      //textAlign(CENTER);
+      //textSize(20);
 
-      if (this.isGameSuccess) { // 게임 성공 시
-        fill(255, 0, 0);
-        textSize(32);
-        text("게임 성공!", width / 2, height / 2 - 50); // 성공 메시지 표시
-      }
+      //if (this.isGameSuccess) { // 게임 성공 시
+      //fill(255, 0, 0);
+      //textSize(32);
+      //text("게임 성공!", width / 2, height / 2 - 50); // 성공 메시지 표시
+      //}
     }
 
     if (this.isGameSuccess) {
@@ -548,10 +548,10 @@ class screwGame {
 
     if (timeLeft <= 0) { // 시간이 다 지난 경우
       this.gameOver(); // 게임 오버 처리
-      fill(255, 0, 0);
-      textSize(32);
-      textAlign(CENTER);
-      text("시간 초과! 게임 오버", width / 2, height / 2 - 50); // 게임 오버 메시지 표시
+      // fill(255, 0, 0);
+      // textSize(32);
+      // textAlign(CENTER);
+      // text("시간 초과! 게임 오버", width / 2, height / 2 - 50); // 게임 오버 메시지 표시
       //this.restartButton.show(); // 다시 시작 버튼 표시
     } else if (!this.isGameSuccess) { // 게임 성공이 아닌 경우
       fill(255, 0, 0);
