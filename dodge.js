@@ -187,8 +187,8 @@ function drawGame() {
     totalDeg += guests[i].degY;
   }
 
-  textAlign(CENTER, CENTER);
-  text(radians(totalDeg), width / 2, 100);
+  // textAlign(CENTER, CENTER);
+  // text(radians(totalDeg), width / 2, 100);
 
   totalDeg = 0;
 
@@ -208,16 +208,18 @@ function drawGame() {
     game.display(frameCount); // 게임 화면 표시
   } else {
     if (game.win) {
+      fill(0, 120);
       rect(0, 0, windowWidth, windowHeight)
       imageMode(CENTER)
-      image(dodgesuccessBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 게임 성공 배경 이미지 표시
+      image(successBg, windowWidth / 2, windowHeight / 2); // 게임 성공 배경 이미지 표시
       imageMode(CORNER)
     } else {
       fill(0, 120);
       rect(0, 0, windowWidth, windowHeight)
       imageMode(CENTER)
-      image(dodgegameoverBg, windowWidth / 2, windowHeight / 2, image.width, image.height); // 실패 배경 이미지 표시
+      image(gameOverBg, windowWidth / 2, windowHeight / 2); // 실패 배경 이미지 표시
       imageMode(CORNER)
+
       drawRestartButton(); // 다시 시작 버튼 표시
     }
   }
