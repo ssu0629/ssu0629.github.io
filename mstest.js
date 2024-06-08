@@ -266,9 +266,9 @@ function draw() {
     // }
 
     // 게임 오버 상태와 관계없이 항상 텍스트를 그립니다.
-    textAlign(CENTER, CENTER); // 텍스트 정렬 설정
-    fill("#000066"); // 텍스트 색상 설정
-    text(totalDeg.toFixed(5) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
+    // textAlign(CENTER, CENTER); // 텍스트 정렬 설정
+    // fill("#000066"); // 텍스트 색상 설정
+    // text(totalDeg.toFixed(5) + " rad", width / 2, 100); // 합산된 기울기 값을 라디안으로 변환하여 화면에 표시
 
     console.log(totalDeg); // 합산된 기울기 값을 콘솔에 출력
   }
