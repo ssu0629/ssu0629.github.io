@@ -122,7 +122,7 @@ function handleMotionEvent(event) {
   const acceleration = event.accelerationIncludingGravity;
   if (acceleration) {
     const accelerationX = acceleration.x;
-    me.accelerationX = accelerationX; // 기울기 데이터 공유
+    game.accelerationX = accelerationX; // 기울기 데이터 공유
   }
 }
 
