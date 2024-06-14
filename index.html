@@ -2,115 +2,31 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Computer Display</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <script src="https://unpkg.com/p5.party.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Sketch</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script> -->
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8" />
+
 </head>
 
 <body>
-  <script>
-    let party;
-    let shared;
+  <main></main>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.js"></script>
+  <script src="p5.party.js"></script>
+  <script src="camera.js"></script>
+  <script src="gameMap.js"></script>
+  <script src="player.js"></script>
+  <script src="libraries/p5.min.js"></script>
+  <script src="libraries/p5.sound.min.js"></script>
+  <!-- <button id="activateButton">Activate</button> -->
+  <script src="movemotor.js"></script>
 
-    let theta1 = 0;
-    let theta2 = 0;
-    let theta3 = 0;
 
-    let thetaX = 0;
-    let thetaY = 0;
-    let thetaZ = 0;
-
-    let t = 0, dt = 1;
-
-    function setup() {
-      createCanvas(400, 400, WEBGL);
-      party = new Party();
-      shared = party.connect('wss://p5.party/ws', 'shared');
-      frameRate(30); // Update the frame rate to ensure smooth animation
-    }
-
-    function draw() {
-      background(0);
-
-      if (shared) {
-        let dthetaXdt = shared.dthetaXdt * PI / 180 || 0;
-        let dthetaYdt = shared.dthetaYdt * PI / 180 || 0;
-        let dthetaZdt = shared.dthetaZdt * PI / 180 || 0;
-
-        let ct = millis() / 1000;
-        dt = ct - t;
-        t = ct;
-
-        let dtheta1dt = dthetaXdt;
-        let dtheta2dt = dthetaYdt * sin(thetaX) + dthetaZdt * cos(thetaX);
-        let dtheta3dt = -dthetaYdt * cos(thetaX) * cos(theta2) + dthetaZdt * sin(thetaX) * cos(theta2);
-
-        theta1 += dtheta1dt * dt;
-        theta2 += dtheta2dt * dt;
-        theta3 += dtheta3dt * dt;
-
-        thetaX += dthetaXdt * dt;
-        thetaY += dthetaYdt * dt;
-        thetaZ += dthetaZdt * dt;
-      }
-
-      directionalLight(255, 255, 255, -1, -1, -1);
-      ambientLight(80);
-
-      scale(1.5);
-
-      stroke(0);
-
-      let r1 = 100, r2 = 80, r3 = 60;
-
-      noStroke();
-      let detailX = 48 * 2;
-      let detailY = 32;
-
-      //outer ring
-      torus(r1, 5, detailX, detailY);
-
-      push();
-      translate((r1 + r2) / 2, 0, 0);
-      rotateZ(PI / 2);
-      cylinder(5, 20);
-      pop();
-      push();
-      translate(-(r1 + r2) / 2, 0, 0);
-      rotateZ(PI / 2);
-      cylinder(5, 20);
-      pop();
-
-      //middle ring
-      rotateX(theta1);
-      rotateX(PI / 2);
-      torus(r2, 5, detailX, detailY);
-
-      push();
-      translate(0, (r2 + r3) / 2, 0);
-      rotateY(PI / 2);
-      cylinder(5, 20);
-      pop();
-
-      push();
-      translate(0, -(r2 + r3) / 2, 0);
-      rotateY(PI / 2);
-      cylinder(5, 20);
-      pop();
-
-      //inner ring
-      rotateY(theta2);
-      rotateY(PI / 2);
-      torus(r3, 5, detailX, detailY);
-
-      //box
-      rotateX(theta3);
-      box(50);
-      rotateZ(PI / 2);
-      cylinder(5, 2 * r3);
-    }
-  </script>
 </body>
 
 </html>
