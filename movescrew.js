@@ -106,7 +106,13 @@ function onClick() {
   }
 }
 
-
+function preload() {
+  console.log("preload called");
+  partyConnect(
+    "wss://demoserver.p5party.org",
+    "party_circle"
+  );
+}
 
 
 function setup() {
