@@ -183,6 +183,12 @@ function mouseReleased() {
 }
 
 function mouseMoved() {
+  // game 객체가 정의되어 있는지 확인
+  if (!game) {
+    console.log("Game object is not initialized yet.");
+    return;  // game 객체가 없으면 함수 실행 중지
+  }
+
   if (game.gameState === "intro") {
     if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
       buttonState = "over";
@@ -190,7 +196,6 @@ function mouseMoved() {
       buttonState = "normal";
     }
   } else if (game.isGameOver || game.isGameSuccess) {
-    // 게임 오버 또는 성공 화면에서 버튼 위에 마우스가 있을 때 상태 업데이트
     if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
       buttonState = "over";
     } else {
@@ -198,6 +203,7 @@ function mouseMoved() {
     }
   }
 }
+
 
 // 키가 눌렸을 때 호출되는 함수
 function keyPressed() {
