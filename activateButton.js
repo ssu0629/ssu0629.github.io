@@ -24,7 +24,7 @@ function onClick() {
     // iOS 13 이전 버전이나 다른 장치에서는 권한 요청 없이 바로 이벤트를 추가
   }
 
-  if (device == 'Mobile') {
+  if (device == 'Computer') {
     shared.checkConnection = true;
   }
 }

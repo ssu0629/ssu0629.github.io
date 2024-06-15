@@ -50,7 +50,7 @@ class Motorgame {
     }
 
     if (this.gameState === "success") { 
-      if (frameCount - this.successTime <= 120) { // 약 2초간 배터리 이미지 표시
+      if (frameCount - this.successTime <= 60) { // 약 2초간 배터리 이미지 표시
         motorBatteryImgNow = 8;
         motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
         image(motorBatteryImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
