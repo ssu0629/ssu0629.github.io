@@ -3,7 +3,7 @@ class MovingGame {
     this.directions = [];
     this.currentDirections = [];
     this.round = 1;
-    this.maxRounds = 4;
+    this.maxRounds = 3;
     this.baseTimeLimit = 30000; // 기본 30초
     this.startTime = 0;
     this.gameOver = false;
@@ -42,8 +42,9 @@ class MovingGame {
     return random(directions);
   }
 
+
   getTimeLimit() {
-    return this.baseTimeLimit + this.round * 1000; // 라운드마다 1초 추가
+    return this.baseTimeLimit + this.round * 100000; //
   }
 
   update() {
@@ -79,18 +80,18 @@ class MovingGame {
 
     //엔터누를때 버튼 누르는 이미지
     let boostButtonPressed = 0
-    if (keyIsPressed && keyCode === ENTER) boostButtonPressed = 1;
+    if (keyIsPressed && keyCode === 32) boostButtonPressed = 1;
     else boostButtonPressed = 0;
     image(boostButtonImgs[boostButtonPressed], shared.slime.x - 400, shared.slime.y - 300, 800, 600);
 
     let boostDirection = 0;
-    if (storedDegY > 0.5) {
+    if (storedDegY > 1.2) {
       boostDirection = 4;
-    } else if (storedDegY < -0.5) {
+    } else if (storedDegY < -1.2) {
       boostDirection = 3;
-    } else if (storedDegX > 0.5) {
+    } else if (storedDegX > 1.7) {
       boostDirection = 2;
-    } else if (storedDegX < -0.5) {
+    } else if (storedDegX < 1.2) {
       boostDirection = 1;
     }
 
@@ -98,7 +99,6 @@ class MovingGame {
     image(boostImgs[boostDirection], shared.slime.x - 400, shared.slime.y - 300, 800, 600);
 
     this.drawDirections();
-    this.drawTimer();
   }
 
   drawStartScreen() {
@@ -174,22 +174,6 @@ class MovingGame {
     textSize(32);
   }
 
-  drawTimer() {
-    let elapsedTime = millis() - this.startTime;
-    let timerWidth = map(elapsedTime, 150, this.getTimeLimit(), 800 - 124, 0);
-
-
-    fill('#31293d');
-    stroke('#31293d');
-    strokeWeight(5);
-    rect(shared.slime.x - 400 + 48, shared.slime.y + 300 - 64, 800 - 94, 20);
-    noStroke();
-    noStroke();
-    fill('#A6E31E');
-    rect(shared.slime.x - 400 + 50, shared.slime.y + 300 - 62, timerWidth, 16); // 레트로 스타일 타이머 막대
-
-  }
-
   handleKeyPressed() {
     if (!this.gameStarted) {
       this.gameStarted = true;
@@ -202,16 +186,16 @@ class MovingGame {
     }
   }
 
-  degmatch(storedDegX, storedDegY) {
+  degmatch(storedDegZ, storedDegX) {
     let inputDirection = null;
     fill(0);
-    if (storedDegY > 0.5) {
+    if (storedDegY > 1.2) {
       inputDirection = 'RIGHT';
-    } else if (storedDegY < -0.5) {
+    } else if (storedDegY < -1.2) {
       inputDirection = 'LEFT';
-    } else if (storedDegX > 0.5) {
+    } else if (storedDegX > 1.7) {
       inputDirection = 'DOWN';
-    } else if (storedDegX < -0.5) {
+    } else if (storedDegX < 1.2) {
       inputDirection = 'UP';
     }
 
@@ -223,7 +207,7 @@ class MovingGame {
         this.round++;
         this.startNewRound();
       } else {
-        lastDirectionText = `StoredDegX: ${storedDegX.toFixed(2)}, StoredDegY: ${storedDegY.toFixed(2)}, Direction: ${inputDirection}`;
+        lastDirectionText = `StoredDegX: ${storedDegZ.toFixed(2)}, StoredDegY: ${storedDegY.toFixed(2)}, Direction: ${inputDirection}`;
       }
     }
   }
