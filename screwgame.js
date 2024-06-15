@@ -15,10 +15,7 @@ class ScrewGame {
     setup() {
       console.log("Game setup called");
       this.createScrews(); // 나사 객체 생성
-      // this.restartButton = createButton("다시 시작"); // 다시 시작 버튼 생성
-      // this.restartButton.position(width / 2 - 50, height / 2); // 버튼 위치 설정
-      // this.restartButton.mousePressed(this.resetGame.bind(this)); // 버튼 클릭 시 게임 리셋
-      // this.restartButton.hide(); // 버튼 숨기기
+
     }
   
     draw() {
@@ -62,8 +59,6 @@ class ScrewGame {
       }
   
       if (this.selectedScrew) {
-        //this.selectedScrew.highlight(); // 선택된 나사 하이라이트
-  
         areaNum = area(totalDeg);
   
         updateDirection();
@@ -92,7 +87,7 @@ class ScrewGame {
       } 
     }
   
-    displayClosetButton() {
+    displayCloseButton() {
       let buttonImg;
       if (buttonState === "normal") {
         buttonImg = buttonCloseImg;
