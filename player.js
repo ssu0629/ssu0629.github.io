@@ -5,7 +5,7 @@ class Player {
     // this.img = img; -> 이건 sketch.js에서 정의되므로 필요없어진 것 같음.
     this.size = 80;
     this.speed = 10;
-    // this.lastDirection = null;
+    this.lastDirection = null;
     this.directions = { up: false, down: false, left: false, right: false };
   }
 
@@ -13,74 +13,40 @@ class Player {
     let nextX = this.x;
     let nextY = this.y;
 
-    // switch (this.lastDirection) {
-    //   case 'up': // setDirection에서 정한 lastDirection이 up이면서 down은 false일 때
-        if (this.directions.up && this.directions.left) {
-          if (this.checkCollision('up', obstacles) && this.checkCollision('left', obstacles)) {
-            nextY -= this.speed;
-            nextX -= this.speed;
-          } else if (this.checkCollision('up', obstacles) && !this.checkCollision('left', obstacles)) {
-            nextY -= this.speed;
-          } else if (!this.checkCollision('up', obstacles) && this.checkCollision('left', obstacles)) {
-            nextX -= this.speed;
-          }
-        } else if (this.directions.up && this.directions.right) {
-          if (this.checkCollision('up', obstacles) && this.checkCollision('right', obstacles)) {
-            nextY -= this.speed;
-            nextX += this.speed;
-          } else if (this.checkCollision('up', obstacles) && !this.checkCollision('right', obstacles)) {
-            nextY -= this.speed;
-          } else if (!this.checkCollision('up', obstacles) && this.checkCollision('right', obstacles)) {
-            nextX += this.speed;
-          }
-        } else if (this.directions.up && this.checkCollision('up', obstacles)) {
-          nextY -= this.speed;
-        }
+    if (!shared.moveStop) {
 
-        if (this.directions.down && this.directions.left) {
-          if (this.checkCollision('down', obstacles) && this.checkCollision('left', obstacles)) {
-            nextY += this.speed;
-            nextX -= this.speed;
-          } else if (this.checkCollision('down', obstacles) && !this.checkCollision('left', obstacles)) {
-            nextY += this.speed;
-          } else if (!this.checkCollision('down', obstacles) && this.checkCollision('left', obstacles)) {
-            nextX -= this.speed;
+      switch (this.lastDirection) {
+        case 'up': // setDirection에서 정한 lastDirection이 up이면서 down은 false일 때
+        if (this.directions.up && !this.directions.down) {
+          if (this.checkCollision('up', obstacles)) { // 충돌 체크
+            nextY -= this.speed;
           }
-        } else if (this.directions.down && this.directions.right) {
-          if (this.checkCollision('down', obstacles) && this.checkCollision('right', obstacles)) {
-            nextY += this.speed;
-            nextX += this.speed;
-          } else if (this.checkCollision('down', obstacles) && !this.checkCollision('right', obstacles)) {
-            nextY += this.speed;
-          } else if (!this.checkCollision('down', obstacles) && this.checkCollision('right', obstacles)) {
-            nextX += this.speed;
-          }
-        } else if (this.directions.down && this.checkCollision('down', obstacles)) {
-          nextY += this.speed;
         }
-    //    break;
-    //  case 'down': // setDirection에서 정한 lastDirection이 down이면서 up은 false일 때
-        // if (this.directions.down) {
-        //   if (this.checkCollision('down', obstacles)) { // 충돌 체크
-        //     nextY += this.speed;
-        //   }
-        // }
-    //    break;
-    //  case 'left': // setDirection에서 정한 lastDirection이 left이면서 right은 false일 때
-        // if (this.directions.left) {
-        //   if (this.checkCollision('left', obstacles)) { // 충돌 체크
-        //     nextX -= this.speed;
-        //   }
-        // }
-    //    break;
-    //  case 'right': // setDirection에서 정한 lastDirection이 right이면서 left은 false일 때
-        // if (this.directions.right) {
-        //   if (this.checkCollision('right', obstacles)) { // 충돌 체크
-        //     nextX += this.speed;
-        //   }
-        // }
-    //    break;
-    //}
+        break;
+      case 'down': // setDirection에서 정한 lastDirection이 down이면서 up은 false일 때
+          if (this.directions.down && !this.directions.up) {
+            if (this.checkCollision('down', obstacles)) { // 충돌 체크
+              nextY += this.speed;
+            }
+          }
+        break;
+      case 'left': // setDirection에서 정한 lastDirection이 left이면서 right은 false일 때
+          if (this.directions.left && !this.directions.right) {
+            if (this.checkCollision('left', obstacles)) { // 충돌 체크
+              nextX -= this.speed;
+            }
+          }
+        break;
+      case 'right': // setDirection에서 정한 lastDirection이 right이면서 left은 false일 때
+          if (this.directions.right && !this.directions.left) {
+            if (this.checkCollision('right', obstacles)) { // 충돌 체크
+              nextX += this.speed;
+            }
+          }
+        break;
+      }
+
+    }
 
     this.x = nextX;
     this.y = nextY;
@@ -138,19 +104,19 @@ class Player {
 
   setDirection(direction, state) { // wasd키가 하나라도 눌리면 true를 넣어주고, 키를 떼는 순간 false를 넣음
     this.directions[direction] = state; // 방향을 받아서 constructor에 있는 up/down/left/right 중 하나의 상태를 변경
-    // if (state) { // 만약 받은 상태가 true라면 
-    //   this.lastDirection = direction; // lastDirection을 현재 방향으로 설정
-    //   this.lastDirection = direction; // 왜 2개가 똑같은 라인이...
-    // } else if (this.directions.up) { // 여기서부터 코드는 2개 이상 입력되었다가 한 키를 떼게 되었을 때를 결정함.
-    //   this.lastDirection = 'up'; // 다른 키를 입력하고 있더라도 '위'키는 우선 순위 1순위로 반환됨
-    // } else if (this.directions.down) {
-    //   this.lastDirection = 'down';
-    // } else if (this.directions.left) {
-    //   this.lastDirection = 'left';
-    // } else if (this.directions.right) {
-    //   this.lastDirection = 'right';
-    // } else { // 받은 상태는 false이고 모든 방향이 false일 경우
-    //   this.lastDirection = null; // lastDirection에는 아무 것도 넣지 않는다.
-    // } 
+    if (state) { // 만약 받은 상태가 true라면 
+      this.lastDirection = direction; // lastDirection을 현재 방향으로 설정
+      this.lastDirection = direction; // 왜 2개가 똑같은 라인이...
+    } else if (this.directions.up) { // 여기서부터 코드는 2개 이상 입력되었다가 한 키를 떼게 되었을 때를 결정함.
+      this.lastDirection = 'up'; // 다른 키를 입력하고 있더라도 '위'키는 우선 순위 1순위로 반환됨
+    } else if (this.directions.down) {
+      this.lastDirection = 'down';
+    } else if (this.directions.left) {
+      this.lastDirection = 'left';
+    } else if (this.directions.right) {
+      this.lastDirection = 'right';
+    } else { // 받은 상태는 false이고 모든 방향이 false일 경우
+      this.lastDirection = null; // lastDirection에는 아무 것도 넣지 않는다.
+    } 
   }
 }

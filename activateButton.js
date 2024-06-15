@@ -23,6 +23,10 @@ function onClick() {
     window.addEventListener('deviceorientation', handleDeviceOrientation);
     // iOS 13 이전 버전이나 다른 장치에서는 권한 요청 없이 바로 이벤트를 추가
   }
+
+  if (device == 'Computer') {
+    shared.checkConnection = true;
+  }
 }
 
 // devicemotion 이벤트 콜백 함수
@@ -31,6 +35,11 @@ function handleDeviceMotion(event) {
   console.log("DeviceMotionEvent detected");
   const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
   const accWithoutGravity = event.acceleration || { x: 0, y: 0, z: 0 };
+
+  if (acc) {
+    const accelerationX = acc.x;
+    me.accelerationX = accelerationX; // 내 기울기 데이터 공유
+  }
 
   // 중력 보정
   const alpha = 0.8;
