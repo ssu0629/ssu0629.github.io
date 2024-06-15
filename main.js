@@ -28,7 +28,7 @@ let mapMouseX, mapMouseY;
 
 let chatTimerStart;
 
-let progress = 2; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
+let progress = 1; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
 let gameObjective = [
   '올바른 대답을 입력하여 안전한 중고거래를 성사시키자. \n 컴퓨터 앞으로 가면 될 것 같은데...!',
   '어찌저찌 부품을 샀다! 이제 로봇을 완성하려면 합판끼리 연결을 해야해! \n 나사를 열심히 돌려서 합판을 연결하러 가자.',
@@ -491,11 +491,17 @@ function draw() {
                         totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
                       }
                     }
-                    fill(255);
-                    arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
-                    console.log("totalDeg : " + totalDeg);
-
-                    screwGame.draw();
+                      // 오른쪽 상단에 arc 그리기
+                      push();
+                      noFill(); // 원 안을 채우지 않음
+                      stroke(255); // 흰색 원
+                      strokeWeight(5); // 선의 두께
+                      let arcX = width - 60; // 오른쪽 상단 위치 설정
+                      let arcY = 60; // 상단에서 적절한 간격
+                      let startAngle = -PI / 2; // 상단 중심에서 시작
+                      let endAngle = startAngle + (TWO_PI * (totalDeg / 360)); // totalDeg를 0-360 범위로 가정
+                      arc(arcX, arcY, this.arcRadius * 2, this.arcRadius * 2, startAngle, endAngle);
+                      pop();
                   }
                 } else {
                   if (progress < 1) {
