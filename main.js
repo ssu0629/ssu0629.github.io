@@ -496,7 +496,7 @@ function draw() {
                       }
                     }
                     fill(255);
-                    arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
+                    arc(shared.slime.x, shared.slime.y, 50, 50, 0, totalDeg);
                     console.log("totalDeg : " + totalDeg);
 
                     screwGame.draw();
