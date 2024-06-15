@@ -15,7 +15,10 @@ class ScrewGame {
     setup() {
       console.log("Game setup called");
       this.createScrews(); // 나사 객체 생성
-
+      // this.restartButton = createButton("다시 시작"); // 다시 시작 버튼 생성
+      // this.restartButton.position(width / 2 - 50, height / 2); // 버튼 위치 설정
+      // this.restartButton.mousePressed(this.resetGame.bind(this)); // 버튼 클릭 시 게임 리셋
+      // this.restartButton.hide(); // 버튼 숨기기
     }
   
     draw() {
@@ -59,6 +62,8 @@ class ScrewGame {
       }
   
       if (this.selectedScrew) {
+        //this.selectedScrew.highlight(); // 선택된 나사 하이라이트
+  
         areaNum = area(totalDeg);
   
         updateDirection();
@@ -76,37 +81,40 @@ class ScrewGame {
       if (this.successed == 4) { // 모든 나사가 성공한 경우
         this.isGameSuccess = true; // 게임 성공 상태로 설정
       }
-
   
+  
+   
       if (this.isGameSuccess) {
         image(successBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 성공 배경 이미지 표시
         if (progress == 1) {
           progress++;
-          this.displayCloseButton(); // 다시 시작 버튼 표시
         }
-      } 
+      } else if (this.isGameOver) {
+        image(gameoverBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 게임 오버 배경 이미지 표시
+        this.displayRestartButton(); // 다시 시작 버튼 표시
+      }
     }
   
-    displayCloseButton() {
+    displayRestartButton() {
       let buttonImg;
       if (buttonState === "normal") {
-        buttonImg = buttonCloseImg;
+        buttonImg = buttonAgainImg;
       } else if (buttonState === "over") {
-        buttonImg = buttonCloseOverImg;
+        buttonImg = buttonAgainOverImg;
       } else if (buttonState === "pressed") {
-        buttonImg = buttonClosePressedImg;
+        buttonImg = buttonAgainPressedImg;
       }
       image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
     }
   
   
-  
+
   
     gameOver() {
       this.isGameOver = true; // 게임 오버 상태로 설정
     }
   
-    
+
   
     resetGame() {
       this.successed = 0; // 성공한 나사 수 초기화

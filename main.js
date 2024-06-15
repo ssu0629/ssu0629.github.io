@@ -82,12 +82,14 @@ let antiClockWise = {
 let movingGame;
 let totalDegX = 0;
 let totalDegY = 0;
+let totalDegZ = 0;
 let lastDirectionText = "";
 let boostIntroBg;
 let boostImgBg;
 let boostImgs = [];
 let boostButtonImgs = [];
 
+let saveDegZ = 0;
 let saveDegX = 0;
 let saveDegY = 0;
 
@@ -328,14 +330,16 @@ function draw() {
 
   totalDegX = 0; // 합산된 회전 값을 초기화
   totalDegY = 0;
+  totalDegZ = 0;
 
   for (let i = 0; i < guests.length; i++) {
     if (guests[i] && guests[i].degX !== undefined && guests[i].degY !== undefined) {
       totalDegX += guests[i].degX; // 각 게스트의 X축 기울기를 합산
       totalDegY += guests[i].degY; // 각 게스트의 Y축 기울기를 합산
+      totalDegZ += guests[i].degZ;
     }
   }
-  console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
+  console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY, "totalDegZ:", totalDegZ);
 
   // 본격적으로 게임 그리기
   switch (shared.mainStage) {
@@ -491,17 +495,11 @@ function draw() {
                         totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
                       }
                     }
-                      // 오른쪽 상단에 arc 그리기
-                      push();
-                      noFill(); // 원 안을 채우지 않음
-                      stroke(255); // 흰색 원
-                      strokeWeight(5); // 선의 두께
-                      let arcX = width - 60; // 오른쪽 상단 위치 설정
-                      let arcY = 60; // 상단에서 적절한 간격
-                      let startAngle = -PI / 2; // 상단 중심에서 시작
-                      let endAngle = startAngle + (TWO_PI * (totalDeg / 360)); // totalDeg를 0-360 범위로 가정
-                      arc(arcX, arcY, this.arcRadius * 2, this.arcRadius * 2, startAngle, endAngle);
-                      pop();
+                    fill(255);
+                    arc(shared.slime.x, shared.slime.y, 50, 50, -PI / 2, totalDeg);
+                    console.log("totalDeg : " + totalDeg);
+
+                    screwGame.draw();
                   }
                 } else {
                   if (progress < 1) {
@@ -951,14 +949,8 @@ function keyPressed() {
   }
 
   // 나사 스페이스바로 돌리기(추후 삭제)
-  if (key === ' ') { // 스페이스바를 눌렀을 때
-    if (screwGame.selectedScrew) { // 선택된 나사가 있는 경우
-      screwGame.selectedScrew.move(); // 나사를 회전시킴
-    }
-  }
-
-  if (keyCode === ENTER) {
-
+  if (keyCode === 32) { // 스페이스바를 눌렀을 때
+    
     saveDegX = totalDegX
     saveDegY = totalDegY
     movingGame.degmatch(saveDegX, saveDegY);
