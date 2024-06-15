@@ -4,8 +4,9 @@ class Motorgame {
     this.acceleration = 0;
     this.maxAcceleration = 60;
     this.energy = 0;
-    this.maxEnergy = 10000;
+    this.maxEnergy = 8000;
     this.gameState = "intro"; // 게임 상태: "intro", "playing", "success", "fail"
+    this.successTime = 0; // 충전 완료 후 경과 시간 계산
   }
 
   update(totalAccelerationChange) {
@@ -22,6 +23,7 @@ class Motorgame {
       // 에너지가 최대치에 도달하면 게임 성공 상태로 전환
       if (this.energy >= this.maxEnergy) {
         this.gameState = "success";
+        this.successTime = frameCount; // 성공 시간을 현재 frameCount로 설정
         progress++;
       }
     }
@@ -29,8 +31,7 @@ class Motorgame {
 
   display() {
     if (this.gameState === "playing" || this.gameState === "success") {
-      // 에너지 게이지 그리기
-      // this.drawEnergyGauge(this.energy, this.maxEnergy);
+
 
       // 모터 애니메이션
       if (this.acceleration > 0 && this.gameState === "playing") {
@@ -48,19 +49,14 @@ class Motorgame {
       image(motorBatteryImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
     }
 
-    if (this.gameState === "success") {
-
-      image(successBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 성공 배경 이미지 표시
-
-      // 게임 성공 메시지 그리기
-      // textFont(galmuriFont);
-      // textSize(64);
-      // fill(0);
-      // textAlign(CENTER, CENTER);
-      // text("게임 성공!", shared.slime.x, shared.slime.y);
-
-      // // 다시 도전 버튼 그리기
-      // this.drawRetryButton();
+    if (this.gameState === "success") { 
+      if (frameCount - this.successTime <= 120) { // 약 2초간 배터리 이미지 표시
+        motorBatteryImgNow = 8;
+        motorBatteryImg = motorBatteryImgs[motorBatteryImgNow];
+        image(motorBatteryImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+      } else {
+        image(successBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 성공 배경 이미지 표시
+      }
     }
   }
 
@@ -75,18 +71,12 @@ class Motorgame {
     rect(shared.slime.x - gaugeWidth / 2, shared.slime.y - 40, filledWidth, gaugeHeight);
   }
 
-  // drawRetryButton() {
-  //   fill(0, 255, 0);
-  //   rect(width / 2 - 100, height / 2 + 50, 200, 50);
-  //   fill(0);
-  //   textSize(32);
-  //   textAlign(CENTER, CENTER);
-  //   text("다시 도전", width / 2, height / 2 + 75);
-  // }
 
   reset() {
     this.acceleration = 0;
     this.energy = 0;
     this.gameState = "intro";
+    this.successTime = 0; // 성공 시간도 초기화
   }
 }
+
