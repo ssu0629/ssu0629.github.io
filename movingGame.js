@@ -20,6 +20,8 @@ class MovingGame {
     this.isButtonOverAgain = false;
     this.isButtonPressedClose = false;
     this.isButtonOverClose = false;
+    this.currentBg = false;
+    this.phase = 1;
   }
 
   startNewRound() {
@@ -78,7 +80,7 @@ class MovingGame {
 
     image(boostImgBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
 
-    //엔터누를때 버튼 누르는 이미지
+    //스페이스바 누를때 버튼 누르는 이미지
     let boostButtonPressed = 0
     if (keyIsPressed && keyCode === 32) boostButtonPressed = 1;
     else boostButtonPressed = 0;
@@ -102,17 +104,30 @@ class MovingGame {
   }
 
   drawStartScreen() {
-    image(boostIntroBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
-    let img;
-    if (this.isButtonPressed) {
-      img = buttonStartPressedImg;
-    } else if (this.isButtonOver) {
-      img = buttonStartOverImg;
-    } else {
-      img = buttonStartImg;
-    }
-    noSmooth();
-    image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 200 - buttonHeight / 2 - 10, buttonWidth, buttonHeight);
+    if (this.phase == 1) {image(boostIntroBg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+      let img;
+      if (this.isButtonPressed) {
+        img = buttonStartPressedImg;
+      } else if (this.isButtonOver) {
+        img = buttonStartOverImg;
+      } else {
+        img = buttonStartImg;
+      }
+      noSmooth();
+      image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 200 - buttonHeight / 2 - 10, buttonWidth, buttonHeight);
+    } else if (this.phase == 2) {
+      image(boostIntroBg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 2번째 화면
+      image(boostStickImgs[boostDirection], shared.slime.x - 400, shared.slime.y - 300, 800, 600); // 연습화면에서 기어봉 조작 연습
+      let img;
+      if (this.isButtonPressed) {
+        img = buttonStartPressedImg;
+      } else if (this.isButtonOver) {
+        img = buttonStartOverImg;
+      } else {
+        img = buttonStartImg;
+      }
+      image(img, shared.slime.x - buttonWidth / 2, shared.slime.y + 200 - buttonHeight / 2 - 10, buttonWidth, buttonHeight);
+    } else {this.currenBg = true};
   }
 
   drawGameOverScreen() {
@@ -175,7 +190,9 @@ class MovingGame {
   }
 
   handleKeyPressed() {
-    if (!this.gameStarted) {
+    if (currentBg == false){
+      this.phase++;
+    } else if (!this.gameStarted) {
       this.gameStarted = true;
       this.startNewRound();
       return;
@@ -186,7 +203,7 @@ class MovingGame {
     }
   }
 
-  degmatch(storedDegZ, storedDegX) {
+  degmatch(storedDegX, storedDegY) {
     let inputDirection = null;
     fill(0);
     if (storedDegY > 1.2) {
@@ -219,6 +236,7 @@ class MovingGame {
     this.success = false;
     this.restartButton.hide();
     this.startNewRound();
+    this.phase = 1;
   }
 
   getArrowSymbol(direction) {
