@@ -94,14 +94,14 @@ class ObstacleGame {
     drawMiniMap() {
       let miniMapWidth = 50;
       let miniMapHeight = 200;
-      let miniPlayerSize = 10;
+      let miniPlayerSize = 30;
   
       // 미니맵 배경
       fill(200);
       rect(width - miniMapWidth - 10, 10, miniMapWidth, miniMapHeight);
   
       // 주인공 위치 표시
-      fill(216, 47, 235);
+      fill(183, 52, 235);
       let miniPlayerY = map(this.distanceTraveled, 0, this.totalDistance, 10 + miniMapHeight, 10);
       ellipse(width - miniMapWidth / 2 - 10, miniPlayerY, miniPlayerSize, miniPlayerSize);
   

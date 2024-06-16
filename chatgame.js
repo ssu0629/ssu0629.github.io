@@ -158,6 +158,7 @@ class ChatBot {
       } else {
         //성공 배경
         image(successBg,shared.slime.x - 400,shared.slime.y - 300,800,600);
+        drawExitButton(); // '나가기' 버튼 그리기
         // 게임 성공 시 닫기 버튼 표시
         // let img;
         // if (this.isButtonPressedClose) {
