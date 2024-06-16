@@ -8,8 +8,8 @@ class Screw {
       this.angle = 0; // 나사의 각도
       this.successed = false; // 나사 성공 여부
       this.imageIndex = 0; // 이미지 인덱스 초기화
-      this.imageWidth = 75;
-      this.imageHeight = 150;
+      this.imageWidth = 90;
+      this.imageHeight = 90;
       this.selected = false; // 나사 선택 여부 초기화
     }
   
@@ -45,11 +45,14 @@ class Screw {
     }
   
     isMouseOver() {
-      return mapMouseX > this.x - this.imageWidth / 2 &&
-        mapMouseX < this.x + this.imageWidth / 2 &&
-        mapMouseY > this.y + this.depth - this.imageHeight / 2 &&
-        mapMouseY < this.y + this.depth + this.imageHeight / 2;
+      const isOver = mapMouseX > this.x - this.imageWidth / 2 &&
+                     mapMouseX < this.x + this.imageWidth / 2 &&
+                     mapMouseY > this.y - this.imageHeight / 2 &&
+                     mapMouseY < this.y + this.imageHeight / 2;
+      console.log(`Checking isMouseOver: ${isOver}, ScrewX: ${this.x}, ScrewY: ${this.y}`);
+      return isOver;
     }
+
   
     move() {
       if (this.imageIndex < 3) { // 나사가 구멍 깊이보다 깊지 않은 경우

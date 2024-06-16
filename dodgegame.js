@@ -9,6 +9,7 @@ class ObstacleGame {
       this.totalDistance = 2500; // 총 이동 거리 (맵의 길이)
       this.gameOver = false;
       this.win = false; // Initialize win state
+      this.gameState = "intro"; // 게임 상태: "intro", "playing", "success", "fail"
     }
   
     reset() {

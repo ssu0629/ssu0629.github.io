@@ -28,7 +28,7 @@ let mapMouseX, mapMouseY;
 
 let chatTimerStart;
 
-let progress = 4; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
+let progress = 1; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
 let gameObjective = [
   '올바른 대답을 입력하여 안전한 중고거래를 성사시키자. \n 컴퓨터 앞으로 가면 될 것 같은데...!',
   '어찌저찌 부품을 샀다! 이제 로봇을 완성하려면 합판끼리 연결을 해야해! \n 나사를 열심히 돌려서 합판을 연결하러 가자.',
@@ -117,12 +117,13 @@ const initialIgnoreCount = 5; // 초기 측정값 무시 횟수
 let ignoreCount = initialIgnoreCount;
 
 // dodge game
-// 인트로 화면 상태 초기화
 let introScreens = {
   showIntro1: true,
   showIntro2: false,
   gameStart: false
 };
+let dodgeIntroImg;
+let dodgeIntroImg2;
 let dodgeImgRobots = []; // 로봇 애니메이션 전체파일
 let dodgeImgFrame = 0; // 로봇 현재 프레임 저장
 let dodgeImgBg;
@@ -441,14 +442,13 @@ function draw() {
               case 0: // 5번째 미니게임 & 상태 확인(?)
                 if (progress == 4) {
 
-                  if (introActive) {
-                      image(dodgeIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
-                        displayNextButton(); // '다음' 버튼 표시
-                      } else if (introActive = false) {
-                        image(dodgeIntroImg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
-                        buttonX = shared.slime.x - buttonWidth / 2 + 230;
-                        buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
-                  } else {
+                  if (introScreens.showIntro1) {
+                    image(dodgeIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+                    displayNextButton();
+                  } else if (introScreens.showIntro2) {
+                    image(dodgeIntroImg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+                    drawStartButton(); // 게임 시작 버튼 표시
+                  
                     if (blackoutCount < 100) {
                       rectMode(CENTER);
                       fill(0, 0, 0, blackoutCount * 2.55);
@@ -457,11 +457,12 @@ function draw() {
                     } else {
                       shared.mainStage = 4;
                     }
-                  }
+                  
                 } else {
                   console.log('You Should Clear Manipulation Game.');
                   shared.moveStop = !shared.moveStop;
                 }
+              }
                 break;
               
               case 1: // 중고거래 채팅 게임(타이핑 게임)
@@ -522,6 +523,7 @@ function draw() {
                     noSmooth();
                     noStroke();
                     image(screwBgImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+                    console.log(`Mouse X: ${mapMouseX}, Mouse Y: ${mapMouseY}`);
 
                     // 각 게스트의 회전 값을 합산
                     totalDeg = 0; // 합산된 회전 값을 초기화
@@ -1093,7 +1095,8 @@ function mousePressed() {
           case 0:
             if (introActive) {
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
-                startButtonPressed = true;
+                buttonState = "pressed"; // 버튼 누름 상태로 변경
+                introScreens.gameStart = true; // 게임 시작 상태로 변경
               }
             }
             break;
@@ -1146,12 +1149,6 @@ function mousePressed() {
       }
       break;
     case 4:
-      if (introActive) {
-        // 시작 화면에서 시작 버튼을 누르면 게임 시작
-        if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
-          buttonState = "pressed";
-        }
-       }
       if (dodgeGame.gameOver) {
         let restartW = 200;
         let restartH = 100;
@@ -1179,12 +1176,13 @@ function mouseReleased() {
       if (shared.moveStop) {
         switch (shared.zone) {
           case 0:
-            if (introActive && startButtonPressed) {
+            if (introActive && buttonState === "pressed") {
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
-                startGame();
+                introActive = false; // intro 활성 상태를 비활성화하여 다음 화면으로 전환
+                introScreens.showIntro2 = true; // 다음 인트로 화면으로 전환
               }
-              startButtonPressed = false;
-            } 
+              buttonState = "normal"; // 버튼 상태 초기화
+            }
             break;
           case 1:
             if (!chatGame.isGameStarted) {
@@ -1243,13 +1241,9 @@ function mouseReleased() {
         }
       }
       break;
-    case 4:
-      if (dodgeGame.gameState === "intro" && buttonState === "pressed") {
-        if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) 
-      break;
 } 
 }
-}
+
 
 function mouseMoved() {
 
@@ -1264,6 +1258,13 @@ function mouseMoved() {
       if (shared.moveStop) {
         switch (shared.zone) {
           case 0:
+            if (introActive) {
+              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+                buttonState = "over"; // 마우스 오버 상태
+              } else {
+                buttonState = "normal"; // 일반 상태
+              }
+            }
             break;
           case 1:
             if (!chatGame.isGameStarted && mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
@@ -1331,17 +1332,10 @@ function mouseMoved() {
         }
       }
       break;
-    case 4:
-      if (dodgeGame.gameState === "intro") {
-        if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
-          buttonState = "over";
-        } else {
-          buttonState = "normal";
-        }
-      break;
+
   }
 }
-}
+
 
 function touchStarted() {
   if (device == 'Computer') {
@@ -1463,31 +1457,33 @@ function updateCount() {
 
 
 
-function drawIntro() {
-  if (introScreens.showIntro1) {
-    image(dodgeIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
-    displayNextButton(); // "다음" 버튼 표시
-  } else if (introScreens.showIntro2) {
-    image(dodgeIntroImg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
-    drawStartButton(); // "시작" 버튼 표시
-  }
-}
+// function drawIntro() {
+//   if (introScreens.showIntro1) {
+//     image(dodgeIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+//     displayNextButton(); // "다음" 버튼 표시
+//   } else if (introScreens.showIntro2) {
+//     image(dodgeIntroImg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+//     drawStartButton(); // "시작" 버튼 표시
+//   }
+// }
 
 
 
 function drawStartButton() {
-
-  buttonX = shared.slime.x - buttonWidth / 2;
-  buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
-
-
+  let buttonImg;
   if (startButtonPressed) {
-    image(buttonStartPressedImg, buttonX, buttonY, buttonWidth, buttonHeight);
+    buttonImg = buttonStartPressedImg;
   } else if (mouseX > startX && mouseX < startX + startW && mouseY > startY && mouseY < startY + startH) {
-    image(buttonStartOverImg, buttonX, buttonY, buttonWidth, buttonHeight);
+    buttonImg = buttonStartOverImg;
   } else {
-    image(buttonStartImg, buttonX, buttonY, buttonWidth, buttonHeight);
+    buttonImg = buttonStartImg;
   }
+
+  // 인트로 화면 이미지 변경
+  let introImg = introScreens.showIntro2 ? dodgeIntroImg2 : dodgeIntroImg;
+  image(introImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+  
+  image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
 }
 
 function drawGame() {
@@ -1611,6 +1607,10 @@ function displayNextButton() {
   }
 
   image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+  if (buttonState === "pressed" && introScreens.showIntro1) {
+    introScreens.showIntro1 = false;
+    introScreens.showIntro2 = true;
+  }
 }
 
 function drawStartButton() {
@@ -1626,12 +1626,4 @@ function drawStartButton() {
   image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
 }
 
-function drawIntro() {
-  if (introScreens.showIntro1) {
-    image(dodgeIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
-    displayNextButton(); // '다음' 버튼 표시
-  } else if (introScreens.showIntro2) {
-    image(dodgeIntroImg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
-    drawStartButton(); // '시작' 버튼 표시
-  }
-}
+

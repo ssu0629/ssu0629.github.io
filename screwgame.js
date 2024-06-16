@@ -27,7 +27,6 @@ class ScrewGame {
   
     mousePressed() {
       if (this.isGameOver || this.isGameSuccess) return; // 게임 오버 또는 성공 시 무시
-  
       let newSelectedScrew = null;
       for (let screw of this.screws) {
         if (screw.isMouseOver()) { // 마우스가 나사 위에 있을 때
@@ -60,16 +59,13 @@ class ScrewGame {
       for (let screw of this.screws) {
         screw.show(); // 각 나사 객체 표시
       }
-  
       if (this.selectedScrew) {
         //this.selectedScrew.highlight(); // 선택된 나사 하이라이트
-  
         areaNum = area(totalDeg);
-  
         updateDirection();
         updateCount();
-        if (pCount < count && !this.selectedScrew.successed && !this.isGameOver) {
-          this.selectedScrew.move()
+        if (pCount < count && !game.selectedScrew.successed && !game.isGameOver) {
+          game.selectedScrew.move()
         }
   
         pANum = areaNum;
