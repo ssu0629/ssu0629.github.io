@@ -10,7 +10,6 @@ let endingBg;
 
 // mobile screen
 let mobileToolImg, mobileToolImg2;
-let shoppingListImg, ScrewdriverImg, ScrewdriverWithDirectionImg, lightningImg, controllerImg;
 
 //game Map & character
 let gameMap;
@@ -83,15 +82,12 @@ let antiClockWise = {
 let movingGame;
 let totalDegX = 0;
 let totalDegY = 0;
-let totalDegZ = 0;
 let lastDirectionText = "";
 let boostIntroBg;
 let boostImgBg;
 let boostImgs = [];
 let boostButtonImgs = [];
-let boostStickImgs = [];
 
-let saveDegZ = 0;
 let saveDegX = 0;
 let saveDegY = 0;
 
@@ -180,11 +176,6 @@ function preload() {
   // mobile tool image load
   mobileToolImg = loadImage('assets/mobile-tool(bttry_low).png');
   mobileToolImg2 = loadImage('assets/mobile-tool(bttry_high).png');
-  shoppingListImg = loadImage('assets/mobileShoppinglist.png');
-  ScrewdriverImg = loadImage('assets/mobileScrewdriver.png');
-  ScrewdriverWithDirectionImg = loadImage('assets/mobileScrewdriver(direction).png');
-  // lightningImg = loadImage('');
-  controllerImg = loadImage('assets/mobileBoost.png');
 
   // player image load
   for (let i = 0; i < 5; i++) {
@@ -231,9 +222,6 @@ function preload() {
   boostImgBg = loadImage('assets/boostBg.png');
   for (i = 0; i < 5; i++) {
     boostImgs[i] = loadImage('assets/boost' + i + '.png');
-  }
-  for (i = 0; i <5; i++){
-    boostStickImgs[i] = loadImage('assets/boostStick'+i+'.png');
   }
   boostButtonImgs[0] = loadImage('assets/boostButton0.png');
   boostButtonImgs[1] = loadImage('assets/boostButton1.png');
@@ -340,16 +328,14 @@ function draw() {
 
   totalDegX = 0; // 합산된 회전 값을 초기화
   totalDegY = 0;
-  totalDegZ = 0;
 
   for (let i = 0; i < guests.length; i++) {
     if (guests[i] && guests[i].degX !== undefined && guests[i].degY !== undefined) {
       totalDegX += guests[i].degX; // 각 게스트의 X축 기울기를 합산
       totalDegY += guests[i].degY; // 각 게스트의 Y축 기울기를 합산
-      totalDegZ += guests[i].degZ;
     }
   }
-  console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY, "totalDegZ:", totalDegZ);
+  console.log("totalDegX:", totalDegX, "totalDegY:", totalDegY);
 
   // 본격적으로 게임 그리기
   switch (shared.mainStage) {
@@ -385,20 +371,13 @@ function draw() {
       noSmooth();
       image(instructionBg2, windowWidth / 2, windowHeight / 2, instructionBg2.width * 1.2, instructionBg2.height * 1.2);
       imageMode(CORNER);
+      activateButton.style.display = 'inline';
 
-      shared.checkConnection = true;
-
-      if (device == 'Computer') {
-        activateButton.style.display = 'inline'; // push할 때는 none으로 바꿔야 함!!!
-
-        if (shared.checkConnection) {
-          fill(255);
-          textSize(35);
-          textAlign(CENTER, CENTER)
-          text('연동 완료! 화면을 클릭해 다음으로 넘어가주세요!', windowWidth * 0.5, windowHeight * 0.75);
-        }
-      } else {
-        activateButton.style.display = 'inline';
+      if (shared.checkConnection) {
+        fill(255);
+        textSize(40);
+        textAlign(LEFT, CENTER)
+        text('연동 완료!', windowWidth * 0.6, windowHeight * 0.75);
       }
       break;
 
@@ -408,7 +387,6 @@ function draw() {
       if (device == 'Computer') { // 만약 컴퓨터로 접속한다면
 
         // 카메라 적용 + 맵 그리기
-        noStroke(); // 미니게임에서 활용한 stroke 초기화
         camera.update(shared.slime);
         camera.apply();
         gameMap.display();
@@ -815,55 +793,22 @@ function draw() {
           }
         }
       } else { // 핸드폰으로 접속한다면
-        if (!shared.moveStop) {
-          rectMode(CORNER);
-          fill('#31293D');
-          rect(0, 0, windowWidth, windowHeight);
-          noSmooth();
-          imageMode(CENTER);
-          if (progress < 3) {
-            image(mobileToolImg, windowWidth / 2, windowHeight / 2, mobileToolImg.width * 3.5, mobileToolImg.height * 3.5);
-          } else {
-            image(mobileToolImg2, windowWidth / 2, windowHeight / 2, mobileToolImg2.width * 3.5, mobileToolImg2.height * 3.5);
-          }
+        rectMode(CORNER);
+        fill('#31293D');
+        rect(0, 0, windowWidth, windowHeight);
+        imageMode(CENTER);
+        if (progress < 3) {
+          image(mobileToolImg, windowWidth / 2, windowHeight / 2, 600, 360);
         } else {
-          switch (shared.zone) {
-            case 0: // 내비게이션 표시
-              break;
-            case 1:
-              imageMode(CENTER);
-              image(shoppingListImg, windowWidth / 2, windowHeight / 2, windowWidth, windowHeight);
-              break;
-            case 2:
-              rectMode(CORNER);
-              fill('#31293D');
-              rect(0, 0, windowWidth, windowHeight);
-              imageMode(CENTER);
-              image(ScrewdriverImg, windowWidth / 2, windowHeight / 2, windowWidth, windowHeight);
-              break;
-            case 3:
-              rectMode(CORNER);
-              fill('#31293D');
-              rect(0, 0, windowWidth, windowHeight);
-              imageMode(CENTER);
-              // image()
-              break;
-            case 4:
-              rectMode(CORNER);
-              fill('#31293D');
-              rect(0, 0, windowWidth, windowHeight);
-              imageMode(CENTER);
-              image(controllerImg, windowWidth / 2, windowHeight / 2, windowWidth, windowHeight);
-              break;
-          }
+          image(mobileToolImg2, windowWidth / 2, windowHeight / 2, 600, 360);
         }
         // fill(255, 100);
         // stroke(255);
         // rectMode(CENTER);
-        // rect(windowWidth / 2 - 70, windowHeight / 2 - 120, 100, 180); // 주문 확인서
-        // rect(windowWidth / 2 + 60, windowHeight / 2 - 120, 90, 180); // 드라이버
-        // rect(windowWidth / 2 - 70, windowHeight / 2 + 120, 100, 180); // 배터리
-        // rect(windowWidth / 2 + 70, windowHeight / 2 + 120, 115, 180); // 컨트롤러
+        // rect(windowWidth / 2 - 40, windowHeight / 2 + 10, 100, 160); // 컨트롤러
+        // rect(windowWidth / 2 - 150, windowHeight / 2 + 10, 100, 160); // 드라이버
+        // rect(windowWidth / 2 + 65, windowHeight / 2 + 10, 100, 155); // 배터리
+        // rect(windowWidth / 2 + 165, windowHeight / 2 + 10, 90, 165); // 주문 확인서
 
         // fill(0);
         // stroke(0);
@@ -1000,8 +945,14 @@ function keyPressed() {
   }
 
   // 나사 스페이스바로 돌리기(추후 삭제)
-  if (keyCode === 32) { // 스페이스바를 눌렀을 때
-    
+  if (key === ' ') { // 스페이스바를 눌렀을 때
+    if (screwGame.selectedScrew) { // 선택된 나사가 있는 경우
+      screwGame.selectedScrew.move(); // 나사를 회전시킴
+    }
+  }
+
+  if (keyCode === ENTER) {
+
     saveDegX = totalDegX
     saveDegY = totalDegY
     movingGame.degmatch(saveDegX, saveDegY);
@@ -1342,31 +1293,31 @@ function touchStarted() {
       activeTrigger = gameMap.checkTriggers(shared.slime);
       switch (activeTrigger.message) {
         case "spawn zone \n press Q to interact":
-          if (!shared.moveStop && progress == 4 && touch.x > windowWidth / 2 - 120 && touch.x < windowWidth / 2 - 20 && touch.y > windowHeight / 2 + 30 && touch.y < windowHeight / 2 + 210) {
+          if (progress == 4 && touch.x > windowWidth / 2 + 15 && touch.x < windowWidth / 2 + 115 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 0;
           }
           break;
         case "zone 1": // chat game
-          if (!shared.moveStop && progress == 0 && touch.x > windowWidth / 2 - 120 && touch.x < windowWidth / 2 - 20 && touch.y > windowHeight / 2 - 210 && touch.y < windowHeight / 2 - 30) {
+          if (touch.x > windowWidth / 2 + 120 && touch.x < windowWidth / 2 + 210 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 1;
           }
           break;
         case "zone 2": // screw game
-          if (!shared.moveStop && progress == 1 && touch.x > windowWidth / 2 + 15 && touch.x < windowWidth / 2 + 105 && touch.y > windowHeight / 2 - 210 && touch.y < windowHeight / 2 - 30) {
+          if (touch.x > windowWidth / 2 - 200 && touch.x < windowWidth / 2 + 100 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 2;
           }
           break;
         case "zone 3": // motor game
-          if (!shared.moveStop && progress == 2 && touch.x > windowWidth / 2 - 120 && touch.x < windowWidth / 2 - 20 && touch.y > windowHeight / 2 + 30 && touch.y < windowHeight / 2 + 210) {
+          if (touch.x > windowWidth / 2 + 15 && touch.x < windowWidth / 2 + 115 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 3;
           }
           break;
         case "zone 4": // moving game
-          if (!shared.moveStop && progress == 3 && touch.x > windowWidth / 2 + 12.5 && touch.x < windowWidth / 2 + 127.5 && touch.y > windowHeight / 2 + 30 && touch.y < windowHeight / 2 + 210) {
+          if (touch.x > windowWidth / 2 - 90 && touch.x < windowWidth / 2 + 10 && touch.y > windowHeight / 2 - 70 && touch.y < windowHeight / 2 + 90) {
             shared.moveStop = !shared.moveStop;
             shared.zone = 4;
           }
