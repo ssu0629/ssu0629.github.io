@@ -28,7 +28,7 @@ let mapMouseX, mapMouseY;
 
 let chatTimerStart;
 
-let progress = 1; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
+let progress = 4; // 0은 채팅 게임, 1은 나사 게임, 2는 모터 게임, 3은 조종 게임, 4는 닷지 게임
 let gameObjective = [
   '올바른 대답을 입력하여 안전한 중고거래를 성사시키자. \n 컴퓨터 앞으로 가면 될 것 같은데...!',
   '어찌저찌 부품을 샀다! 이제 로봇을 완성하려면 합판끼리 연결을 해야해! \n 나사를 열심히 돌려서 합판을 연결하러 가자.',
@@ -59,6 +59,8 @@ let screwImgs = new Array(8);
 let screwSelectedImgs = new Array(8);
 let screwBgImg;
 let screwIntroImg;
+let screwIntroImg2;
+let introStage = 0; // intro 화면의 진행 단계를 저장
 
 let centerX, centerY;
 let totalDeg, pTotalDeg;
@@ -115,6 +117,12 @@ const initialIgnoreCount = 5; // 초기 측정값 무시 횟수
 let ignoreCount = initialIgnoreCount;
 
 // dodge game
+// 인트로 화면 상태 초기화
+let introScreens = {
+  showIntro1: true,
+  showIntro2: false,
+  gameStart: false
+};
 let dodgeImgRobots = []; // 로봇 애니메이션 전체파일
 let dodgeImgFrame = 0; // 로봇 현재 프레임 저장
 let dodgeImgBg;
@@ -210,6 +218,7 @@ function preload() {
 
   screwBgImg = loadImage("assets/screwBg.png");
   screwIntroImg = loadImage("assets/screwIntroBg.png"); // 시작 화면 이미지 파일 로드
+  screwIntroImg2 = loadImage("assets/screwIntroBg2.png"); // 시작 화면 이미지 파일 로드
 
   // motorgame image load
   for (let i = 1; i < 9; i++) { // 파일이름이 1부터 8임 (0부터 7이 아님)
@@ -238,6 +247,7 @@ function preload() {
   }
   dodgeImgBg = loadImage("assets/dodgeBgSpace.png");
   dodgeIntroImg = loadImage("assets/dodgeIntroBg.png"); // 시작 화면 이미지 파일 로드
+  dodgeIntroImg2 = loadImage("assets/dodgeIntroBg.png"); // 시작 화면 이미지 파일 로드
   dodgeGameOverBg = loadImage("assets/dodgegameoverBg.png");
   dodgeSuccessBg = loadImage("assets/dodgesuccessBg.png");
 
@@ -251,6 +261,9 @@ function preload() {
   buttonCloseImg = loadImage('assets/buttonClose.png');
   buttonCloseOverImg = loadImage('assets/buttonCloseOver.png');
   buttonClosePressedImg = loadImage('assets/buttonClosePressed.png');
+  buttonNextImg = loadImage('assets/buttonNext.png');
+  buttonNextOverImg = loadImage('assets/buttonNextOver.png');
+  buttonNextPressedImg = loadImage('assets/buttonNextPressed.png');
 
 }
 
@@ -429,7 +442,12 @@ function draw() {
                 if (progress == 4) {
 
                   if (introActive) {
-                    drawIntro();
+                      image(dodgeIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+                        displayNextButton(); // '다음' 버튼 표시
+                      } else if (introActive = false) {
+                        image(dodgeIntroImg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+                        buttonX = shared.slime.x - buttonWidth / 2 + 230;
+                        buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
                   } else {
                     if (blackoutCount < 100) {
                       rectMode(CENTER);
@@ -445,7 +463,7 @@ function draw() {
                   shared.moveStop = !shared.moveStop;
                 }
                 break;
-
+              
               case 1: // 중고거래 채팅 게임(타이핑 게임)
 
                 if (progress >= 0) {
@@ -465,22 +483,39 @@ function draw() {
 
                 if (progress >= 1) {
                   if (screwGame.gameState === "intro") {
-                    // 시작 화면 표시
-                    image(screwIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600); //맵 중앙에 800*600
+                    if (introStage === 0) {
+                      image(screwIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+                      displayNextButton(); // '다음' 버튼 표시
+                    } else if (introStage === 1) {
+                      image(screwIntroImg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+                      buttonX = shared.slime.x - buttonWidth / 2 + 230;
+                      buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
+                      // 각 게스트의 회전 값을 합산
+                      totalDeg = 0; // 합산된 회전 값을 초기화
+                      for (let i = 0; i < guests.length; i++) {
+                        if (guests[i].degdiffY !== undefined) {
+                          totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
+                        }
+                      }
+                      fill(255);
+                      arc(shared.slime.x - buttonWidth / 2 + 325, shared.slime.y+55, 200, 200, -PI/2, totalDeg*2);
+                      console.log("totalDeg : " + totalDeg);
 
-                    buttonX = shared.slime.x - buttonWidth / 2;
-                    buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
+                      let buttonImg;
+                      if (buttonState === "normal") {
+                        buttonImg = buttonStartImg;
+                      } else if (buttonState === "over") {
+                        buttonImg = buttonStartOverImg;
+                      } else if (buttonState === "pressed") {
+                        buttonImg = buttonStartPressedImg;
+                      }
 
-                    let buttonImg;
-                    if (buttonState === "normal") {
-                      buttonImg = buttonStartImg;
-                    } else if (buttonState === "over") {
-                      buttonImg = buttonStartOverImg;
-                    } else if (buttonState === "pressed") {
-                      buttonImg = buttonStartPressedImg;
-                    }
+                      image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+                      }
+                
 
-                    image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+                    
+        
                   } else {
                     // 게임 화면 표시
                     // 애니메이션 배경 그리기
@@ -495,12 +530,33 @@ function draw() {
                         totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
                       }
                     }
-                    fill(255);
-                    arc(shared.slime.x, shared.slime.y, 50, 50, -PI/2, totalDeg*2);
+                    fill(255,100);
+                    arc(shared.slime.x + 300, shared.slime.y -215, 70, 70, -PI/2, totalDeg*2);
                     console.log("totalDeg : " + totalDeg);
-
-                    screwGame.draw();
+                      screwGame.draw();
+                      break;
                   }
+                
+                  // } else {
+                  //   // 게임 화면 표시
+                  //   // 애니메이션 배경 그리기
+                  //   noSmooth();
+                  //   noStroke();
+                  //   image(screwBgImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+
+                  //   // 각 게스트의 회전 값을 합산
+                  //   totalDeg = 0; // 합산된 회전 값을 초기화
+                  //   for (let i = 0; i < guests.length; i++) {
+                  //     if (guests[i].degdiffY !== undefined) {
+                  //       totalDeg += guests[i].degdiffY; // 각 게스트의 y축 기울기를 합산
+                  //     }
+                  //   }
+                  //   fill(255,100);
+                  //   arc(shared.slime.x + 300, shared.slime.y -215, 70, 70, -PI/2, totalDeg*2);
+                  //   console.log("totalDeg : " + totalDeg);
+
+                  //   screwGame.draw();
+                  // }
                 } else {
                   if (progress < 1) {
                     console.log('You Should Clear Chat Game.');
@@ -915,9 +971,8 @@ function draw() {
       }
       break;
   }
-
-
 }
+
 
 function keyPressed() {
 
@@ -1056,19 +1111,14 @@ function mousePressed() {
             //   chatGame.closeGame();
             // }
             break;
-          case 2:
-            screwGame.mousePressed(); // 미니게임 1 마우스 클릭 처리
+            case 2: // 부품 조립 게임(나사 게임)
             if (screwGame.gameState === "intro") {
               // 시작 화면에서 시작 버튼을 누르면 게임 시작
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
                 buttonState = "pressed";
               }
-            } else if (screwGame.isGameOver || screwGame.isGameSuccess) {
-              // 게임 오버 또는 성공 화면에서 다시 시작 버튼을 누르면 게임 리셋
-              if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
-                buttonState = "pressed";
-              }
-            }
+             }
+            
             break;
           case 3:
             if (batteryChargeGame.gameState === "intro") {
@@ -1096,6 +1146,12 @@ function mousePressed() {
       }
       break;
     case 4:
+      if (introActive) {
+        // 시작 화면에서 시작 버튼을 누르면 게임 시작
+        if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+          buttonState = "pressed";
+        }
+       }
       if (dodgeGame.gameOver) {
         let restartW = 200;
         let restartH = 100;
@@ -1148,7 +1204,10 @@ function mouseReleased() {
           case 2:
             if (screwGame.gameState === "intro" && buttonState === "pressed") {
               if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
-                screwGame.gameState = "playing";
+                introStage += 1; // 다음 단계로 이동
+                if (introStage > 1) {
+                  screwGame.gameState = "playing";
+                }
               }
               buttonState = "normal";
             } else if ((screwGame.isGameOver || screwGame.isGameSuccess) && buttonState === "pressed") {
@@ -1185,19 +1244,11 @@ function mouseReleased() {
       }
       break;
     case 4:
-      if (dodgeGame.gameOver && restartButtonPressed) {
-        let restartW = 200;
-        let restartH = 100;
-        let restartX = windowWidth / 2 - restartW / 2;
-        let restartY = windowHeight / 5 * 4 - restartH / 2;
-    
-        if (mouseX > restartX && mouseX < restartX + restartW && mouseY > restartY && mouseY < restartY + restartH) {
-          dodgeGame.reset();
-        }
-        restartButtonPressed = false;
-      }
+      if (dodgeGame.gameState === "intro" && buttonState === "pressed") {
+        if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) 
       break;
-  }
+} 
+}
 }
 
 function mouseMoved() {
@@ -1280,7 +1331,16 @@ function mouseMoved() {
         }
       }
       break;
+    case 4:
+      if (dodgeGame.gameState === "intro") {
+        if (mapMouseX > buttonX && mapMouseX < buttonX + buttonWidth && mapMouseY > buttonY && mapMouseY < buttonY + buttonHeight) {
+          buttonState = "over";
+        } else {
+          buttonState = "normal";
+        }
+      break;
   }
+}
 }
 
 function touchStarted() {
@@ -1401,15 +1461,25 @@ function updateCount() {
 //   return degrees * (Math.PI / 180);
 // }
 
+
+
 function drawIntro() {
-  image(dodgeIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
-  drawStartButton();
+  if (introScreens.showIntro1) {
+    image(dodgeIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+    displayNextButton(); // "다음" 버튼 표시
+  } else if (introScreens.showIntro2) {
+    image(dodgeIntroImg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+    drawStartButton(); // "시작" 버튼 표시
+  }
 }
+
+
 
 function drawStartButton() {
 
   buttonX = shared.slime.x - buttonWidth / 2;
   buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
+
 
   if (startButtonPressed) {
     image(buttonStartPressedImg, buttonX, buttonY, buttonWidth, buttonHeight);
@@ -1516,4 +1586,52 @@ function drawRestartButton() {
 function startGame() {
   introActive = false;
   drawGame();
+}
+
+// function displayNextButton() {
+//   buttonX = shared.slime.x - buttonWidth / 2;
+//   buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
+
+//   // 다음 버튼 이미지 설정
+//   let buttonImg = buttonState === "pressed" ? buttonNextPressedImg : buttonState === "over" ? buttonNextOverImg : buttonNextImg;
+
+//   image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+//   checkNextButtonPressed();
+// }
+function displayNextButton() {
+  let buttonImg;
+  buttonX = shared.slime.x - buttonWidth / 2;
+  buttonY = shared.slime.y + 200 - buttonHeight / 2 - 10;
+  if (buttonState === "normal") {
+    buttonImg = buttonNextImg;
+  } else if (buttonState === "over") {
+    buttonImg = buttonNextOverImg;
+  } else if (buttonState === "pressed") {
+    buttonImg = buttonNextPressedImg;
+  }
+
+  image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+}
+
+function drawStartButton() {
+  let buttonImg;
+  if (startButtonPressed) {
+    buttonImg = buttonStartPressedImg;
+  } else if (mouseX > startX && mouseX < startX + startW && mouseY > startY && mouseY < startY + startH) {
+    buttonImg = buttonStartOverImg;
+  } else {
+    buttonImg = buttonStartImg;
+  }
+
+  image(buttonImg, buttonX, buttonY, buttonWidth, buttonHeight);
+}
+
+function drawIntro() {
+  if (introScreens.showIntro1) {
+    image(dodgeIntroImg, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+    displayNextButton(); // '다음' 버튼 표시
+  } else if (introScreens.showIntro2) {
+    image(dodgeIntroImg2, shared.slime.x - 400, shared.slime.y - 300, 800, 600);
+    drawStartButton(); // '시작' 버튼 표시
+  }
 }
